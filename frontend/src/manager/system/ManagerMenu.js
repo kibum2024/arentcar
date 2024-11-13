@@ -46,8 +46,6 @@ const ManagerMenu = () => {
   };
 
   const handleMainMouseLeave = () => {
-    setSubMenuState(false);
-    setSelectedMenuMain("");
   };
 
   const handleSubMenuMouseEnter = () => {
@@ -81,7 +79,7 @@ const ManagerMenu = () => {
                 <li key={index}
                   className='manager-menu-header-main-title'
                   onMouseEnter={(e) => handleMainMouseEnter(menuMain.menu_main, e)}
-                  // onMouseLeave={handleMainMouseLeave}
+                  onMouseLeave={handleMainMouseLeave}
                 >
                   {menuMain.menu_name}
                 </li>
@@ -115,7 +113,9 @@ const ManagerMenu = () => {
       </div>
       <div className='manager-menu-content-wrap'>
         <div className='manager-menu-content-left'>
-
+          <div>
+            홈페이지
+          </div>
         </div>
         <div className='manager-menu-content-right'>
           <div className='manager-menu-content-right-top'>
