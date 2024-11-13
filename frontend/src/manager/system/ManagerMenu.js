@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'manager/system/ManagerMenu.css';
 import Sample from 'manager/reservation/Sample';
+import ManagerReservation from 'manager/reservation/ManagerReservation';
 
 const ManagerMenu = () => {
   const [menus, setMenus] = useState([]);
@@ -16,6 +17,7 @@ const ManagerMenu = () => {
 
   const componentMap = {
     Sample: <Sample onClick={handleCloseClick} />,
+    ManagerReservation: <ManagerReservation onClick={handleCloseClick} />,
   };
 
   useEffect(() => {

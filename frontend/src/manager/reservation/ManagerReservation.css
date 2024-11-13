@@ -1,0 +1,96 @@
+.container {
+	display: flex;
+}
+
+
+.main-content {
+	flex: 1; /* 남은 공간을 차지 */
+	padding: 16px;
+}
+
+/* 테이블 스타일 */
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 16px;
+}
+
+th, td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: center;
+}
+
+th {
+	background-color: #f2f2f2;
+	font-weight: bold;
+}
+
+
+.gray-button {
+	padding: 4px 8px;
+	color: black; /* 글자 색상을 검정으로 설정 */
+	background-color: #d3d3d3; /* 연한 회색 배경색 */
+	text-decoration: none;
+	border-radius: 4px;
+	border: none;
+	cursor: pointer;
+}
+
+.gray-button:hover {
+	background-color: #b0b0b0;
+}
+
+/* modal 팝업창 CSS */
+/* 모달 전체 스타일 */
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 각 박스 간격 */
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  color: #aaa;
+  cursor: pointer;
+}
+
+/* 박스 형태 스타일 */
+.info-box {
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.info-box p {
+  margin: 5px 0;
+}
+
+.btm-btn {
+  display: flex;
+  justify-content: space-between; /* 오른쪽 정렬 */
+  gap: 10px; /* 버튼 간격 */
+  margin-top: 20px; /* 모달 내용과 버튼 사이의 여백 */
+}
