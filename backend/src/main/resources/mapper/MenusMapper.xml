@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.apple.arentcar.mapper.MenusMapper">
+
+    <!-- 모든 조회 -->
+    <select id="getAllMenus" resultType="com.apple.arentcar.model.Menus">
+        SELECT * FROM menus
+    </select>
+
+    <!-- key 단건 조회 -->
+    <select id="getMenusById" resultType="com.apple.arentcar.model.Menus">
+        SELECT * FROM menus 
+        WHERE menu_code = #{menuCode}
+    </select>
+
+    <!-- Insert -->
+    <insert id="createMenus" parameterType="com.apple.arentcar.model.Menus" >
+        INSERT INTO menus 
+        (menu_code, menu_kind, menu_main, menu_sub, menu_small, menu_name, menu_type, menu_icon, menu_component, created_at, updated_at)
+        VALUES 
+        (#{menuCode}, #{menuKind}, #{menuMain}, #{menuSub}, #{menuSmall}, #{menuName}, #{menuType}, #{menuIcon}, #{menuComponent}, NOW(), NOW())
+    </insert>
+
+    <!-- Update -->
+    <update id="updateMenusById" parameterType="com.apple.arentcar.model.Menus">
+        UPDATE menus 
+        SET 
+          menu_kind = #{menuKind},
+          menu_main = #{menuMain},
+          menu_sub = #{menuSub},
+          menu_small = #{menuSmall},
+          menu_name = #{menuName},
+          menu_type = #{menuType},
+          menu_icon = #{menuIcon},
+          menu_component = #{menuComponent},
+          updated_at = NOW()
+        WHERE menu_code = #{menuCode}
+    </update>
+
+    <!-- Delete -->
+    <delete id="deleteMenusById">
+        DELETE FROM menus 
+        WHERE menu_code = #{menuCode}
+    </delete>
+
+    
+</mapper>
