@@ -1,32 +1,41 @@
 .manager-menu-wrap {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
 }
 
-.manager-menu-header-title-wrap {
+.manager-menu-header-wrap {
   display: flex;
   align-items: center;
-  height: 3%;
-  /* border-bottom: 1px solid #eee; */
-  background-color: white;
-}
-
-.manager-menu-header-img {
-  width: 16px;
-  height: 16px;
-  margin: 0px 5px;
+  background-color: black;
+  color: white;
 }
 
 .manager-menu-main-header {
-  position: relative;
-  height: 4%;
-  border-bottom: 1px solid #eee;
-  background-color: white;
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+
+.manager-menu-header-img-wrap {
+  width: 230px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.manager-menu-header-img {
+  width: 80px;
+  height: 40px;
 }
 
 .manager-menu-main-header>ul {
   display: flex;
   justify-content: left;
+  align-items: center;
+  height: 30px;
+  line-height: 30px;
+  text-align: left;
+  gap: 40px;
 }
 
 .manager-menu-header-main-title {
@@ -36,8 +45,16 @@
   cursor: pointer;
 }
 
+.manager-menu-main-header-login-info {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  right: 20px;
+  gap: 15px;
+}
+
 .manager-menu-header-main-title:hover {
-  background-color: rgb(229, 243, 255);
+  color: yellow;
 }
 
 .manager-menu-sub-header {
@@ -48,6 +65,7 @@
   border: 1px solid #ddd;
   background-color: rgb(240, 240, 240);
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); 
+  color: black;
 }
 
 .manager-menu-header-sub-title {
@@ -57,9 +75,23 @@
   cursor: pointer;
 }
 
-.manager-menu-container-wrap {
+.manager-menu-content-wrap {
   display: flex;
-  margin-left: 20px;
   height: 100vh;
+}
+
+.manager-menu-content-left {
+  width: 230px;
+  border: 1px solid #eee;
+  background-color: #fcfcfc;
+}
+
+.manager-menu-content-right-top {
+  width: 1700px;
+  height: 40px;
+  line-height: 40px;
+  padding: 0px 20px;
+  border: 1px solid #eee;
+  background-color: #fcfcfc;
 }
 

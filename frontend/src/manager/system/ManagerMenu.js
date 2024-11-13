@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'manager/system/ManagerMenu.css';
+import Sample from 'manager/reservation/Sample';
 
 const ManagerMenu = () => {
   const [menus, setMenus] = useState([]);
@@ -14,6 +15,7 @@ const ManagerMenu = () => {
   };
 
   const componentMap = {
+    Sample: <Sample onClick={handleCloseClick} />,
   };
 
   useEffect(() => {
@@ -67,11 +69,10 @@ const ManagerMenu = () => {
   return (
     <div className='manager-menu-wrap'>
       <div className='manager-menu-header-wrap'>
-        <div className='manager-menu-header-title-wrap'>
-          <img className="manager-menu-header-img" src={`${process.env.REACT_APP_IMAGE_URL}/data/images/MyHelper.png`} alt="" />
-          <div className='manager-menu-header-title'>MyHelper ver1.0</div>
-        </div>
         <div className='manager-menu-main-header'>
+          <div className="manager-menu-header-img-wrap">
+            <img className="manager-menu-header-img" src={`${process.env.REACT_APP_IMAGE_URL}/arentcar.png`} alt="" />
+          </div>
           <ul>
             {menus.filter(menu => menu.menu_type === "1")
               .map((menuMain, index) => (
@@ -84,6 +85,10 @@ const ManagerMenu = () => {
                 </li>
               ))}
           </ul>
+        </div>
+        <div className='manager-menu-main-header-login-info'>
+          <div>접속자명</div>
+          <div>로그아웃</div>
         </div>
         {subMenuState && (
           <div
@@ -106,8 +111,18 @@ const ManagerMenu = () => {
           </div>
         )}
       </div>
-      <div className='manager-menu-container-wrap'>
-        {selectedComponent && selectedComponent}
+      <div className='manager-menu-content-wrap'>
+        <div className='manager-menu-content-left'>
+
+        </div>
+        <div className='manager-menu-content-right'>
+          <div className='manager-menu-content-right-top'>
+            관리자모드
+          </div>
+          <div>
+            {selectedComponent && selectedComponent}
+          </div>
+        </div>
       </div>
     </div>
   );
