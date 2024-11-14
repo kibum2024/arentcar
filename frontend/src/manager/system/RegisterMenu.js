@@ -2,10 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'manager/system/RegisterMenu.css';
 
-const RegisterMenu = () => {
+const RegisterMenu = ({ onClick }) => {
   const [menus, setMenus] = useState([]);
   const [isPopUp, setIsPopUp] = useState(false);
   const [workMode, setWorkMode] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [pageNumber, setPageNumber] = useState(1);
+  const pageSize = 10;
+  const [totalMenus, setTotalMenus] = useState(0);
+
   const [columnDefs] = useState([
     { headerName: '코드', field: 'menu_code', width: 80, align: 'center' },
     { headerName: '메뉴구분', field: 'menu_kind', width: 80, align: 'center' },
@@ -38,20 +43,47 @@ const RegisterMenu = () => {
     { value: '3', label: '소분류메뉴' },
   ];
 
-  useEffect(() => {
-    const fetchMenus = async () => {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/user/menus`);
-        if (response.data) {
-          setMenus(response.data);
-        }
-      } catch (error) {
-        console.error('There was an error fetching the movies!', error);
+  const pageingMenus = async () => {
+    try {
+      const params = {
+        pageSize,
+        pageNumber,
+      };
+  
+      if (searchName && searchName.trim() !== '') {
+        params.menuName = searchName;
       }
-    };
+  
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/menus/paged`, { params });
+      if (response.data) {
+        setMenus(response.data);
+      }
+    } catch (error) {
+      console.error('There was an error fetching the menus pageing!', error);
+    }
+  };
 
-    fetchMenus();
-  }, []);
+  const getTotalMenusCount = async () => {
+    try {
+
+      console.log("searchName : ",searchName);
+      const params = searchName ? { menuName: searchName } : {};
+  
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/menus/count`, { params });
+      if (typeof response.data === 'number') {
+        setTotalMenus(response.data);
+      } else {
+        console.error('Unexpected response:', response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching total menus count', error);
+    }
+  };
+
+  useEffect(() => {
+    pageingMenus();
+    getTotalMenusCount();
+  }, [pageNumber, pageSize]);
 
   const handleUpdateClick = (updateData, workMode) => {
     setIsPopUp(true);
@@ -75,7 +107,12 @@ const RegisterMenu = () => {
     setMenuType("1");
     setMenuName("");
     setMenuComponent("");
-  }
+  };
+
+  const handleSearchClick = async () => {
+    pageingMenus();
+    getTotalMenusCount();
+  };
 
   const handleInsertClick = (workMode) => {
     setIsPopUp(true);
@@ -83,13 +120,48 @@ const RegisterMenu = () => {
     viewDataInit();
   };
 
-  const handleDeleteClick = (menuCode) => {
+  const handleDeleteClick = async (menuCode) => {
     if (window.confirm('자료를 정말로 삭제하시겠습니까?')) {
-      setMenus((prevMenus) => prevMenus.filter(menu => menu.menu_code !== menuCode));
+      try {
+        await axios.delete(`${process.env.REACT_APP_API_URL}/arentcar/manager/menus/${menuCode}`);
+        setMenus((prevMenus) => prevMenus.filter(menu => menu.menu_code !== menuCode));
+        alert("자료가 삭제되었습니다.");
+      } catch (error) {
+        alert("삭제 중 오류가 발생했습니다." + error);
+      }
     }
   };
 
-  const handleDataSaveClick = () => {
+  const handleDataSaveClick = async () => {
+    const newMenu = {
+      menu_code: menuCode,
+      menu_kind: menuKind,
+      menu_main: menuMain,
+      menu_sub: menuSub,
+      menu_small: menuSmall,
+      menu_type: menuType,
+      menu_name: menuName,
+      menu_component: menuComponent,
+    };
+
+    if (workMode === "수정") {
+      try {
+        await axios.put(`${process.env.REACT_APP_API_URL}/arentcar/manager/menus/${menuCode}`, newMenu);
+        setMenus((prevMenus) => prevMenus.map(menu => menu.menu_code === menuCode ? newMenu : menu));
+        alert("자료가 수정되었습니다.");
+      } catch (error) {
+        alert("수정 중 오류가 발생했습니다." + error);
+      }
+    } else {
+      try {
+        await axios.post(`${process.env.REACT_APP_API_URL}/arentcar/manager/menus`, newMenu);
+        setMenus((prevMenus) => [...prevMenus, newMenu]);
+        alert("자료가 등록되었습니다.");
+      } catch (error) {
+        alert("등록 중 오류가 발생했습니다." + error);
+      }
+    }
+
     setIsPopUp(false);
   };
 
@@ -97,18 +169,42 @@ const RegisterMenu = () => {
     setIsPopUp(false);
   };
 
+  const handleCloseClick = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  const totalWidth = columnDefs.reduce((sum, columnDef) => {
+    return sum + (columnDef.width ? columnDef.width : 150);
+  }, 0);
+
+  const handlePageChange = (newPageNumber) => {
+    setPageNumber(newPageNumber);
+  };
+
+  const totalPages = Math.ceil(totalMenus / pageSize);
+
   return (
     <div className='register-menu-wrap'>
       <div className='register-menu-header-wrap'>
         <div className='register-menu-title-wrap'>
           <div className='manager-title'>● 메뉴등록</div>
         </div>
-        <div className='register-menu-button-wrap'>
-          <label className='manager-label' htmlFor="">메뉴명</label>
-          <input className='width200' type="text" />
-          <button className='manager-button manager-button-search'>검색</button>
-          <button className='manager-button manager-button-insert' onClick={() => handleInsertClick("등록")}>추가</button>
-          <button className='manager-button manager-button-close'>닫기</button>
+        <div
+          className='register-menu-button-wrap'
+          style={{ width: `${totalWidth}px` }}
+        >
+          <div className='flex-align-center'>
+            <label className='manager-label' htmlFor="">메뉴명</label>
+            <input className='width200' type="text" value={searchName} onChange={(e) => (setSearchName(e.target.value))}/>
+            <button className='manager-button manager-button-search' onClick={() => handleSearchClick()}>검색</button>
+            <span>[검색건수 : {totalMenus}건]</span>
+          </div>
+          <div>
+            <button className='manager-button manager-button-insert' onClick={() => handleInsertClick("등록")}>추가</button>
+            <button className='manager-button manager-button-close' onClick={() => handleCloseClick()}>닫기</button>
+          </div>
         </div>
       </div>
       <div className='register-menu-content-wrap'>
@@ -170,15 +266,15 @@ const RegisterMenu = () => {
               </div>
               <div className='register-menu-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">대분류</label>
-                <input className='width30 word-center' value={menuMain} type="text" maxLength={2}/>
+                <input className='width30 word-center' value={menuMain} type="text" maxLength={2} onChange={(e) => setMenuMain(e.target.value)} />
               </div>
               <div className='register-menu-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">중분류</label>
-                <input className='width30 word-center' value={menuSub} type="text" maxLength={2}/>
+                <input className='width30 word-center' value={menuSub} type="text" maxLength={2} onChange={(e) => setMenuSub(e.target.value)} />
               </div>
               <div className='register-menu-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">소분류</label>
-                <input className='width30 word-center' value={menuSmall} type="text" maxLength={2}/>
+                <input className='width30 word-center' value={menuSmall} type="text" maxLength={2} onChange={(e) => setMenuSmall(e.target.value)} />
               </div>
               <div className='register-menu-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">분류구분</label>
@@ -192,18 +288,30 @@ const RegisterMenu = () => {
               </div>
               <div className='register-menu-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">메뉴명</label>
-                <input className='width300' type="text" value={menuName} maxLength={30}/>
+                <input className='width300' type="text" value={menuName} maxLength={30} onChange={(e) => setMenuName(e.target.value)} />
               </div>
               <div className='register-menu-content-popup-line'>
-                <label className='width80 word-right label-margin-right' htmlFor="">프로그래명</label>
-                <input className='width300' type="text" value={menuComponent} maxLength={20}/>
+                <label className='width80 word-right label-margin-right' htmlFor="">프로그램명</label>
+                <input className='width300' type="text" value={menuComponent} maxLength={20} onChange={(e) => setMenuComponent(e.target.value)} />
               </div>
             </div>
           </div>
         }
       </div>
-      <div className='register-menu-pageing-wrap'>
-
+      <div className='register-menu-pageing-wrap flex-align-center'>
+        <button 
+          className='manager-button'
+          style={{color: pageNumber === 1 ?  '#aaa' : 'rgb(38, 49, 155)'}} 
+          onClick={() => handlePageChange(pageNumber - 1)} 
+          disabled={pageNumber === 1}
+        >이전</button>
+        <div className='register-menu-pageing-display'>{pageNumber} / {totalPages}</div>
+        <button 
+          className='manager-button' 
+          style={{color: pageNumber === totalPages ?  '#aaa' : 'rgb(38, 49, 155)'}} 
+          onClick={() => handlePageChange(pageNumber + 1)} 
+          disabled={pageNumber === totalPages}
+        >다음</button>
       </div>
     </div>
   );

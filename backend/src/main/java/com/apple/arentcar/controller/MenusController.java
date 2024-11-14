@@ -17,12 +17,12 @@ public class MenusController {
     @Autowired
     private MenusService menusService;
 
-    @GetMapping("/user/menus")
+    @GetMapping("/manager/menus")
     public List<Menus> getAllMenus() {
         return menusService.getAllMenus();
     }
 
-    @GetMapping("/user/menus/{menuCode}")
+    @GetMapping("/manager/menus/{menuCode}")
     public ResponseEntity<Menus> getMenusById(
             @PathVariable Integer menuCode) {
         Menus menus = menusService.getMenusById(menuCode);
@@ -31,6 +31,12 @@ public class MenusController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/manager/menus/name/{menuName}")
+    public List<Menus> getMenusByMenuName(
+            @PathVariable String menuName) {
+        return menusService.getMenusByMenuName(menuName);
     }
 
     @PostMapping("/manager/menus")
@@ -57,6 +63,32 @@ public class MenusController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/manager/menus/paged")
+    public ResponseEntity<List<Menus>> getMenusWithPaging(
+            @RequestParam int pageSize,
+            @RequestParam int pageNumber,
+            @RequestParam(required = false) String menuName) {
 
+        List<Menus> menus;
+
+        if (menuName != null && !menuName.isEmpty()) {
+            menus = menusService.getMenusByNameWithPaging(menuName, pageSize, pageNumber);
+        } else {
+            menus = menusService.getMenusWithPaging(pageSize, pageNumber);
+        }
+
+        return ResponseEntity.ok(menus);
+    }
+
+    @GetMapping("/manager/menus/count")
+    public ResponseEntity<Integer> getTotalMenusCount(@RequestParam(required = false) String menuName) {
+        int count;
+        if (menuName != null && !menuName.isEmpty()) {
+            count = menusService.countByNameMenus(menuName);
+        } else {
+            count = menusService.countAllMenus();
+        }
+        return ResponseEntity.ok(count);
+    }
 
 }

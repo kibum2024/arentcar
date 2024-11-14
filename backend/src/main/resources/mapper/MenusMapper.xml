@@ -12,8 +12,14 @@
 
     <!-- key 단건 조회 -->
     <select id="getMenusById" resultType="com.apple.arentcar.model.Menus">
-        SELECT * FROM menus 
+        SELECT * FROM menus
         WHERE menu_code = #{menuCode}
+    </select>
+
+    <!-- menu_name 조회 -->
+    <select id="getMenusByMenuName" resultType="com.apple.arentcar.model.Menus">
+        SELECT * FROM menus
+        WHERE menu_name LIKE CONCAT('%', #{menuName}, '%')
     </select>
 
     <!-- Insert -->
@@ -46,5 +52,31 @@
         WHERE menu_code = #{menuCode}
     </delete>
 
-    
+    <!-- 메뉴 페이징 조회 -->
+    <select id="getMenusWithPaging" resultType="com.apple.arentcar.model.Menus">
+        SELECT * FROM menus
+        ORDER BY menu_code
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <!-- 메뉴 수 조회 -->
+    <select id="countAllMenus" resultType="int">
+        SELECT COUNT(*) FROM menus
+    </select>
+
+    <!-- 검색조건에 맞게 메뉴 페이징 조회 -->
+    <select id="getMenusByNameWithPaging" resultType="com.apple.arentcar.model.Menus">
+        SELECT * FROM menus
+        WHERE menu_name LIKE CONCAT('%', #{menuName}, '%')
+        ORDER BY menu_code
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <!-- 메뉴 수 조회 -->
+    <select id="countByNameMenus" resultType="int">
+        SELECT COUNT(*) FROM menus
+        WHERE menu_name LIKE CONCAT('%', #{menuName}, '%')
+    </select>
+
+
 </mapper>

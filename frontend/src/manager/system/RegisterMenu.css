@@ -10,6 +10,7 @@
 .register-menu-button-wrap {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .register-menu-content-header {
@@ -38,4 +39,12 @@
 
 .register-menu-content-popup-line {
   margin: 5px 0px;
+}
+
+.register-menu-pageing-wrap {
+  margin-top: 5px;
+}
+
+.register-menu-pageing-display {
+  margin: 0px 10px;
 }

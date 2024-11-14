@@ -21,6 +21,10 @@ public class MenusService {
         return menusMapper.getMenusById(menuCode);
     }
 
+    public List<Menus> getMenusByMenuName(String menuName) {
+        return menusMapper.getMenusByMenuName(menuName);
+    }
+
     public void createMenus(Menus menus) {
         menusMapper.createMenus(menus);
     }
@@ -33,6 +37,22 @@ public class MenusService {
         menusMapper.deleteMenusById(menuCode);
     }
 
-    
+    public List<Menus> getMenusWithPaging(int pageSize, int pageNumber) {
+        int offset = (pageNumber - 1) * pageSize;
+        return menusMapper.getMenusWithPaging(pageSize, offset);
+    }
+
+    public List<Menus> getMenusByNameWithPaging(String menuName, int pageSize, int pageNumber) {
+        int offset = (pageNumber - 1) * pageSize;
+        return menusMapper.getMenusByNameWithPaging(menuName, pageSize, offset);
+    }
+
+    public int countAllMenus() {
+        return menusMapper.countAllMenus();
+    }
+
+    public int countByNameMenus(String menuName) {
+        return menusMapper.countByNameMenus(menuName);
+    }
 
 }

@@ -230,6 +230,11 @@ em {
   margin-right: 5px;
 }
 
+.flex-align-center {
+  display: flex;
+  align-items: center;
+}
+
 /* 관리자 css */
 .manager-title {
   font-size: 14px;
@@ -247,15 +252,17 @@ em {
 
 .manager-button {
   width: 60px;
-  height: 25px;
-  line-height: 25px;
+  height: 24px;
+  line-height: 24px;
   text-align: center;
   /* border: 1px solid rgb(38, 49, 155); */
-  background-color: #eee;
-  /* background-color: white; */
+  border: 1px solid #ddd;
+  /* background-color: #faf8f8; */
+  background-color: white;
   border-radius: 6px;
   font-weight: bold;
   margin: 0px 2px;
+  color: rgb(38, 49, 155);
 }
 
 .manager-button-insert {
@@ -267,7 +274,7 @@ em {
 }
 
 .manager-button-delete {
-  color: red;
+  color: green;
 }
 
 .manager-button-update {
