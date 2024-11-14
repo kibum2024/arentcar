@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'manager/system/ManagerMenu.css';
-import Sample from 'manager/reservation/Sample';
+import RegisterMenu from 'manager/system/RegisterMenu';
 import ManagerReservation from 'manager/reservation/ManagerReservation';
 
 const ManagerMenu = () => {
@@ -16,7 +16,7 @@ const ManagerMenu = () => {
   };
 
   const componentMap = {
-    Sample: <Sample onClick={handleCloseClick} />,
+    RegisterMenu: <RegisterMenu onClick={handleCloseClick} />,
     ManagerReservation: <ManagerReservation onClick={handleCloseClick} />,
   };
 
@@ -94,10 +94,11 @@ const ManagerMenu = () => {
           <div
             className='manager-menu-sub-header'
             style={{ top: `${mainPosition.top}px`, left: `${mainPosition.left}px` }}
-            onMouseEnter={handleSubMenuMouseEnter}
-            onMouseLeave={handleSubMenuMouseLeave}
           >
-            <ul>
+            <ul 
+              onMouseEnter={handleSubMenuMouseEnter}
+              onMouseLeave={handleSubMenuMouseLeave}
+            >
               {menus.filter(menuSub => menuSub.menu_type === "2" && menuSub.menu_main === selectedMenuMain)
                 .map((menuSub, index) => (
                   <li key={index}

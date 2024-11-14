@@ -112,6 +112,12 @@ input {
   border: 1px solid rgb(236, 239, 243);
   padding: 0px 5px;
 }
+select {
+  height: 25px;
+  border-radius: 6px;
+  border: 1px solid rgb(236, 239, 243);
+  padding: 0px 5px;
+}
 textarea {
   border-radius: 6px;
   border: 1px solid rgb(236, 239, 243);
@@ -124,11 +130,11 @@ button {
 }
 
 select {
-  -webkit-appearance: none;
+  /* -webkit-appearance: none; */
   /* 화살표 없애기 for chrome*/
-  -moz-appearance: none;
+  /* -moz-appearance: none; */
   /* 화살표 없애기 for firefox*/
-  appearance: none;
+  /* appearance: none; */
   /* 화살표 없애기 공통*/
 }
 
@@ -180,8 +186,14 @@ em {
   color: red;
 }
 
+.width30 {
+  width: 30px;
+}
 .width50 {
   width: 50px;
+}
+.width80 {
+  width: 80px;
 }
 .width100 {
   width: 100px;
@@ -203,4 +215,99 @@ em {
 }
 .width400 {
   width: 400px;
+}
+
+.word-left {
+  text-align: left;
+}
+.word-right {
+  text-align: right;
+}
+.word-center {
+  text-align: center;
+}
+.label-margin-right {
+  margin-right: 5px;
+}
+
+/* 관리자 css */
+.manager-title {
+  font-size: 14px;
+  font-weight: bold;
+  height: 35px;
+  line-height: 35px;
+  color: rgb(38, 49, 155);
+}
+
+.manager-label {
+  width: auto;
+  text-align: right;
+  padding: 0px 5px;
+}
+
+.manager-button {
+  width: 60px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  /* border: 1px solid rgb(38, 49, 155); */
+  background-color: #eee;
+  /* background-color: white; */
+  border-radius: 6px;
+  font-weight: bold;
+  margin: 0px 2px;
+}
+
+.manager-button-insert {
+  color: rgb(38, 49, 155);
+}
+
+.manager-button-search {
+  color: green;
+}
+
+.manager-button-delete {
+  color: red;
+}
+
+.manager-button-update {
+  color: rgb(38, 49, 155);
+}
+
+.manager-button-close {
+  color: rgb(38, 49, 155);
+}
+
+.manager-button-save {
+  color: rgb(38, 49, 155);
+}
+
+.manager-head-column {
+  height: 30px;
+  line-height: 30px;
+  border: 1px solid #ddd;
+  font-weight: bold;
+  background-color: aliceblue;
+}
+
+.manager-row-column {
+  height: 30px;
+  line-height: 30px;
+  padding: 0px 5px;
+  border: 1px solid #ddd;
+  background-color: white;
+}
+
+.manager-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+}
+
+.manager-popup-title {
+  font-weight: bold;
 }

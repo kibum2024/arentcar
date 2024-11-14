@@ -1,0 +1,41 @@
+.register-menu-wrap {
+  width: 100%;
+  margin: 20px 20px;
+}
+
+.register-menu-title-wrap {
+  margin: 20px;
+}
+
+.register-menu-button-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.register-menu-content-header {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.register-menu-content-row {
+  display: flex;
+  align-items: center;
+}
+
+.register-menu-content-popup-wrap {
+  width: 500px;
+  margin: 250px auto;
+  padding: 20px 20px;
+  background-color: #fff;
+  border-radius: 6px;
+}
+
+.register-menu-content-popup-close {
+  display: flex;
+  justify-content: space-between;
+}
+
+.register-menu-content-popup-line {
+  margin: 5px 0px;
+}
