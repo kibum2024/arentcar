@@ -1,5 +1,6 @@
 package com.apple.arentcar.controller;
 
+import com.apple.arentcar.model.Admins;
 import com.apple.arentcar.model.Menus;
 import com.apple.arentcar.service.MenusService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,8 @@ public class MenusController {
 
     @PostMapping("/manager/menus")
     public ResponseEntity<Menus> createMenus(@RequestBody Menus menus) {
-        menusService.createMenus(menus);
-        return ResponseEntity.status(HttpStatus.CREATED).body(menus);
+        Menus savedMenus = menusService.createMenus(menus);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedMenus);
     }
 
 

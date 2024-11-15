@@ -25,8 +25,9 @@ public class MenusService {
         return menusMapper.getMenusByMenuName(menuName);
     }
 
-    public void createMenus(Menus menus) {
+    public Menus createMenus(Menus menus) {
         menusMapper.createMenus(menus);
+        return menus;
     }
 
     public void updateMenusById(Menus menus) {

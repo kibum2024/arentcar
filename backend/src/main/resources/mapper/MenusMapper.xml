@@ -23,7 +23,7 @@
     </select>
 
     <!-- Insert -->
-    <insert id="createMenus" parameterType="com.apple.arentcar.model.Menus" >
+    <insert id="createMenus" parameterType="com.apple.arentcar.model.Menus"  useGeneratedKeys="true" keyProperty="menuCode" >
         INSERT INTO menus 
         (menu_code, menu_kind, menu_main, menu_sub, menu_small, menu_name, menu_type, menu_icon, menu_component, created_at, updated_at)
         VALUES 

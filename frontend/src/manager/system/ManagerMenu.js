@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'manager/system/ManagerMenu.css';
 import RegisterMenu from 'manager/system/RegisterMenu';
-import ManagerReservation from 'manager/reservation/ManagerReservation';
+import RegisterUser from 'manager/system/RegisterUser';
 
 const ManagerMenu = () => {
   const [menus, setMenus] = useState([]);
   const [subMenuState, setSubMenuState] = useState(false);
+  const [subMenuMoveState, setSubMenuMoveState] = useState(false);
   const [selectedMenuMain, setSelectedMenuMain] = useState("");
   const [selectedComponent, setSelectedComponent] = useState("");
   const [mainPosition, setMainPosition] = useState({ left: 0, top: 0 });
@@ -17,7 +18,7 @@ const ManagerMenu = () => {
 
   const componentMap = {
     RegisterMenu: <RegisterMenu onClick={handleCloseClick} />,
-    ManagerReservation: <ManagerReservation onClick={handleCloseClick} />,
+    RegisterUser: <RegisterUser onClick={handleCloseClick} />,
   };
 
   useEffect(() => {
@@ -42,14 +43,20 @@ const ManagerMenu = () => {
       top: rect.bottom,
     });
     setSubMenuState(true);
+    setSubMenuMoveState(false);
     setSelectedMenuMain(menuMain);
   };
 
   const handleMainMouseLeave = () => {
+    if (!subMenuMoveState) {
+      setSubMenuState(false);
+      setSubMenuMoveState(false);
+    }
   };
 
   const handleSubMenuMouseEnter = () => {
     setSubMenuState(true);
+    setSubMenuMoveState(true);
   };
 
   const handleSubMenuMouseLeave = () => {
