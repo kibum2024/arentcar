@@ -100,3 +100,9 @@
   background-color: #fcfcfc;
 }
 
+.manager-menu-main-header-login-out {
+  cursor: pointer;
+  background-color: chocolate;
+  padding: 5px;
+  border-radius: 6px;
+}

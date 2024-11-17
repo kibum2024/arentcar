@@ -22,6 +22,8 @@ public class Menus {
 
     private String menuType;
 
+    private String menuRole;
+
     private String menuIcon;
 
     private String menuComponent;

@@ -1,34 +1,62 @@
 import { useSelector } from 'react-redux';
-import { Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import UserMenu from 'user/header/UserMenu';
 import ManagerMenu from 'manager/system/ManagerMenu';
+import ManagerLogin from 'manager/system/ManagerLogin';
 import './App.css';
 
+function RequireAuth({ children }) {
+  const isAuthenticated = useSelector((state) => state.adminState.loginState);
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/admin" />;
+  }
+
+  return children;
+}
+
 function App() {
-  // const isUserRole = useSelector((state) => state.userState.userRole);
-  // const isLoginState = useSelector((state) => state.userState.loginState);
+  const isAuthenticated = useSelector((state) => state.adminState.loginState);
 
   return (
     <div className="app-main-wrap">
-      <ManagerMenu />
-      {/* {isUserRole !== "3" ?
-        (
-          <div className='app-manager-content-wrap'>
-            {isLoginState ? <ManagerMenu /> : <ManagerMenu />}
-          </div>
-        ) : (
-          <>
-            <div className='app-user-header-wrap'>
-            </div>
-            <div className='app-user-content-wrap'>
-              <Routes>
-                <Route path="/" element={<ContentHome />} ></Route>
-                <Route path="/login" element={<UserLogin />} ></Route>
-              </Routes>
-            </div>
-            <div className='app-user-footer-wrap'>
-            </div>
-          </>
-        )} */}
+      <Routes>
+        {/* 로그인 페이지 */}
+        <Route
+          path="/admin"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/admin/main" />
+            ) : (
+              <ManagerLogin />
+            )
+          }
+        />
+
+        {/* 관리자 페이지 */}
+        <Route
+          path="/admin/*"
+          element={
+            <RequireAuth>
+              <ManagerMenu />
+            </RequireAuth>
+          }
+        />
+
+        {/* 사용자 페이지 */}
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/" />
+            ) : (
+              <UserMenu />
+            )
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
     </div>
   );
 }

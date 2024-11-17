@@ -35,9 +35,9 @@ public class SecurityConfig {
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/arentcar/user/**").permitAll()
-                        .requestMatchers("/arentcar/user/login", "/arentcar/user/userMemberships", "/arentcar/user/userMemberships/refresh").permitAll()
-                        .requestMatchers("/arentcar/manager/**").permitAll()
-//                        .requestMatchers("/arentcar/manager/**").authenticated()
+//                        .requestMatchers("/arentcar/manager/**").permitAll()
+                        .requestMatchers("/arentcar/manager/admins/login", "/arentcar/manager/admins/refresh", "/arentcar/manager/menus").permitAll()
+                        .requestMatchers("/arentcar/manager/**").authenticated()
                         .anyRequest().authenticated()  // 나머지 요청은 인증 필요
                 )
                 .sessionManagement(session -> session

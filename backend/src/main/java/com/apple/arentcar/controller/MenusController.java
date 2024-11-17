@@ -1,6 +1,5 @@
 package com.apple.arentcar.controller;
 
-import com.apple.arentcar.model.Admins;
 import com.apple.arentcar.model.Menus;
 import com.apple.arentcar.service.MenusService;
 import org.springframework.beans.factory.annotation.Autowired;

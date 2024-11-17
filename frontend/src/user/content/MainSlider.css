@@ -1,0 +1,118 @@
+.main-slider-wrap {
+  width: 100%;
+  height: 620px;
+  margin: 0 auto;
+  overflow: hidden;
+  user-select: none;
+}
+
+.main-slider-view>ul {
+  display: flex;
+  justify-content: center;
+  width: auto;
+}
+
+.main-slider-view-list {
+  position: relative;
+  width: 100%;
+  transition: all 0.5s ease-in;
+}
+
+.main-slider-view-list img {
+  width: 100%;
+  height: 620px;
+}
+
+.main-slider-page {
+  position: absolute;
+  display: flex;
+  flex-wrap: nowrap;
+  bottom: 50px;
+  right: 100px;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.main-slider-page .main-slider-view-button {
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.main-slider-view-button.active {
+  width: 30px;
+  height: 10px;
+  background-color: yellow;
+  border-radius: 5px;
+}
+
+.main-slider-play-button {
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 11px solid green;
+}
+
+.main-slider-stop-button {
+  width: 10px;
+  height: 10px;
+  background-color: white;
+}
+
+.main-slider-button {
+  position: absolute;
+  width: 100%;
+  top: 300px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 20px;
+  color: white;
+}
+
+.fs-play {
+  font-size: 100px;
+}
+
+.main-slider-button div {
+  cursor: pointer;
+}
+
+/* 모달 오버레이 */
+.main-slider-modal-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 100;
+}
+
+/* 모달 본체 */
+.main-slider-modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+}
+
+/* 닫기 버튼 */
+.main-slider-modal-close-button {
+  position: absolute;
+  font-size: 12px;
+  font-weight: bold;
+  top: 1px;
+  right: 5px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 0px 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}

@@ -16,6 +16,14 @@
         WHERE admin_code = #{adminCode}
     </select>
 
+    <!-- admin_id 단건 조회 -->
+    <select id="getAdminByAdminId" parameterType="string" resultType="com.apple.arentcar.model.Admins">
+        SELECT *
+        FROM admins
+        WHERE admin_id = #{adminId}
+        AND   usage_status in ("1", "3")
+    </select>
+
     <!-- Insert -->
     <insert id="createAdmins" parameterType="com.apple.arentcar.model.Admins" useGeneratedKeys="true" keyProperty="adminCode" >
         INSERT INTO admins 
@@ -65,5 +73,15 @@
         SELECT COUNT(*) FROM admins
         WHERE admin_name LIKE CONCAT('%', #{adminName}, '%')
     </select>
+
+    <!-- Update -->
+    <update id="updateAdminPasswordChange" parameterType="com.apple.arentcar.model.Admins">
+        UPDATE admins
+        SET
+        admin_password = #{adminPassword},
+        usage_status = "1",
+        updated_at = NOW()
+        WHERE admin_id = #{adminId}
+    </update>
 
 </mapper>

@@ -1,0 +1,92 @@
+.manager-login-wrap {
+  width: 100%;
+  height: 100%;
+  margin-top: 100px;
+}
+
+.manager-login-box-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 0;
+  width: 100%;
+  background-color: #F5F5F5;
+  gap: 50px;
+}
+
+.manager-login-title-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F5F5F5;
+  padding-top: 20px;
+}
+
+.manager-login-title-img {
+  width: 150px;
+  height: 75px;
+}
+
+.manager-login-title-name {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.manager-login-area {
+  position: relative;
+  width: 500px;
+}
+
+.manager-login-area input {
+  display: block;
+  width: 75%;
+  height: 45px;
+  margin: 10px 0px;
+}
+
+.manager-login-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 110px;
+  height: 100px;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 4px;
+  background-color: #57a6f6;
+}
+
+.manager-login-bot-wrap {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 5px;
+}
+
+.manager-login-new-password-wrap {
+  width: 500px;
+  margin: 230px auto;
+  padding: 20px 20px;
+  background-color: #fff;
+  border-radius: 6px;
+}
+
+.manager-login-new-password-title {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.manager-login-new-password-line {
+  display: flex;
+  align-items: center;
+  margin: 10px 0px;
+}
+
+.manager-login-new-password-line.align-right {
+  justify-content: end;
+}

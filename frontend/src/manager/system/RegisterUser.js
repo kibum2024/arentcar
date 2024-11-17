@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { refreshAccessToken, handleLogout } from 'common/Common';
+import Loading from 'common/Loading';
 import 'manager/system/RegisterUser.css';
 
 const RegisterUser = ({ onClick }) => {
   const [admins, setAdmins] = useState([]);
   const [isPopUp, setIsPopUp] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [workMode, setWorkMode] = useState("");
   const [searchName, setSearchName] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const pageSize = 10;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const adminIdRegex = /^[a-zA-Z0-9]{8,15}$/;
   const [totalCount, setTotalCount] = useState(0);
 
   const [columnDefs] = useState([
-    { headerName: '코드', field: 'admin_code', width: 80, align: 'center' },
+    { headerName: '코드', field: 'admin_code', width: 50, align: 'center' },
     { headerName: '관리자ID', field: 'admin_id', width: 150, align: 'left' },
     { headerName: '관리자명', field: 'admin_name', width: 200, align: 'left' },
     { headerName: '비밀번호', field: 'admin_password', width: 200, align: 'left' },
     { headerName: '이메일', field: 'admin_email', width: 150, align: 'left' },
-    { headerName: '권한', field: 'admin_role', width: 50, align: 'center' },
+    { headerName: '권한', field: 'admin_role', width: 100, align: 'center' },
     { headerName: '사용여부', field: 'usage_status', width: 80, align: 'center' },
     { headerName: '작업', field: '', width: 200, align: 'center' },
   ]);
@@ -43,37 +48,82 @@ const RegisterUser = ({ onClick }) => {
 
   const pageingAdmins = async () => {
     try {
-      const params = {
-        pageSize,
-        pageNumber,
-      };
-  
-      if (searchName && searchName.trim() !== '') {
-        params.menuName = searchName;
-      }
-  
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins/paged`, { params });
-      if (response.data) {
-        setAdmins(response.data);
-      }
+      const token = localStorage.getItem('accessToken');
+      await getAdmins(token);
     } catch (error) {
-      console.error('There was an error fetching the admins pageing!', error);
+      if (error.response && error.response.status === 403) {
+        try {
+          const newToken = await refreshAccessToken();
+          await getAdmins(newToken);
+        } catch (error) {
+          alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
+          handleLogout();
+        }
+      } else {
+        console.error('There was an error fetching the admins pageing!', error);
+      }
+    }
+  };
+
+  const getAdmins = async (token) => {
+    const params = {
+      pageSize,
+      pageNumber,
+    };
+
+    if (searchName && searchName.trim() !== '') {
+      params.menuName = searchName;
+    }
+
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins/paged`, 
+      {
+        params,
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        withCredentials: true,
+      });
+
+    if (response.data) {
+      setAdmins(response.data);
     }
   };
 
   const getTotalCount = async () => {
     try {
-
-      const params = searchName ? { menuName: searchName } : {};
-  
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins/count`, { params });
-      if (typeof response.data === 'number') {
-        setTotalCount(response.data);
-      } else {
-        console.error('Unexpected response:', response.data);
-      }
+      const token = localStorage.getItem('accessToken');
+      await getCount(token);
     } catch (error) {
-      console.error('Error fetching total admins count', error);
+      if (error.response && error.response.status === 403) {
+        try {
+          const newToken = await refreshAccessToken();
+          await getCount(newToken);
+        } catch (error) {
+          alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
+          handleLogout();
+        }
+      } else {
+        console.error('There was an error fetching the admins count!', error);
+      }
+    }
+  };
+
+  const getCount = async (token) => {
+    const params = searchName ? { menuName: searchName } : {};
+
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins/count`,
+      {
+        params,
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        withCredentials: true,
+      });
+
+    if (typeof response.data === 'number') {
+      setTotalCount(response.data);
+    } else {
+      console.error('Unexpected response:', response.data);
     }
   };
 
@@ -118,21 +168,45 @@ const RegisterUser = ({ onClick }) => {
   const handleDeleteClick = async (adminCode) => {
     if (window.confirm('자료를 정말로 삭제하시겠습니까?')) {
       try {
-        await axios.delete(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins/${adminCode}`);
-        setAdmins((prevAdmin) => prevAdmin.filter(admin => admin.admin_code !== adminCode));
-        alert("자료가 삭제되었습니다.");
+        const token = localStorage.getItem('accessToken');
+        await deleteAdmin(token, adminCode);
       } catch (error) {
-        alert("삭제 중 오류가 발생했습니다." + error);
+        if (error.response && error.response.status === 403) {
+          try {
+            const newToken = await refreshAccessToken();
+            await deleteAdmin(newToken, adminCode);
+          } catch (error) {
+            alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
+            handleLogout();
+          }
+        } else {
+          alert("삭제 중 오류가 발생했습니다." + error);
+        }
       }
     }
   };
 
+  const deleteAdmin = async (token, adminCode) => {
+    await axios.delete(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins/${adminCode}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials: true,
+    });
+    setAdmins((prevAdmin) => prevAdmin.filter(admin => admin.admin_code !== adminCode));
+    alert("자료가 삭제되었습니다.");
+  };
+
   const handleDataSaveClick = async () => {
+    if (!validateCheck()) {
+      return;
+    }
+
     let newAdmin = {
       admin_code: adminCode,
       admin_id: adminId,
       admin_password: adminPassword,
-      admin_name: adminName, 
+      admin_name: adminName,
       admin_role: adminRole,
       admin_email: adminEmail,
       usage_status: usageStatus,
@@ -140,34 +214,163 @@ const RegisterUser = ({ onClick }) => {
 
     if (workMode === "수정") {
       try {
-        await axios.put(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins/${adminCode}`, newAdmin);
-        setAdmins((prevAdmin) => prevAdmin.map(admin => admin.admin_code === adminCode ? newAdmin : admin));
-        alert("자료가 수정되었습니다.");
+        setLoading(true);
+        const token = localStorage.getItem('accessToken');
+        await updateAdmin(token, newAdmin);
       } catch (error) {
-        alert("수정 중 오류가 발생했습니다." + error);
+        if (error.response && error.response.status === 403) {
+          try {
+            const newToken = await refreshAccessToken();
+            await updateAdmin(newToken, newAdmin);
+          } catch (error) {
+            alert("인증이 만료되었습니다. 다시 로그인 해주세요." + error);
+            handleLogout();
+          }
+        } else {
+          alert("수정 중 오류가 발생했습니다." + error);
+        }
+      } finally {
+        setLoading(false);
       }
     } else {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins`, newAdmin);
-        newAdmin.admin_code = response.data.admin_code;
-        setAdmins((prevAdmin) => [...prevAdmin, newAdmin]);
-        alert("자료가 등록되었습니다.");
+        setLoading(true);
+        const token = localStorage.getItem('accessToken');
+        await createAdmin(token, newAdmin);
       } catch (error) {
-        alert("등록 중 오류가 발생했습니다." + error);
+        if (error.response && error.response.status === 403) {
+          try {
+            const newToken = await refreshAccessToken();
+            await createAdmin(newToken, newAdmin);
+          } catch (error) {
+            alert("인증이 만료되었습니다. 다시 로그인 해주세요." + error);
+            handleLogout();
+          }
+        } else {
+          alert("등록 중 오류가 발생했습니다." + error);
+        }
+      } finally {
+        setLoading(false);
       }
     }
 
     setIsPopUp(false);
+  };
+
+  const updateAdmin = async (token, newAdmin) => {
+    await axios.put(
+      `${process.env.REACT_APP_API_URL}/arentcar/manager/admins/${adminCode}`,
+      newAdmin,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
+    );
+    setAdmins((prevAdmin) => prevAdmin.map(admin => admin.admin_code === adminCode ? newAdmin : admin));
+    alert("자료가 수정되었습니다.");
+  };
+
+  const createAdmin = async (token, newAdmin) => {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins`, 
+      newAdmin,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        withCredentials: true,
+      });
+    newAdmin.admin_code = response.data.admin_code;
+    newAdmin.admin_password = response.data.admin_password;
+    setAdmins((prevAdmin) => [...prevAdmin, newAdmin]);
+    alert("자료가 등록되었습니다.");
   };
 
   const handlePopupClodeClick = () => {
     setIsPopUp(false);
   };
 
+  const handleDataUseStopClick = () => {
+    setUsageStatus("2");
+  };
+
+  const handlePasswordIssueClick = async () => {
+    if (window.confirm('임시비밀번호를 발급하시겠습니까?')) {
+      setUsageStatus("3");
+      let newAdmin = {
+        admin_code: adminCode,
+        admin_id: adminId,
+        admin_password: adminPassword,
+        admin_name: adminName,
+        admin_role: adminRole,
+        admin_email: adminEmail,
+        usage_status: "3",
+      };
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('accessToken');
+        await updatePassword(token, newAdmin);
+      } catch (error) {
+        if (error.response && error.response.status === 403) {
+          try {
+            const newToken = await refreshAccessToken();
+            await updatePassword(newToken, newAdmin);
+          } catch (error) {
+            alert("인증이 만료되었습니다. 다시 로그인 해주세요." + error);
+            handleLogout();
+          }
+        } else {
+          alert("임시비밀번호 중 오류가 발생했습니다." + error);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const updatePassword = async (token, newAdmin) => {
+    const response = await axios.put(
+      `${process.env.REACT_APP_API_URL}/arentcar/manager/admins/issue/${adminCode}`,
+      newAdmin,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true, 
+      }
+    );
+    newAdmin.usage_status = response.data.usage_status;
+    newAdmin.admin_password = response.data.admin_password;
+    setAdmins((prevAdmin) => prevAdmin.map(admin => admin.admin_code === adminCode ? newAdmin : admin));
+    alert("임시비밀번호가 발급되었습니다.");
+  };
+
   const handleCloseClick = () => {
     if (onClick) {
       onClick();
     }
+  };
+
+  const validateCheck = () => {
+    if (!adminId || adminId.trim() === '') {
+      alert("관리자ID를 입력해주세요.");
+      return false;
+    };
+    if (!adminName || adminName.trim() === '') {
+      alert("관리자명을 입력해주세요.");
+      return false;
+    };
+    if (!emailRegex.test(adminEmail)) {
+      alert("유효하지 않은 이메일 주소입니다.");
+      return false;
+    };
+    if (!adminIdRegex.test(adminId)) {
+      alert("대소문영문자과 숫자로 8자 이상, 15자 이하로 입력해주세요.");
+      return false;
+    };
+
+    return true;
   };
 
   const totalWidth = columnDefs.reduce((sum, columnDef) => {
@@ -195,7 +398,7 @@ const RegisterUser = ({ onClick }) => {
         >
           <div className='flex-align-center'>
             <label className='manager-label' htmlFor="">관리자명</label>
-            <input className='width200' type="text" value={searchName} onChange={(e) => (setSearchName(e.target.value))}/>
+            <input className='width200' type="text" value={searchName} onChange={(e) => (setSearchName(e.target.value))} />
             <button className='manager-button manager-button-search' onClick={() => handleSearchClick()}>검색</button>
             <span>[검색건수 : {totalCount}건]</span>
           </div>
@@ -231,7 +434,13 @@ const RegisterUser = ({ onClick }) => {
                       <button className='manager-button manager-button-delete' onClick={() => handleDeleteClick(row.admin_code)}>삭제</button>
                     </>
                   ) : (
-                    row[title.field]
+                    title.field === 'admin_role' ? (
+                      optionsAdminRole.find(option => option.value === row[title.field])?.label || row[title.field]
+                    ) :
+                      title.field === 'usage_status' ? (
+                        optionsUsageStatus.find(option => option.value === row[title.field])?.label || row[title.field]
+                      ) :
+                        row[title.field]
                   )}
                 </div>
               ))}
@@ -245,6 +454,12 @@ const RegisterUser = ({ onClick }) => {
                 <div className='manager-popup-title'>● 관리자{workMode}</div>
                 <div className='register-menu-content-popup-button'>
                   <button className='manager-button manager-button-save' onClick={handleDataSaveClick}>저장</button>
+                  {workMode === "수정" &&
+                    <>
+                      <button className='manager-button manager-button-issue' onClick={handlePasswordIssueClick}>임시발급</button>
+                      <button className='manager-button manager-button-stop' onClick={handleDataUseStopClick}>사용정지</button>
+                    </>
+                  }
                   <button className='manager-button manager-button-close' onClick={handlePopupClodeClick}>닫기</button>
                 </div>
               </div>
@@ -262,7 +477,7 @@ const RegisterUser = ({ onClick }) => {
               </div>
               <div className='register-menu-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">비밀번호</label>
-                <input className='width300 word-center' value={adminPassword} type="text" maxLength={50} onChange={(e) => setAdminPassword(e.target.value)} />
+                <input className='width300 word-left' value={adminPassword} type="text" maxLength={50} disabled onChange={(e) => setAdminPassword(e.target.value)} />
               </div>
               <div className='register-menu-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">이메일</label>
@@ -280,7 +495,7 @@ const RegisterUser = ({ onClick }) => {
               </div>
               <div className='register-menu-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">사용여부</label>
-                <select className='width150' id="comboBox" value={usageStatus} onChange={(e) => (setUsageStatus(e.target.value))}>
+                <select className='register-menu-content-popup-usage-status width150' id="comboBox" value={usageStatus} disabled onChange={(e) => (setUsageStatus(e.target.value))}>
                   {optionsUsageStatus.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
@@ -293,20 +508,23 @@ const RegisterUser = ({ onClick }) => {
         }
       </div>
       <div className='register-menu-pageing-wrap flex-align-center'>
-        <button 
+        <button
           className='manager-button'
-          style={{color: pageNumber === 1 ?  '#aaa' : 'rgb(38, 49, 155)'}} 
-          onClick={() => handlePageChange(pageNumber - 1)} 
+          style={{ color: pageNumber === 1 ? '#aaa' : 'rgb(38, 49, 155)' }}
+          onClick={() => handlePageChange(pageNumber - 1)}
           disabled={pageNumber === 1}
         >이전</button>
         <div className='register-menu-pageing-display'>{pageNumber} / {totalPages}</div>
-        <button 
-          className='manager-button' 
-          style={{color: pageNumber === totalPages ?  '#aaa' : 'rgb(38, 49, 155)'}} 
-          onClick={() => handlePageChange(pageNumber + 1)} 
+        <button
+          className='manager-button'
+          style={{ color: pageNumber === totalPages ? '#aaa' : 'rgb(38, 49, 155)' }}
+          onClick={() => handlePageChange(pageNumber + 1)}
           disabled={pageNumber === totalPages}
         >다음</button>
       </div>
+      {loading && (
+        <Loading />
+      )}
     </div>
   );
 }

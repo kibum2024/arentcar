@@ -16,9 +16,9 @@ public class JwtUtil {
     private static final long REFRESH_EXPIRATION_TIME = 7 * 24 * 60 * 60;
 
     // 토큰 생성
-    public static String generateToken(String email) {
+    public static String generateToken(String item) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, email);
+        return createToken(claims, item);
     }
 
     private static String createToken(Map<String, Object> claims, String subject) {
@@ -32,7 +32,7 @@ public class JwtUtil {
     }
 
     // 리프레시 토큰 생성
-    public static String generateRefreshToken(String email) {
+    public static String generateRefreshToken(String item) {
         // UUID를 사용하여 리프레시 토큰 생성
         String refreshToken = UUID.randomUUID().toString();
 
@@ -41,7 +41,7 @@ public class JwtUtil {
         Date validity = new Date(now.getTime() + REFRESH_EXPIRATION_TIME);
 
         return Jwts.builder()
-                .setSubject(email) // 이메일을 페이로드에 포함
+                .setSubject(item) // 이메일을 페이로드에 포함
                 .setId(refreshToken) // UUID를 토큰 ID로 사용
                 .setIssuedAt(now) // 발행 시간
                 .setExpiration(validity) // 만료 시간
@@ -90,9 +90,8 @@ public class JwtUtil {
         }
     }
 
-    public static String getEmailFromRefreshToken(String token) {
+    public static String getItemFromRefreshToken(String token) {
         try {
-            // JWT를 파싱하여 클레임에서 사용자 이메일을 가져옵니다.
             return Jwts.parser()
                     .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token)
@@ -100,8 +99,8 @@ public class JwtUtil {
                     .getSubject(); // 이메일을 subject로 설정했기 때문에 여기서 반환
         } catch (JwtException e) {
             // 토큰이 유효하지 않은 경우 예외 처리
-            System.out.println("token email null error: " + e.getMessage());
-            return null; // 이메일 추출 실패
+            System.out.println("token item null error: " + e.getMessage());
+            return null;
         }
     }
 }
