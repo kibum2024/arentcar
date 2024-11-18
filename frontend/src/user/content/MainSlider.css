@@ -1,6 +1,6 @@
 .main-slider-wrap {
   width: 100%;
-  height: 620px;
+  height: calc(100vh - 85px);
   margin: 0 auto;
   overflow: hidden;
   user-select: none;
@@ -15,19 +15,20 @@
 .main-slider-view-list {
   position: relative;
   width: 100%;
+  height: 100%;
   transition: all 0.5s ease-in;
 }
 
 .main-slider-view-list img {
   width: 100%;
-  height: 620px;
+  height: 100%;
 }
 
 .main-slider-page {
   position: absolute;
   display: flex;
   flex-wrap: nowrap;
-  bottom: 50px;
+  bottom: 10%;
   right: 100px;
   gap: 10px;
   cursor: pointer;
@@ -64,7 +65,7 @@
 .main-slider-button {
   position: absolute;
   width: 100%;
-  top: 300px;
+  top: 50%;
   display: flex;
   justify-content: space-between;
   align-items: center;

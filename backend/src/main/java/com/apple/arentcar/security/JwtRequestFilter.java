@@ -37,15 +37,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        System.out.println("authorizationHeader aaa: " + authorizationHeader);
+//        System.out.println("authorizationHeader aaa: " + authorizationHeader);
 
         // 회원가입 및 토큰 발행 요청인지 확인
         String requestURI = httpRequest.getRequestURI();
-        boolean isPublicRequest = requestURI.equals("/arentcar/manager/admins/login") && httpRequest.getMethod().equalsIgnoreCase("POST")
-                || requestURI.equals("/arentcar/manager/admins/refresh") && httpRequest.getMethod().equalsIgnoreCase("POST");
-//        boolean isPublicRequest = requestURI.equals("/arentcar/manager/admins") && httpRequest.getMethod().equalsIgnoreCase("POST")
-//                || requestURI.equals("/arentcar/manager/admins/login") && httpRequest.getMethod().equalsIgnoreCase("POST")
-//                || requestURI.equals("/arentcar/manager/admins/refresh") && httpRequest.getMethod().equalsIgnoreCase("POST");
+        boolean isPublicRequest;
+        if ("Bearer null".equals(authorizationHeader) || "Bearer undefined".equals(authorizationHeader)) {
+            isPublicRequest = requestURI.equals("/arentcar/manager/admins") && httpRequest.getMethod().equalsIgnoreCase("POST")
+                    || requestURI.equals("/arentcar/manager/admins/login") && httpRequest.getMethod().equalsIgnoreCase("POST")
+                    || requestURI.equals("/arentcar/manager/admins/refresh") && httpRequest.getMethod().equalsIgnoreCase("POST");
+        } else {
+            isPublicRequest = false;
+        }
+
+//        System.out.println("isPublicRequest aaa: " + isPublicRequest);
 
         if (!isPublicRequest && authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);

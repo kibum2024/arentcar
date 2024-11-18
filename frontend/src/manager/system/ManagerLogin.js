@@ -94,12 +94,17 @@ const ManagerLogin = () => {
   }
 
   const updatePassword = async (token) => {
-    await api.put(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins/newpassword`, {
-      admin_id: adminId,
-      admin_password: newPassword,
-      headers: { Authorization: `Bearer ${token}` },
-      withCredentials: true, 
-    });
+    await api.put(
+      `${process.env.REACT_APP_API_URL}/arentcar/manager/admins/newpassword`,
+      {
+        admin_id: adminId,
+        admin_password: newPassword,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      }
+    );
   };
 
   const validateCheck = () => {

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import axios from 'axios';
 import 'user/content/MainSlider.css';
 
@@ -180,7 +179,6 @@ const MainSlider = () => {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
-            {/* <video src={currentUrl} width="920" height="510" controls autoPlay /> */}
           </div>
         </div>
       )}

@@ -111,7 +111,7 @@ const ManagerMenu = () => {
             <img className="manager-menu-header-img" src={`${process.env.REACT_APP_IMAGE_URL}/arentcar.png`} alt="" />
           </div>
           <ul>
-            {menus.filter(menu => menu.menu_type === "1" && menu.menu_role >= isAdminRole)
+            {menus.filter(menu => menu.menu_kind === "2" && menu.menu_type === "1" && menu.menu_role >= isAdminRole)
               .map((menuMain, index) => (
                 <li key={index}
                   className='manager-menu-header-main-title'
@@ -136,7 +136,7 @@ const ManagerMenu = () => {
               onMouseEnter={handleSubMenuMouseEnter}
               onMouseLeave={handleSubMenuMouseLeave}
             >
-              {menus.filter(menuSub => menuSub.menu_type === "2" && menuSub.menu_main === selectedMenuMain && menuSub.menu_role >= isAdminRole)
+              {menus.filter(menuSub => menuSub.menu_kind === "2" && menuSub.menu_type === "2" && menuSub.menu_main === selectedMenuMain && menuSub.menu_role >= isAdminRole)
                 .map((menuSub, index) => (
                   <li key={index}
                     className='manager-menu-header-sub-title'
