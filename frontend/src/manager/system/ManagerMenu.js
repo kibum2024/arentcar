@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { setAdminState } from '../../redux/AdminState';
@@ -17,6 +18,7 @@ const ManagerMenu = () => {
   const isAdminRole = useSelector((state) => state.adminState.adminRole);
   const isAdminName = useSelector((state) => state.adminState.adminName);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleCloseClick = () => {
     setSelectedComponent("");
@@ -103,6 +105,10 @@ const ManagerMenu = () => {
     handleLogout()
   }
 
+  const handleHomePageClick = () => {
+    navigate('/');
+  }
+
   return (
     <div className='manager-menu-wrap'>
       <div className='manager-menu-header-wrap'>
@@ -151,7 +157,7 @@ const ManagerMenu = () => {
       </div>
       <div className='manager-menu-content-wrap'>
         <div className='manager-menu-content-left'>
-          <div>
+          <div className='manager-menu-content-homepage' onClick={handleHomePageClick}>
             홈페이지
           </div>
         </div>

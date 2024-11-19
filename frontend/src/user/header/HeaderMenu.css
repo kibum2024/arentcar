@@ -42,4 +42,12 @@
 .manager-menu-login-img {
   width: 26px;
   height: 28px;
+  cursor: pointer;
+}
+
+.header-menu-top-login> span{
+  margin-left: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import 'user/header/HeaderMenu.css';
 
@@ -9,6 +9,8 @@ const HeaderMenu = () => {
   const [activeMenuSub, setActiveMenuSub] = useState(null);
   const [isHome, setIsHome] = useState(true);
   const location = useLocation();
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchMenus = async () => {
@@ -33,37 +35,49 @@ const HeaderMenu = () => {
     }
   }, [location]);
 
-  const handleMenuMainMouseOver = (MainMenu) => {
-    setActiveMenuMain(MainMenu);
+  // const handleMenuMainMouseOver = (MainMenu) => {
+  //   setActiveMenuMain(MainMenu);
+  // };
+
+  // const handleMenuMainMouseLeave = () => {
+  //   setActiveMenuMain(null);
+  // };
+
+  const handleMenuMainClick = (menuUrl) => {
+    console.log("menuUrl : ",menuUrl);
+    navigate(menuUrl);
   };
 
-  const handleMenuMainMouseLeave = () => {
-    setActiveMenuMain(null);
+
+  const handleLogoClick = (menu) => {
+    navigate('/');
   };
 
-  const handleMenuMainClick = (menu) => {
+  const handlLoginClick = (menu) => {
+    navigate('/login');
   };
 
 
   return (
     <div className='header-menu-wrap'>
       <div className='header-menu-top-logo'>
-        <img className="manager-menu-logo-img" src={`${process.env.REACT_APP_IMAGE_URL}/arentcar.png`} alt="" />
+        <img className="manager-menu-logo-img" src={`${process.env.REACT_APP_IMAGE_URL}/arentcar.png`} alt="" onClick={handleLogoClick} />
       </div>
       <div className="header-menu-top-menu">
         <ul>
           {menus.filter(menu => menu.menu_kind === "1" && menu.menu_type === "1").map((mainMemu, index) => (
             <li
               key={index}
-              onClick={() => handleMenuMainClick(mainMemu.menu_url)}
+              onClick={() => handleMenuMainClick(mainMemu.menu_component)}
             >
               {mainMemu.menu_name}
             </li>
           ))}
         </ul>
       </div>
-      <div className='header-menu-top-login'>
+      <div className='header-menu-top-login' onClick={handlLoginClick}>
         <img className="manager-menu-login-img" src={`${process.env.REACT_APP_IMAGE_URL}/mypage.png`} alt="" />
+        <span>로그인</span>
       </div>
     </div>
   );

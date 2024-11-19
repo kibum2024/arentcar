@@ -1,0 +1,147 @@
+.user-login-wrap {
+  width: 100%;
+  height: calc(100vh - 385px);
+  padding-top: 100px;
+  background-color: #F5F5F5;
+}
+
+.user-login-box-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 0;
+  width: 100%;
+  gap: 50px;
+}
+
+.user-login-title-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F5F5F5;
+  padding-top: 20px;
+}
+
+.user-login-title-img {
+  width: 150px;
+  height: 75px;
+}
+
+.user-login-title-name {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.user-login-area {
+  position: relative;
+  width: 500px;
+}
+
+.user-login-area input {
+  display: block;
+  width: 75%;
+  height: 45px;
+  margin: 10px 0px;
+}
+
+.user-login-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 110px;
+  height: 100px;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 4px;
+  background-color: rgba(251, 115, 37);
+}
+
+.user-login-bot-wrap {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 70px;
+}
+
+.user-login-bot-left {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 5px;
+}
+
+.user-login-bot-right {
+  display: flex;
+  align-items: center;
+  gap: 70px;
+}
+
+.user-login-new-password-wrap {
+  width: 500px;
+  margin: 230px auto;
+  padding: 20px 20px;
+  background-color: #fff;
+  border-radius: 6px;
+}
+
+.user-login-new-password-title {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.user-login-new-password-line {
+  display: flex;
+  align-items: center;
+  margin: 10px 0px;
+}
+
+.user-login-new-password-line.align-right {
+  justify-content: end;
+}
+
+.user-login-easy-wrap {
+  margin: 40px auto;
+}
+
+.user-login-easy-title {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.user-login-easy-title::before {
+  display: inline-block;
+  content: '';
+  width: 240px;
+  height: 1px;
+  background: #d4d7dc;
+  vertical-align: middle;
+  margin-right: 20px;
+}  
+
+.user-login-easy-title::after {
+  display: inline-block;
+  content: '';
+  width: 240px;
+  height: 1px;
+  background: #d4d7dc;
+  vertical-align: middle;
+  margin-left: 20px;
+}  
+
+.user-login-easy-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 30px;
+}
+.user-login-easy-item img {
+  width: 54px;
+  height: 54px;
+}

@@ -106,3 +106,16 @@
   padding: 5px;
   border-radius: 6px;
 }
+
+.manager-menu-content-homepage {
+  width: 90%;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: rgb(237, 246, 248);
+  cursor: pointer;
+}

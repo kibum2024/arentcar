@@ -34,8 +34,7 @@ function App() {
         />
 
         {/* 관리자 페이지 */}
-        <Route
-          path="/admin/*"
+        <Route path="/admin/*" 
           element={
             <RequireAuth>
               <ManagerMenu />
@@ -44,17 +43,9 @@ function App() {
         />
 
         {/* 사용자 페이지 */}
-        <Route
-          path="/"
-          element={
-            isAuthenticated ? (
-              <Navigate to="/" />
-            ) : (
-              <UserMenu />
-            )
-          }
-        />
+        <Route path="/*" element={<UserMenu />} />
 
+        {/* 오류발생시   */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
