@@ -5,14 +5,19 @@ import com.apple.arentcar.dto.UsersLoginDTO;
 import com.apple.arentcar.model.Users;
 import com.apple.arentcar.security.JwtUtil;
 import com.apple.arentcar.service.UsersService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/arentcar")
@@ -33,6 +38,17 @@ public class UsersController {
     public ResponseEntity<Users> getUsersById(
             @PathVariable Integer userCode) {
         Users users = usersService.getUsersById(userCode);
+        if (users != null) {
+            return ResponseEntity.ok(users);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/user/users/email/{userEmail}")
+    public ResponseEntity<Users> getUsersByEmail(
+            @PathVariable String userEmail) {
+        Users users = usersService.getUsersByEmail(userEmail);
         if (users != null) {
             return ResponseEntity.ok(users);
         } else {
@@ -174,5 +190,35 @@ public class UsersController {
     public ResponseEntity<?> updateUserPasswordChange(@RequestBody UsersLoginDTO requestDTO) {
         usersService.updateUserPasswordChange(requestDTO);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/user/naver-login")
+    public ResponseEntity<String> handleNaverLogin(@RequestBody Map<String, String> body) {
+        String token = body.get("token"); // React에서 전달된 액세스 토큰
+        String userInfoJson = fetchNaverUserInfo(token); // 네이버 API 호출
+
+        System.out.println("userInfoJson : " + userInfoJson);
+
+        // 사용자 정보 저장 로직
+        boolean isSaved = usersService.saveUser(userInfoJson);
+
+        if (isSaved) {
+            return ResponseEntity.ok("회원가입 성공");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 실패");
+        }
+    }
+
+    // 네이버 API 호출
+    private String fetchNaverUserInfo(String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken); // 토큰을 Authorization 헤더로 설정
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String url = "https://openapi.naver.com/v1/nid/me"; // 네이버 사용자 정보 API URL
+
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        return response.getBody(); // 사용자 정보 JSON 반환
     }
 }

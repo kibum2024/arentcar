@@ -1,6 +1,6 @@
 .user-membership-wrap {
   width: 100%;
-  height: calc(100vh - 185px);
+  height: calc(100vh - 85px);
   padding-top: 100px;
   background-color: #F5F5F5;
 }
@@ -89,8 +89,8 @@
 
 .user-membership-register-popup-wrap {
   width: 400px;
-  height: 420px;
-  margin: 200px auto;
+  height: 560px;
+  margin: 180px auto;
   padding: 20px;
   background-color: white;
   border-radius: 10px;
@@ -119,6 +119,11 @@
 
 .user-membership-register-popup-content {
   margin: 15px 0px;
+}
+
+.user-membership-register-popup-content-email {
+  display: flex;
+  align-items: center;
 }
 
 .user-membership-register-popup-content-message {

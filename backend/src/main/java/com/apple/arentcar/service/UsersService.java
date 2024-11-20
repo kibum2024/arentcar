@@ -3,6 +3,9 @@ package com.apple.arentcar.service;
 import com.apple.arentcar.dto.UsersLoginDTO;
 import com.apple.arentcar.mapper.UsersMapper;
 import com.apple.arentcar.model.Users;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,10 @@ public class UsersService {
 
     public Users getUsersById(Integer userCode) {
         return usersMapper.getUsersById(userCode);
+    }
+
+    public Users getUsersByEmail(String userEmail) {
+        return usersMapper.getUsersByEmail(userEmail);
     }
 
     public Users createUsers(Users users) {
@@ -74,7 +81,7 @@ public class UsersService {
     }
 
     public Users getUserLogin(UsersLoginDTO requestDTO) {
-        return usersMapper.getUserByEmail(requestDTO.getUserEmail());
+        return usersMapper.getUsersByEmail(requestDTO.getUserEmail());
     }
 
     public void updateUserPasswordChange(UsersLoginDTO requestDTO) {
@@ -82,6 +89,39 @@ public class UsersService {
         requestDTO.setUserPassword(encodedPassword);
 
         usersMapper.updateUserPasswordChange(requestDTO);
+    }
+
+    public boolean saveUser(String userInfoJson) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            // JSON에서 필요한 데이터 추출
+            JsonNode userInfo = objectMapper.readTree(userInfoJson);
+            String id = userInfo.get("response").get("id").asText();
+            String email = userInfo.get("response").get("email").asText();
+            String name = userInfo.get("response").get("name").asText();
+            String mobile = userInfo.get("response").get("mobile").asText().replace("-", "");
+            String birthday = userInfo.get("response").get("birthday").asText().replace("-", "");;
+            String birthyear = userInfo.get("response").get("birthyear").asText();
+
+            // 사용자 엔티티 생성 및 저장
+            Users users = new Users();
+            users.setUserEmail(email);
+            users.setUserName(name);
+            users.setUserPassword("naver");
+            users.setUserPhoneNumber(mobile);
+            users.setUserBirthDate(birthyear + birthday);
+            users.setUserCategory("1");
+            users.setUsageStatus("1");
+
+            System.out.println("users.setUserBirthDate : " + users.getUserBirthDate());
+
+            usersMapper.createUsers(users);
+            return true;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

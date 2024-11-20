@@ -27,6 +27,41 @@ const UserLogin = () => {
     }
   }, []);
 
+  // useEffect(() => {
+  //   const script = document.createElement('script');
+  //   script.src = 'https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js';
+  //   script.type = 'text/javascript';
+  //   script.async = true;
+  //   document.body.appendChild(script);
+
+  //   script.onload = () => {
+  //     console.log('Naver SDK loaded successfully.');
+  //   };
+
+  //   return () => {
+  //     document.body.removeChild(script); // 컴포넌트 언마운트 시 스크립트 제거
+  //   };
+  // }, []);
+
+  useEffect(() => {
+    const loadNaverSdk = () => {
+        const script = document.createElement('script');
+        script.src = 'https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js';
+        script.type = 'text/javascript';
+        script.async = true;
+        script.onload = () => {
+            console.log('네이버 SDK 로드 완료');
+        };
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    };
+
+    loadNaverSdk();
+}, []);
+
   const handleIdSaveChkChange = (e) => {
     const idSaveChkValue = e.target.checked;
     setIdSaveChk(idSaveChkValue);
@@ -130,15 +165,69 @@ const UserLogin = () => {
     navigate('/membership');
   }
 
+  const handleKakaoClick = () => {
+
+  }
+
+  const handleNaverClick = () => {
+    const naverLogin = new window.naver.LoginWithNaverId({
+      clientId: '70Z4zly6MORzKJxt2FRJ',
+      callbackUrl: 'http://localhost:3000/naver-callback',
+      isPopup: false,
+      loginButton: { color: 'green', type: 3, height: '40' },
+    });
+
+    const naverLoginElement = document.getElementById('naverIdLogin');
+    if (naverLoginElement) {
+      naverLogin.init();
+      naverLoginElement.firstChild.click(); // 숨겨진 버튼 클릭
+    } else {
+      console.error('네이버 로그인 버튼 요소를 찾을 수 없습니다.');
+    }
+  }
+
   return (
     <div className="user-login-wrap">
       <div className="user-login-box-wrap">
         <div className="user-login-box">
-          <div className="user-login-area">
+          <form className="user-login-area" onSubmit={handleLoginClick}>
+            <div>
+              <label htmlFor="userId">아이디</label>
+              <input
+                type="text"
+                id="userId"
+                maxLength="50"
+                placeholder="아이디를 입력해 주세요."
+                title="아이디 입력"
+                value={userEmail}
+                onChange={(e) => setUserEmail(e.target.value)}
+                autoComplete="username" // 자동 완성 속성 추가
+              />
+            </div>
+
+            <div>
+              <label htmlFor="userPassword">비밀번호</label>
+              <input
+                type="password"
+                id="userPassword"
+                maxLength="50"
+                placeholder="비밀번호를 입력해 주세요."
+                title="비밀번호 입력"
+                value={userPassword}
+                onChange={(e) => setUserPassword(e.target.value)}
+                autoComplete="current-password" // 자동 완성 속성 추가
+              />
+            </div>
+
+            <button type="submit" className="user-login-button">
+              로그인
+            </button>
+          </form>
+          {/* <div className="user-login-area">
             <input type="text" id="userId" maxlength="50" placeholder="아이디를 입력해 주세요." title="입력태그" value={userEmail} onChange={(e) => { setUserEmail(e.target.value) }} />
             <input type="password" id="userPassword" maxlength="50" placeholder="비밀번호를 입력해 주세요." title="입력태그" value={userPassword} onChange={(e) => { setUserPassword(e.target.value) }} />
             <button type="button" className="user-login-button" onClick={handleLoginClick}>로그인</button>
-          </div>
+          </div> */}
           <div className="user-login-bot-wrap">
             <div className="user-login-bot-left">
               <input type="checkbox" name="loginCheck" id="checkSavedID" checked={idSaveChk} onChange={handleIdSaveChkChange} />
@@ -157,6 +246,7 @@ const UserLogin = () => {
           <button>
             <img className="user-login-easy-kakao" src={`${process.env.REACT_APP_IMAGE_URL}/btn_kakao.png`} alt="" />
           </button>
+          <div id="naverIdLogin" style={{ display: 'none' }}></div>
           <button>
             <img className="user-login-easy-naver" src={`${process.env.REACT_APP_IMAGE_URL}/btn_naver.png`} alt="" />
           </button>
@@ -191,11 +281,11 @@ const UserLogin = () => {
             <div className="user-login-membership-popup-content">
               <div className="user-login-popup-button user-login-membership" onClick={handleMemberShipClick}>A렌터카 회원가입</div>
               <div className="user-login-easy-popup">간편 회원가입</div>
-              <div className="user-login-popup-button user-login-kakao">
+              <div className="user-login-popup-button user-login-kakao" onClick={handleKakaoClick}>
                 <img className="user-login-easy-kakao" src={`${process.env.REACT_APP_IMAGE_URL}/btn_kakao.png`} alt="" />
                 <span>카카오로 시작하기</span>
               </div>
-              <div className="user-login-popup-button user-login-naver">
+              <div className="user-login-popup-button user-login-naver" onClick={handleNaverClick}>
                 <img className="user-login-easy-naver" src={`${process.env.REACT_APP_IMAGE_URL}/btn_naver.png`} alt="" />
                 <span>네이버로 시작하기</span>
               </div>

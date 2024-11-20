@@ -14,7 +14,7 @@ public interface UsersMapper {
 
     Users getUsersById(@Param("userCode") Integer userCode);
 
-    Users getUserByEmail(@Param("userId") String userId);
+    Users getUsersByEmail(@Param("userEmail") String userEmail);
 
     void createUsers(Users users);
 

@@ -4,6 +4,7 @@ import HeaderMenu from 'user/header/HeaderMenu';
 import ContentHome from 'user/content/ContentHome';
 import UserLogin from 'user/content/UserLogin';
 import UserMemberShip from 'user/content/UserMemberShip';
+import NaverCallback from 'user/content/NaverCallback';
 import FooterMain from 'user/footer/FooterMain';
 
 const UserMenu = () => {
@@ -17,6 +18,7 @@ const UserMenu = () => {
           <Route path="/" element={<ContentHome />} ></Route>
           <Route path="/login" element={<UserLogin />} ></Route>
           <Route path="/membership" element={<UserMemberShip />} ></Route>
+          <Route path="/naver-callback" element={<NaverCallback />} /> 
         </Routes>
       </div>
       <div className='user-menu-footer-wrap'>
