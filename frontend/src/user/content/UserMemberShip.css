@@ -1,0 +1,140 @@
+.user-membership-wrap {
+  width: 100%;
+  height: calc(100vh - 185px);
+  padding-top: 100px;
+  background-color: #F5F5F5;
+}
+
+.user-membership-agree-wrap {
+  width: 600px;
+  margin: 0 auto;
+}
+
+.user-membership-title-wrap {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 20px 0px;
+}
+
+.user-membership-title-content {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 10px 0px;
+}
+
+.user-membership-content {
+  width: 600px; 
+  padding: 20px;
+  font-size: 14px;
+  background-color: white;
+  border-radius: 10px;
+}
+.user-membership-content-agree-list {
+  position: relative;
+}
+
+.user-membership-content-agree-check {
+  position: relative;
+  display: flex;
+  font-weight: bold;
+  padding-top: 2px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.user-membership-content-agree-list li {
+  position: relative;
+  margin: 14px 0px;
+  padding-top: 2px;
+}
+
+.chk-box {
+  display: flex;
+  align-items: center;
+}
+
+.chk-label {
+  padding-left: 5px;
+}
+
+.user-login-agree-image {
+  width: 24px;
+  height: 24px;
+}
+
+.user-membership-content-agree-message {
+  font-size: 12px;
+  margin: 15px 0px;
+}
+
+.user-membership-content-agree-button-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.user-membership-content-agree-button {
+  width: 360px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px auto;
+  border-radius: 6px;
+  background-color: rgba(251, 115, 37);
+  color: white;
+  cursor: pointer;
+}
+
+.user-membership-register-popup-wrap {
+  width: 400px;
+  height: 420px;
+  margin: 200px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.user-membership-register-popup-title-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.user-membership-register-popup-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 10px 0px;
+}
+
+.user-membership-register-popup-content-wrap {
+  margin-top: 10px;
+}
+
+.label-name {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.user-membership-register-popup-content {
+  margin: 15px 0px;
+}
+
+.user-membership-register-popup-content-message {
+  color: #aaa;
+}
+
+.user-membership-register-popup-confirm-button {
+  width: 360px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px auto;
+  border-radius: 6px;
+  background-color: rgba(251, 115, 37);
+  color: white;
+  cursor: pointer;
+}

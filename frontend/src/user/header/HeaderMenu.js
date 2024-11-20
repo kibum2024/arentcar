@@ -5,8 +5,6 @@ import 'user/header/HeaderMenu.css';
 
 const HeaderMenu = () => {
   const [menus, setMenus] = useState([]);
-  const [activeMenuMain, setActiveMenuMain] = useState(null);
-  const [activeMenuSub, setActiveMenuSub] = useState(null);
   const [isHome, setIsHome] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
@@ -77,7 +75,8 @@ const HeaderMenu = () => {
       </div>
       <div className='header-menu-top-login' onClick={handlLoginClick}>
         <img className="manager-menu-login-img" src={`${process.env.REACT_APP_IMAGE_URL}/mypage.png`} alt="" />
-        <span>로그인</span>
+        <span className="manager-menu-login-btn">로그인</span>
+        <span>회원가입</span>
       </div>
     </div>
   );

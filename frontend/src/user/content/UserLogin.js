@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUserState } from '../../redux/UserState';
+import { useLocation, useNavigate } from 'react-router-dom';
 import api from 'common/api';
 import { refreshAccessToken, handleLogout } from 'common/Common';
 import 'user/content/UserLogin.css';
 
 
 const UserLogin = () => {
+  const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isInputPassword, setIsInputPassword] = useState(false);
+  const [isMemberShip, setIsMemberShip] = useState(false);
   const [idSaveChk, setIdSaveChk] = useState(false);
   const dispatch = useDispatch();
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -119,6 +122,14 @@ const UserLogin = () => {
     return true;
   };
 
+  const handleIdMemberShipClick = () => {
+    setIsMemberShip(true);
+  }
+
+  const handleMemberShipClick = () => {
+    navigate('/membership');
+  }
+
   return (
     <div className="user-login-wrap">
       <div className="user-login-box-wrap">
@@ -134,7 +145,7 @@ const UserLogin = () => {
               <label for="checkSavedID">아이디 저장</label>
             </div>
             <div className="user-login-bot-right">
-              <div>회원가입</div>
+              <div onClick={handleIdMemberShipClick}>회원가입</div>
               <div>아이디 찾기</div>
             </div>
           </div>
@@ -166,6 +177,28 @@ const UserLogin = () => {
             <div className='user-login-new-password-line align-right'>
               <button type="button" className="manager-button manager-button-save" onClick={handleNewPasswordClick}>확인</button>
               <button type="button" className="manager-button manager-button-close" onClick={() => setIsInputPassword(false)}>닫기</button>
+            </div>
+          </div>
+        </div>
+      }
+      {isMemberShip &&
+        <div className='manager-popup'>
+          <div className="user-login-membership-popup_wrap">
+            <div className="user-login-membership-popup-title-wrap">
+              <div className="user-login-membership-popup-title">가입 방법을 선택해 주세요</div>
+              <button className="manager-button" onClick={() => setIsMemberShip(false)}>닫기</button>
+            </div>
+            <div className="user-login-membership-popup-content">
+              <div className="user-login-popup-button user-login-membership" onClick={handleMemberShipClick}>A렌터카 회원가입</div>
+              <div className="user-login-easy-popup">간편 회원가입</div>
+              <div className="user-login-popup-button user-login-kakao">
+                <img className="user-login-easy-kakao" src={`${process.env.REACT_APP_IMAGE_URL}/btn_kakao.png`} alt="" />
+                <span>카카오로 시작하기</span>
+              </div>
+              <div className="user-login-popup-button user-login-naver">
+                <img className="user-login-easy-naver" src={`${process.env.REACT_APP_IMAGE_URL}/btn_naver.png`} alt="" />
+                <span>네이버로 시작하기</span>
+              </div>
             </div>
           </div>
         </div>
