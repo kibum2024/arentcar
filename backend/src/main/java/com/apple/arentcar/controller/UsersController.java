@@ -1,6 +1,7 @@
 package com.apple.arentcar.controller;
 
 import com.apple.arentcar.dto.JwtUserResponse;
+import com.apple.arentcar.dto.KakaoRequestDTO;
 import com.apple.arentcar.dto.UsersLoginDTO;
 import com.apple.arentcar.model.Users;
 import com.apple.arentcar.security.JwtUtil;
@@ -119,9 +120,11 @@ public class UsersController {
 
     @PostMapping("/user/users/login")
     public ResponseEntity<?> getUserLogin(@RequestBody UsersLoginDTO requestDTO) {
+        System.out.println("login requestDTO: " + requestDTO.getUserEmail());
+        System.out.println("login requestDTO: " + requestDTO.getUserPassword());
+
         Users users = usersService.getUserLogin(requestDTO);
 
-//        System.out.println("login admins: " + admins.getUserId());
         if (users == null) {
             return ResponseEntity.notFound().build();
         }
@@ -159,7 +162,7 @@ public class UsersController {
         if (!JwtUtil.validateRefreshToken(refreshToken)) {
             // 리프레시 토큰이 만료되었거나 유효하지 않다면, 새 리프레시 토큰과 액세스 토큰을 생성
             String userEmail = JwtUtil.getItemFromRefreshToken(refreshToken);
-            System.out.println("refresh userEmail: " + userEmail);
+//            System.out.println("refresh userEmail: " + userEmail);
 
             // 새로운 액세스 토큰 생성
             String newAccessToken = JwtUtil.generateToken(userEmail);
@@ -193,17 +196,33 @@ public class UsersController {
     }
 
     @PostMapping("/user/naver-login")
-    public ResponseEntity<String> handleNaverLogin(@RequestBody Map<String, String> body) {
-        String token = body.get("token"); // React에서 전달된 액세스 토큰
-        String userInfoJson = fetchNaverUserInfo(token); // 네이버 API 호출
+    public ResponseEntity<?> handleNaverLogin(@RequestBody Map<String, String> body) {
+        String token = body.get("token");
+        String userInfoJson = fetchNaverUserInfo(token);
 
         System.out.println("userInfoJson : " + userInfoJson);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String email = "";
+        try {
+            JsonNode userInfo = objectMapper.readTree(userInfoJson);
+            email = userInfo.get("response").get("email").asText();
+            System.out.println("이메일: " + email);
+        } catch (Exception e) {
+            System.out.println("사용자 정보 파싱 중 오류 발생.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원정보확인불가");
+        }
+
+        Users users = usersService.getUsersByEmail(email);
+        if (users != null) {
+            return ResponseEntity.ok(users);
+        };
 
         // 사용자 정보 저장 로직
-        boolean isSaved = usersService.saveUser(userInfoJson);
+        boolean isSaved = usersService.saveNaverUser(userInfoJson);
 
         if (isSaved) {
-            return ResponseEntity.ok("회원가입 성공");
+            return ResponseEntity.ok(userInfoJson);
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 실패");
         }
@@ -220,5 +239,26 @@ public class UsersController {
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         return response.getBody(); // 사용자 정보 JSON 반환
+    }
+
+    @PostMapping("/user/kakao-login")
+    public ResponseEntity<?> kakaoLogin(@RequestBody KakaoRequestDTO request) {
+        String accessToken = request.getAccessToken();
+        System.out.println("accessToken : " + accessToken);
+
+        String url = "https://kapi.kakao.com/v2/user/me";
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 헤더에 액세스 토큰을 추가하여 사용자 정보 요청
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+        // 사용자 정보 처리
+        String userInfo = response.getBody();
+        System.out.println("userInfo : " + userInfo);
+        return ResponseEntity.ok(userInfo);
     }
 }

@@ -10,7 +10,6 @@ const AdminState = createSlice({
     loginState: false,           
   },
   reducers: {
-    // 관리자 권한 설정
     setAdminState: (state, action) => {
       state.adminCode = action.payload.adminCode;
       state.adminName = action.payload.adminName;
@@ -21,6 +20,5 @@ const AdminState = createSlice({
   },
 });
 
-// 액션과 리듀서를 export
 export const { setAdminState } = AdminState.actions;
 export default AdminState.reducer;

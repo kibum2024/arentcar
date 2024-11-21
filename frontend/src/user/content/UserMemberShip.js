@@ -116,7 +116,6 @@ const UserMemberShip = () => {
       user_name: userName,
       user_password: userPassword,
       user_phone_number: userPhoneNumber,
-      user_email: userEmail,
       user_category: "1",
       usage_status: "1",
     };

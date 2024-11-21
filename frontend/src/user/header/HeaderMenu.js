@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUserState } from '../../redux/UserState';
 import axios from 'axios';
 import 'user/header/HeaderMenu.css';
 
 const HeaderMenu = () => {
   const [menus, setMenus] = useState([]);
   const [isHome, setIsHome] = useState(true);
+  const isUserName = useSelector((state) => state.userState.userName);
+  const isLoginState = useSelector((state) => state.userState.loginState);
   const location = useLocation();
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchMenus = async () => {
@@ -33,28 +37,32 @@ const HeaderMenu = () => {
     }
   }, [location]);
 
-  // const handleMenuMainMouseOver = (MainMenu) => {
-  //   setActiveMenuMain(MainMenu);
-  // };
-
-  // const handleMenuMainMouseLeave = () => {
-  //   setActiveMenuMain(null);
-  // };
-
   const handleMenuMainClick = (menuUrl) => {
     console.log("menuUrl : ",menuUrl);
     navigate(menuUrl);
   };
 
 
-  const handleLogoClick = (menu) => {
+  const handleLogoClick = () => {
     navigate('/');
   };
 
-  const handlLoginClick = (menu) => {
+  const handleLoginClick = () => {
     navigate('/login');
   };
 
+  const handleLogoutClick = () => {
+    dispatch(setUserState({
+      userCode: "",
+      userName: "",
+      userEmail: "",
+      userCategory: "",	
+      usageStatus: "",
+      loginState: false,
+    }));
+
+    navigate('/');
+  };
 
   return (
     <div className='header-menu-wrap'>
@@ -73,11 +81,19 @@ const HeaderMenu = () => {
           ))}
         </ul>
       </div>
-      <div className='header-menu-top-login' onClick={handlLoginClick}>
-        <img className="manager-menu-login-img" src={`${process.env.REACT_APP_IMAGE_URL}/mypage.png`} alt="" />
-        <span className="manager-menu-login-btn">로그인</span>
-        <span>회원가입</span>
-      </div>
+      {isLoginState ?
+        <div className='header-menu-top-login' onClick={handleLogoutClick}>
+          <img className="manager-menu-login-img" src={`${process.env.REACT_APP_IMAGE_URL}/mypage.png`} alt="" />
+          <span className="manager-menu-logout-btn">로그아웃</span>
+          <span>({isUserName})</span>
+        </div>
+        :
+        <div className='header-menu-top-login' onClick={handleLoginClick}>
+          <img className="manager-menu-login-img" src={`${process.env.REACT_APP_IMAGE_URL}/mypage.png`} alt="" />
+          <span className="manager-menu-login-btn">로그인</span>
+          <span>회원가입</span>
+        </div>
+      }
     </div>
   );
 };

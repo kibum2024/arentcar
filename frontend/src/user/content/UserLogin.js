@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setUserState } from '../../redux/UserState';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import api from 'common/api';
 import { refreshAccessToken, handleLogout } from 'common/Common';
 import 'user/content/UserLogin.css';
@@ -16,7 +15,6 @@ const UserLogin = () => {
   const [isInputPassword, setIsInputPassword] = useState(false);
   const [isMemberShip, setIsMemberShip] = useState(false);
   const [idSaveChk, setIdSaveChk] = useState(false);
-  const dispatch = useDispatch();
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   useEffect(() => {
@@ -27,40 +25,14 @@ const UserLogin = () => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const script = document.createElement('script');
-  //   script.src = 'https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js';
-  //   script.type = 'text/javascript';
-  //   script.async = true;
-  //   document.body.appendChild(script);
-
-  //   script.onload = () => {
-  //     console.log('Naver SDK loaded successfully.');
-  //   };
-
-  //   return () => {
-  //     document.body.removeChild(script); // 컴포넌트 언마운트 시 스크립트 제거
-  //   };
-  // }, []);
-
   useEffect(() => {
-    const loadNaverSdk = () => {
-        const script = document.createElement('script');
-        script.src = 'https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js';
-        script.type = 'text/javascript';
-        script.async = true;
-        script.onload = () => {
-            console.log('네이버 SDK 로드 완료');
-        };
-        document.body.appendChild(script);
-
-        return () => {
-            document.body.removeChild(script);
-        };
+    const script = document.createElement('script');
+    script.src = 'https://developers.kakao.com/sdk/js/kakao.js';
+    script.onload = () => {
+      window.Kakao.init('78c17c6c2ffdd5fe383edf297c5be8f5');
     };
-
-    loadNaverSdk();
-}, []);
+    document.body.appendChild(script);
+  }, []);
 
   const handleIdSaveChkChange = (e) => {
     const idSaveChkValue = e.target.checked;
@@ -81,22 +53,12 @@ const UserLogin = () => {
         user_password: userPassword,
       });
 
-      if (response.data.users.usage_status === "3") {
-        setIsInputPassword(true);
+      if (response.data.users.usage_status === "2") {
+         alert("사용할 수 없는 아이디입니다. 재가입 후 사용바랍니다.");
+         navigate("/login");
         return;
       }
-      // 액세스 토큰 저장
       api.setAccessToken(response.data.token);
-
-      // 서버 응답 구조에 맞게 수정
-      // const adminData = response.data.admins;
-      // dispatch(setAdminState({
-      //   adminCode: adminData.admin_code,
-      //   adminName: adminData.admin_name,
-      //   adminEmail: adminData.admin_email,
-      //   adminRole: adminData.admin_role,
-      //   loginState: true,
-      // }));
     } catch (error) {
       if (error.response.status === 401 || error.response.status === 404) {
         alert("아이디와 비밀번호를 확인 후 다시 로그인바랍니다.");
@@ -165,22 +127,86 @@ const UserLogin = () => {
     navigate('/membership');
   }
 
+  const handleKakaoLoginClick = () => {
+    window.Kakao.Auth.login({
+      success: function (authObj) {
+        console.log(authObj.access_token);
+        axios.post(`${process.env.REACT_APP_API_URL}/arentcar/user/kakao-login`, {
+          accessToken: authObj.access_token
+        }, {
+          headers: {
+            'Content-Type': 'application/json'  
+          }
+        })
+          .then(response => {
+            navigate('/');
+          })
+          .catch(error => {
+            console.error('Login Error:', error);
+          });
+      },
+      fail: function (err) {
+        console.error('Login Failed:', err);
+      }
+    });
+  }
+
+  const handleNaverLoginClick = () => {
+    if (typeof window.naver === "undefined" || !window.naver.LoginWithNaverId) {
+      const naverLoginScript = document.createElement("script");
+      naverLoginScript.src = "https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"; // 최신 버전 사용
+      document.body.appendChild(naverLoginScript);
+
+      naverLoginScript.onload = () => {
+        console.log("네이버 로그인 SDK 로드 완료");
+        initializeNaverLogin();
+      };
+    } else {
+      console.log("네이버 로그인 SDK 이미 로드됨");
+      initializeNaverLogin();
+    }
+  };
+
+  const initializeNaverLogin = () => {
+    try {
+      const naverLogin = new window.naver.LoginWithNaverId({
+        clientId: "tZmqhZO1NzVp8B5iVi2F",
+        callbackUrl: "http://localhost:8080/arentcar/user/naver/callback",
+        isPopup: false,
+        loginButton: { color: 'green', type: 3, height: '40' },
+        state: "RANDOM_STATE_VALUE",
+        // state: Math.random().toString(36).substring(2, 10), 
+      });
+
+      const naverLoginElement = document.getElementById('naverIdLogin');
+      if (naverLoginElement) {
+        naverLogin.init();
+        naverLoginElement.firstChild.click();
+      } else {
+        console.error('네이버 로그인 버튼 요소를 찾을 수 없습니다.');
+      }
+    } catch (error) {
+      console.error("네이버 로그인 초기화 중 오류:", error);
+    }
+  };
+
   const handleKakaoClick = () => {
 
   }
 
   const handleNaverClick = () => {
     const naverLogin = new window.naver.LoginWithNaverId({
-      clientId: '70Z4zly6MORzKJxt2FRJ',
+      clientId: 'tZmqhZO1NzVp8B5iVi2F',
       callbackUrl: 'http://localhost:3000/naver-callback',
       isPopup: false,
       loginButton: { color: 'green', type: 3, height: '40' },
+      state: Math.random().toString(36).substring(2, 10),
     });
 
     const naverLoginElement = document.getElementById('naverIdLogin');
     if (naverLoginElement) {
       naverLogin.init();
-      naverLoginElement.firstChild.click(); // 숨겨진 버튼 클릭
+      naverLoginElement.firstChild.click();
     } else {
       console.error('네이버 로그인 버튼 요소를 찾을 수 없습니다.');
     }
@@ -190,44 +216,11 @@ const UserLogin = () => {
     <div className="user-login-wrap">
       <div className="user-login-box-wrap">
         <div className="user-login-box">
-          <form className="user-login-area" onSubmit={handleLoginClick}>
-            <div>
-              <label htmlFor="userId">아이디</label>
-              <input
-                type="text"
-                id="userId"
-                maxLength="50"
-                placeholder="아이디를 입력해 주세요."
-                title="아이디 입력"
-                value={userEmail}
-                onChange={(e) => setUserEmail(e.target.value)}
-                autoComplete="username" // 자동 완성 속성 추가
-              />
-            </div>
-
-            <div>
-              <label htmlFor="userPassword">비밀번호</label>
-              <input
-                type="password"
-                id="userPassword"
-                maxLength="50"
-                placeholder="비밀번호를 입력해 주세요."
-                title="비밀번호 입력"
-                value={userPassword}
-                onChange={(e) => setUserPassword(e.target.value)}
-                autoComplete="current-password" // 자동 완성 속성 추가
-              />
-            </div>
-
-            <button type="submit" className="user-login-button">
-              로그인
-            </button>
-          </form>
-          {/* <div className="user-login-area">
+          <div className="user-login-area">
             <input type="text" id="userId" maxlength="50" placeholder="아이디를 입력해 주세요." title="입력태그" value={userEmail} onChange={(e) => { setUserEmail(e.target.value) }} />
             <input type="password" id="userPassword" maxlength="50" placeholder="비밀번호를 입력해 주세요." title="입력태그" value={userPassword} onChange={(e) => { setUserPassword(e.target.value) }} />
             <button type="button" className="user-login-button" onClick={handleLoginClick}>로그인</button>
-          </div> */}
+          </div>
           <div className="user-login-bot-wrap">
             <div className="user-login-bot-left">
               <input type="checkbox" name="loginCheck" id="checkSavedID" checked={idSaveChk} onChange={handleIdSaveChkChange} />
@@ -243,34 +236,15 @@ const UserLogin = () => {
       <div className="user-login-easy-wrap">
         <div className="user-login-easy-title">간편 로그인</div>
         <div className="user-login-easy-item">
-          <button>
+          <button onClick={handleKakaoLoginClick}>
             <img className="user-login-easy-kakao" src={`${process.env.REACT_APP_IMAGE_URL}/btn_kakao.png`} alt="" />
           </button>
           <div id="naverIdLogin" style={{ display: 'none' }}></div>
-          <button>
+          <button onClick={handleNaverLoginClick}>
             <img className="user-login-easy-naver" src={`${process.env.REACT_APP_IMAGE_URL}/btn_naver.png`} alt="" />
           </button>
         </div>
       </div>
-      {isInputPassword &&
-        <div className='manager-popup'>
-          <div className='user-login-new-password-wrap'>
-            <div className='user-login-new-password-title'>임시 비밀번호 변경</div>
-            <div className='user-login-new-password-line'>
-              <label className='width100 word-right label-margin-right' htmlFor="newPassword">새로운 비밀번호</label>
-              <input className='width300' type="password" id="newPassword" maxlength="50" placeholder="새로운 비밀번호를 입력해 주세요." title="입력태그" value={newPassword} onChange={(e) => { setNewPassword(e.target.value) }} />
-            </div>
-            <div className='user-login-new-password-line'>
-              <label className='width100 word-right label-margin-right' htmlFor="newPassword">확인 비밀번호</label>
-              <input className='width300' type="password" id="confirmPassword" maxlength="50" placeholder="확인 비밀번호를 입력해 주세요." title="입력태그" value={confirmPassword} onChange={(e) => { setConfirmPassword(e.target.value) }} />
-            </div>
-            <div className='user-login-new-password-line align-right'>
-              <button type="button" className="manager-button manager-button-save" onClick={handleNewPasswordClick}>확인</button>
-              <button type="button" className="manager-button manager-button-close" onClick={() => setIsInputPassword(false)}>닫기</button>
-            </div>
-          </div>
-        </div>
-      }
       {isMemberShip &&
         <div className='manager-popup'>
           <div className="user-login-membership-popup_wrap">

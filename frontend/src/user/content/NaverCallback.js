@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setUserState } from '../../redux/UserState';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function NaverCallback() {
 	const [isRequesting, setIsRequesting] = useState(false);
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		const naverLogin = new window.naver.LoginWithNaverId({
-			clientId: '70Z4zly6MORzKJxt2FRJ',
+			clientId: 'tZmqhZO1NzVp8B5iVi2F',
 			callbackUrl: 'http://localhost:3000/naver-callback',
 		});
 
@@ -22,11 +27,24 @@ function NaverCallback() {
 					// 서버로 액세스 토큰 전송
 					const response = await axios.post(
 						`${process.env.REACT_APP_API_URL}/arentcar/user/naver-login`,
-						{ token }, // 요청 데이터
-						{ headers: { 'Content-Type': 'application/json' } } // 헤더 설정
+						{ token },
+						{ headers: { 'Content-Type': 'application/json' } }
 					);
 
-					console.log('서버 응답:', response.data); // 서버 응답 처리
+					const userData = response.data;
+					console.log('서버 userData:', response.data);
+
+					dispatch(setUserState({
+						userCode: userData.user_code,
+						userName: userData.user_name,
+						userEmail: userData.user_email,
+						userCategory: userData.user_category,	
+						usageStatus: userData.usage_status,
+						loginState: true,
+					}));
+
+					navigate('/');
+
 				} catch (error) {
 					if (error.response) {
 						console.error('서버 응답 에러:', error.response.data);
@@ -34,7 +52,7 @@ function NaverCallback() {
 						console.error('요청 처리 중 에러 발생:', error.message);
 					}
 				} finally {
-					setIsRequesting(false); // 요청 종료
+					setIsRequesting(false);
 				}
 			} else {
 				console.error('로그인 실패: 네이버에서 상태를 확인할 수 없습니다.');

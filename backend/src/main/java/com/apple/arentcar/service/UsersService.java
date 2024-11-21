@@ -91,7 +91,7 @@ public class UsersService {
         usersMapper.updateUserPasswordChange(requestDTO);
     }
 
-    public boolean saveUser(String userInfoJson) {
+    public boolean saveNaverUser(String userInfoJson) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -114,7 +114,7 @@ public class UsersService {
             users.setUserCategory("1");
             users.setUsageStatus("1");
 
-            System.out.println("users.setUserBirthDate : " + users.getUserBirthDate());
+//            System.out.println("users.setUserBirthDate : " + users.getUserBirthDate());
 
             usersMapper.createUsers(users);
             return true;
