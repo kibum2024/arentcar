@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUserState } from '../../redux/UserState';
 import axios from 'axios';
 import api from 'common/api';
 import { refreshAccessToken, handleLogout } from 'common/Common';
@@ -8,6 +10,7 @@ import 'user/content/UserLogin.css';
 
 const UserLogin = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -23,15 +26,6 @@ const UserLogin = () => {
     if (idSaveChkValue) {
       setIdSaveChk(idSaveChkValue);
     }
-  }, []);
-
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://developers.kakao.com/sdk/js/kakao.js';
-    script.onload = () => {
-      window.Kakao.init('78c17c6c2ffdd5fe383edf297c5be8f5');
-    };
-    document.body.appendChild(script);
   }, []);
 
   const handleIdSaveChkChange = (e) => {
@@ -59,6 +53,18 @@ const UserLogin = () => {
         return;
       }
       api.setAccessToken(response.data.token);
+      const userData = response.data.users;
+      console.log("userData : ",userData);
+      dispatch(setUserState({
+        userCode: userData.user_code,
+        userName: userData.user_name,
+        userEmail: userData.user_email,
+        userCategory: userData.user_category,	
+        usageStatus: userData.usage_status,
+        loginState: true,
+      }));
+
+      navigate("/");
     } catch (error) {
       if (error.response.status === 401 || error.response.status === 404) {
         alert("아이디와 비밀번호를 확인 후 다시 로그인바랍니다.");
@@ -128,62 +134,51 @@ const UserLogin = () => {
   }
 
   const handleKakaoLoginClick = () => {
-    window.Kakao.Auth.login({
-      success: function (authObj) {
-        console.log(authObj.access_token);
-        axios.post(`${process.env.REACT_APP_API_URL}/arentcar/user/kakao-login`, {
-          accessToken: authObj.access_token
-        }, {
-          headers: {
-            'Content-Type': 'application/json'  
-          }
-        })
-          .then(response => {
-            navigate('/');
-          })
-          .catch(error => {
-            console.error('Login Error:', error);
-          });
-      },
-      fail: function (err) {
-        console.error('Login Failed:', err);
-      }
-    });
-  }
+    const kakaoClientId = "fb404d662dae6dcdb051b6460f0dbb35"; // 카카오 REST API 키
+    const redirectUri = "http://localhost:8080/arentcar/user/kakao/callback"; // Spring Boot 콜백 URL
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoClientId}&redirect_uri=${redirectUri}&prompt=login`;
+
+    // 카카오 인증 URL로 이동
+    window.location.href = kakaoAuthUrl;
+  };
 
   const handleNaverLoginClick = () => {
     if (typeof window.naver === "undefined" || !window.naver.LoginWithNaverId) {
       const naverLoginScript = document.createElement("script");
-      naverLoginScript.src = "https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"; // 최신 버전 사용
+      naverLoginScript.src = "https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"; // 최신 버전
       document.body.appendChild(naverLoginScript);
-
+  
       naverLoginScript.onload = () => {
         console.log("네이버 로그인 SDK 로드 완료");
         initializeNaverLogin();
+      };
+  
+      naverLoginScript.onerror = () => {
+        console.error("네이버 로그인 SDK 로드 실패");
       };
     } else {
       console.log("네이버 로그인 SDK 이미 로드됨");
       initializeNaverLogin();
     }
   };
-
+  
   const initializeNaverLogin = () => {
     try {
+      const stateValue = Math.random().toString(36).substring(2, 10); 
       const naverLogin = new window.naver.LoginWithNaverId({
-        clientId: "tZmqhZO1NzVp8B5iVi2F",
-        callbackUrl: "http://localhost:8080/arentcar/user/naver/callback",
-        isPopup: false,
-        loginButton: { color: 'green', type: 3, height: '40' },
-        state: "RANDOM_STATE_VALUE",
-        // state: Math.random().toString(36).substring(2, 10), 
+        clientId: "tZmqhZO1NzVp8B5iVi2F", 
+        callbackUrl: "http://localhost:8080/arentcar/user/naver/callback", 
+        isPopup: false, // 팝업 대신 리다이렉션 방식 사용
+        loginButton: { color: "green", type: 3, height: "40" }, 
+        state: stateValue, // CSRF 방지용 상태값
       });
-
-      const naverLoginElement = document.getElementById('naverIdLogin');
+  
+      const naverLoginElement = document.getElementById("naverIdLogin");
       if (naverLoginElement) {
         naverLogin.init();
         naverLoginElement.firstChild.click();
       } else {
-        console.error('네이버 로그인 버튼 요소를 찾을 수 없습니다.');
+        console.error("네이버 로그인 버튼 요소를 찾을 수 없습니다.");
       }
     } catch (error) {
       console.error("네이버 로그인 초기화 중 오류:", error);

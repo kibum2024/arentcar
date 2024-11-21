@@ -7,6 +7,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 public class CorsConfig {
@@ -17,15 +18,13 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://43.200.185.148", "http://localhost:3000"));
+        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000")); // React 클라이언트
         config.addAllowedHeader("*");
-        config.addAllowedMethod("GET");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("PUT");
-        config.addAllowedMethod("DELETE");
-        config.addAllowedMethod("OPTIONS");
+        config.addAllowedMethod("*");
 
-        source.registerCorsConfiguration("/arentcar/**", config);
+        // 모든 경로에 대해 CORS 허용
+        source.registerCorsConfiguration("/**", config);
+
         return new CorsFilter(source);
     }
 }

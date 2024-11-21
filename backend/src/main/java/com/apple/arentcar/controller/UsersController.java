@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
@@ -120,9 +121,6 @@ public class UsersController {
 
     @PostMapping("/user/users/login")
     public ResponseEntity<?> getUserLogin(@RequestBody UsersLoginDTO requestDTO) {
-        System.out.println("login requestDTO: " + requestDTO.getUserEmail());
-        System.out.println("login requestDTO: " + requestDTO.getUserPassword());
-
         Users users = usersService.getUserLogin(requestDTO);
 
         if (users == null) {
@@ -241,24 +239,4 @@ public class UsersController {
         return response.getBody(); // 사용자 정보 JSON 반환
     }
 
-    @PostMapping("/user/kakao-login")
-    public ResponseEntity<?> kakaoLogin(@RequestBody KakaoRequestDTO request) {
-        String accessToken = request.getAccessToken();
-        System.out.println("accessToken : " + accessToken);
-
-        String url = "https://kapi.kakao.com/v2/user/me";
-        RestTemplate restTemplate = new RestTemplate();
-
-        // 헤더에 액세스 토큰을 추가하여 사용자 정보 요청
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-
-        // 사용자 정보 처리
-        String userInfo = response.getBody();
-        System.out.println("userInfo : " + userInfo);
-        return ResponseEntity.ok(userInfo);
-    }
 }

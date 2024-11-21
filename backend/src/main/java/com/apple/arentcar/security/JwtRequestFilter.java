@@ -45,7 +45,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if ("Bearer null".equals(authorizationHeader) || "Bearer undefined".equals(authorizationHeader)) {
             isPublicRequest = requestURI.equals("/arentcar/manager/admins") && httpRequest.getMethod().equalsIgnoreCase("POST")
                     || requestURI.equals("/arentcar/manager/admins/login") && httpRequest.getMethod().equalsIgnoreCase("POST")
-                    || requestURI.equals("/arentcar/manager/admins/refresh") && httpRequest.getMethod().equalsIgnoreCase("POST");
+                    || requestURI.equals("/arentcar/manager/admins/refresh") && httpRequest.getMethod().equalsIgnoreCase("POST")
+                    || requestURI.equals("/arentcar/user/users/login") && httpRequest.getMethod().equalsIgnoreCase("POST")
+                    || requestURI.equals("/arentcar/user/users/refresh") && httpRequest.getMethod().equalsIgnoreCase("POST");
         } else {
             isPublicRequest = false;
         }
