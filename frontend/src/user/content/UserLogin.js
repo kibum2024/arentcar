@@ -13,6 +13,7 @@ const UserLogin = () => {
   const dispatch = useDispatch();
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  const [kakaoInfo, setKakaoInfo] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isInputPassword, setIsInputPassword] = useState(false);
@@ -133,55 +134,74 @@ const UserLogin = () => {
     navigate('/membership');
   }
 
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const response = await fetch("http://localhost:8080/arentcar/user/kakao/login", {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setKakaoInfo(data);
+        navigate('/');
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
   const handleKakaoLoginClick = () => {
-    const kakaoClientId = "fb404d662dae6dcdb051b6460f0dbb35"; // 카카오 REST API 키
-    const redirectUri = "http://localhost:8080/arentcar/user/kakao/callback"; // Spring Boot 콜백 URL
+    const kakaoClientId = "fb404d662dae6dcdb051b6460f0dbb35"; 
+    const redirectUri = "http://localhost:8080/arentcar/user/callback/kakao"; 
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoClientId}&redirect_uri=${redirectUri}&prompt=login`;
 
-    // 카카오 인증 URL로 이동
     window.location.href = kakaoAuthUrl;
   };
 
+  // const handleNaverLoginClick = () => {
+  //   const naverLogin = new window.naver.LoginWithNaverId({
+  //     clientId: 'tZmqhZO1NzVp8B5iVi2F',
+  //     callbackUrl: 'http://localhost:3000/naver-callback',
+  //     isPopup: false,
+  //     loginButton: { color: 'green', type: 3, height: '40' },
+  //     state: Math.random().toString(36).substring(2, 10),
+  //   });
+
+  //   const naverLoginElement = document.getElementById('naverIdLogin');
+  //   if (naverLoginElement) {
+  //     naverLogin.init();
+  //     window.NaverLogin.login();
+  //     naverLoginElement.firstChild.click();
+  //   } else {
+  //     console.error('네이버 로그인 버튼 요소를 찾을 수 없습니다.');
+  //   }
+  // };
+
   const handleNaverLoginClick = () => {
-    if (typeof window.naver === "undefined" || !window.naver.LoginWithNaverId) {
-      const naverLoginScript = document.createElement("script");
-      naverLoginScript.src = "https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"; // 최신 버전
-      document.body.appendChild(naverLoginScript);
-  
-      naverLoginScript.onload = () => {
+    if (!window.NaverLogin) {
+      console.log("네이버 로그인 SDK 로드 시작");
+    
+      const script = document.createElement('script');
+      script.src = 'https://static.nid.naver.com/js/naveridlogin_js_sdk.js';
+      
+      // 스크립트 로드 완료 후 처리
+      script.onload = () => {
         console.log("네이버 로그인 SDK 로드 완료");
-        initializeNaverLogin();
+        // SDK 로드 후 네이버 로그인 초기화 및 사용
+        const naverLogin = new window.naver.LoginWithNaverId({
+          clientId: 'tZmqhZO1NzVp8B5iVi2F',  // 네이버 클라이언트 ID
+          callbackUrl: 'http://localhost:3000/naver-callback',
+          isPopup: false,
+          loginButton: { color: 'green', type: 3, height: '40' },
+          state: Math.random().toString(36).substring(2, 10),
+        });
+        
+        // 네이버 로그인 초기화
+        naverLogin.init();
       };
-  
-      naverLoginScript.onerror = () => {
-        console.error("네이버 로그인 SDK 로드 실패");
-      };
+    
+      document.body.appendChild(script);
     } else {
       console.log("네이버 로그인 SDK 이미 로드됨");
-      initializeNaverLogin();
-    }
-  };
-  
-  const initializeNaverLogin = () => {
-    try {
-      const stateValue = Math.random().toString(36).substring(2, 10); 
-      const naverLogin = new window.naver.LoginWithNaverId({
-        clientId: "tZmqhZO1NzVp8B5iVi2F", 
-        callbackUrl: "http://localhost:8080/arentcar/user/naver/callback", 
-        isPopup: false, // 팝업 대신 리다이렉션 방식 사용
-        loginButton: { color: "green", type: 3, height: "40" }, 
-        state: stateValue, // CSRF 방지용 상태값
-      });
-  
-      const naverLoginElement = document.getElementById("naverIdLogin");
-      if (naverLoginElement) {
-        naverLogin.init();
-        naverLoginElement.firstChild.click();
-      } else {
-        console.error("네이버 로그인 버튼 요소를 찾을 수 없습니다.");
-      }
-    } catch (error) {
-      console.error("네이버 로그인 초기화 중 오류:", error);
     }
   };
 

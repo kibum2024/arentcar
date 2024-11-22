@@ -7,6 +7,7 @@ import { refreshAccessToken, handleLogout } from 'common/Common';
 import 'manager/system/ManagerMenu.css';
 import RegisterMenu from 'manager/system/RegisterMenu';
 import RegisterUser from 'manager/system/RegisterUser';
+import ManagerUser from 'manager/system/ManagerUser';
 
 const ManagerMenu = () => {
   const [menus, setMenus] = useState([]);
@@ -27,6 +28,7 @@ const ManagerMenu = () => {
   const componentMap = {
     RegisterMenu: <RegisterMenu onClick={handleCloseClick} />,
     RegisterUser: <RegisterUser onClick={handleCloseClick} />,
+    ManagerUser: <ManagerUser onClick={handleCloseClick} />,
   };
 
   useEffect(() => {

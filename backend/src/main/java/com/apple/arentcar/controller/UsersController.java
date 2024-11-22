@@ -198,14 +198,14 @@ public class UsersController {
         String token = body.get("token");
         String userInfoJson = fetchNaverUserInfo(token);
 
-        System.out.println("userInfoJson : " + userInfoJson);
+//        System.out.println("userInfoJson : " + userInfoJson);
         ObjectMapper objectMapper = new ObjectMapper();
 
         String email = "";
         try {
             JsonNode userInfo = objectMapper.readTree(userInfoJson);
             email = userInfo.get("response").get("email").asText();
-            System.out.println("이메일: " + email);
+//            System.out.println("이메일: " + email);
         } catch (Exception e) {
             System.out.println("사용자 정보 파싱 중 오류 발생.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원정보확인불가");

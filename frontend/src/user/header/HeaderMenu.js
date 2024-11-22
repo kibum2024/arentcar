@@ -61,6 +61,8 @@ const HeaderMenu = () => {
       loginState: false,
     }));
 
+    document.cookie = 'nid_aut=; path=/; domain=.naver.com; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+
     navigate('/');
   };
 

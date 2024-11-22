@@ -32,7 +32,6 @@ function NaverCallback() {
 					);
 
 					const userData = response.data;
-					// console.log('서버 userData:', response.data);
 
 					dispatch(setUserState({
 						userCode: userData.user_code,
