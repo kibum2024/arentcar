@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { setUserState } from '../../redux/UserState';
 import axios from 'axios';
 import api from 'common/api';
+import Loading from 'common/Loading';
 import { refreshAccessToken, handleLogout } from 'common/Common';
 import 'user/content/UserLogin.css';
 
@@ -11,15 +12,18 @@ import 'user/content/UserLogin.css';
 const UserLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const [kakaoInfo, setKakaoInfo] = useState("");
+  const [findEmail, setFindEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isInputPassword, setIsInputPassword] = useState(false);
   const [isMemberShip, setIsMemberShip] = useState(false);
+  const [isPasswordFind, setIsPasswordFind] = useState(false);
   const [idSaveChk, setIdSaveChk] = useState(false);
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   useEffect(() => {
     setUserEmail(localStorage.getItem('saveUserEmail'));
@@ -49,18 +53,21 @@ const UserLogin = () => {
       });
 
       if (response.data.users.usage_status === "2") {
-         alert("사용할 수 없는 아이디입니다. 재가입 후 사용바랍니다.");
-         navigate("/login");
+        alert("사용할 수 없는 아이디입니다. 재가입 후 사용바랍니다.");
+        navigate("/login");
+        return;
+      } else if (response.data.users.usage_status === "3") {
+        setIsInputPassword(true);
         return;
       }
+
       api.setAccessToken(response.data.token);
       const userData = response.data.users;
-      console.log("userData : ",userData);
       dispatch(setUserState({
         userCode: userData.user_code,
         userName: userData.user_name,
         userEmail: userData.user_email,
-        userCategory: userData.user_category,	
+        userCategory: userData.user_category,
         usageStatus: userData.usage_status,
         loginState: true,
       }));
@@ -81,40 +88,23 @@ const UserLogin = () => {
     }
 
     try {
-      const token = localStorage.getItem('accessToken');
-      await updatePassword(token);
+      await api.put(`${process.env.REACT_APP_API_URL}/arentcar/user/users/newpassword`,
+        {
+          user_email: userEmail,
+          user_password: newPassword,
+        });
       alert("새로운 비밀번호로 변경되었습니다. 로그인바랍니다.");
       setIsInputPassword(false);
     } catch (error) {
-      if (error.response && error.response.status === 403) {
-        try {
-          const newToken = await refreshAccessToken();
-          await updatePassword(newToken);
-        } catch (refreshError) {
-          alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
-          handleLogout();
-        }
-      } else {
         alert("비밀번호 변경  중 오류가 발생하였습니다. " + error.message);
-      }
     }
-  }
-
-  const updatePassword = async (token) => {
-    await api.put(
-      `${process.env.REACT_APP_API_URL}/arentcar/manager/admins/newpassword`,
-      {
-        admin_id: userEmail,
-        admin_password: newPassword,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      }
-    );
   };
 
   const validateCheck = () => {
+    // if (!emailRegex.test(userEmail)) {
+    //   alert("유효하지 않은 이메일 주소입니다.");
+    //   return false;
+    // };
     if (!passwordRegex.test(newPassword)) {
       alert("최소 하나의 알파벳, 숫자, 특수문자와 8자 이상으로 입력해주세요.");
       return false;
@@ -134,80 +124,39 @@ const UserLogin = () => {
     navigate('/membership');
   }
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      const response = await fetch("http://localhost:8080/arentcar/user/kakao/login", {
-        credentials: "include",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setKakaoInfo(data);
-        navigate('/');
+  const loadKakaoSDK = () => {
+    return new Promise((resolve, reject) => {
+      if (window.Kakao) {
+        resolve();
+      } else {
+        const script = document.createElement('script');
+        script.src = 'https://developers.kakao.com/sdk/js/kakao.js';
+        script.onload = () => {
+          if (!window.Kakao.isInitialized()) {
+            window.Kakao.init('fb404d662dae6dcdb051b6460f0dbb35');
+            console.log('Kakao SDK initialized');
+          }
+          resolve();
+        };
+        script.onerror = () => reject('Failed to load Kakao SDK');
+        document.body.appendChild(script);
       }
-    };
-
-    fetchUserInfo();
-  }, []);
-
-  const handleKakaoLoginClick = () => {
-    const kakaoClientId = "fb404d662dae6dcdb051b6460f0dbb35"; 
-    const redirectUri = "http://localhost:8080/arentcar/user/callback/kakao"; 
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoClientId}&redirect_uri=${redirectUri}&prompt=login`;
-
-    window.location.href = kakaoAuthUrl;
+    });
   };
 
-  // const handleNaverLoginClick = () => {
-  //   const naverLogin = new window.naver.LoginWithNaverId({
-  //     clientId: 'tZmqhZO1NzVp8B5iVi2F',
-  //     callbackUrl: 'http://localhost:3000/naver-callback',
-  //     isPopup: false,
-  //     loginButton: { color: 'green', type: 3, height: '40' },
-  //     state: Math.random().toString(36).substring(2, 10),
-  //   });
-
-  //   const naverLoginElement = document.getElementById('naverIdLogin');
-  //   if (naverLoginElement) {
-  //     naverLogin.init();
-  //     window.NaverLogin.login();
-  //     naverLoginElement.firstChild.click();
-  //   } else {
-  //     console.error('네이버 로그인 버튼 요소를 찾을 수 없습니다.');
-  //   }
-  // };
-
-  const handleNaverLoginClick = () => {
-    if (!window.NaverLogin) {
-      console.log("네이버 로그인 SDK 로드 시작");
-    
-      const script = document.createElement('script');
-      script.src = 'https://static.nid.naver.com/js/naveridlogin_js_sdk.js';
-      
-      // 스크립트 로드 완료 후 처리
-      script.onload = () => {
-        console.log("네이버 로그인 SDK 로드 완료");
-        // SDK 로드 후 네이버 로그인 초기화 및 사용
-        const naverLogin = new window.naver.LoginWithNaverId({
-          clientId: 'tZmqhZO1NzVp8B5iVi2F',  // 네이버 클라이언트 ID
-          callbackUrl: 'http://localhost:3000/naver-callback',
-          isPopup: false,
-          loginButton: { color: 'green', type: 3, height: '40' },
-          state: Math.random().toString(36).substring(2, 10),
+  const handleKakaoClick = async () => {
+    try {
+      await loadKakaoSDK();
+      window.Kakao.Auth.logout(() => {
+        console.log('카카오 로그아웃 완료');
+        window.Kakao.Auth.authorize({
+          redirectUri: 'http://localhost:3000/kakao-callback',
         });
-        
-        // 네이버 로그인 초기화
-        naverLogin.init();
-      };
-    
-      document.body.appendChild(script);
-    } else {
-      console.log("네이버 로그인 SDK 이미 로드됨");
+      });
+    } catch (error) {
+      console.error('Kakao SDK load error:', error);
     }
   };
-
-  const handleKakaoClick = () => {
-
-  }
 
   const handleNaverClick = () => {
     const naverLogin = new window.naver.LoginWithNaverId({
@@ -227,12 +176,35 @@ const UserLogin = () => {
     }
   }
 
+  const handlePasswordFindClick = () => {
+    setIsPasswordFind(true);
+  }
+
+  const handleFindeEmailClick = async () => {
+    if (window.confirm('임시비밀번호를 발급하시겠습니까?')) {
+      try {
+        setLoading(true);
+        await axios.put(`${process.env.REACT_APP_API_URL}/arentcar/user/users/issue/${findEmail}`, {});
+        alert("임시비밀번호가 발급되었습니다.\n메일 확인 후 비밀번호를 재설정하세요.");
+        setIsPasswordFind(false);
+      } catch (error) {
+        if (error.response.status === 404) {
+          alert("이메일 주소를 확인 후 다시 시도하세요.")
+        } else {
+          alert("임시비밀번호 중 오류가 발생했습니다." + error);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <div className="user-login-wrap">
       <div className="user-login-box-wrap">
         <div className="user-login-box">
           <div className="user-login-area">
-            <input type="text" id="userId" maxlength="50" placeholder="아이디를 입력해 주세요." title="입력태그" value={userEmail} onChange={(e) => { setUserEmail(e.target.value) }} />
+            <input type="text" id="userId" maxlength="50" placeholder="이메일을 입력해 주세요." title="입력태그" value={userEmail} onChange={(e) => { setUserEmail(e.target.value) }} />
             <input type="password" id="userPassword" maxlength="50" placeholder="비밀번호를 입력해 주세요." title="입력태그" value={userPassword} onChange={(e) => { setUserPassword(e.target.value) }} />
             <button type="button" className="user-login-button" onClick={handleLoginClick}>로그인</button>
           </div>
@@ -243,7 +215,7 @@ const UserLogin = () => {
             </div>
             <div className="user-login-bot-right">
               <div onClick={handleIdMemberShipClick}>회원가입</div>
-              <div>아이디 찾기</div>
+              <div onClick={handlePasswordFindClick}>비밀번호 재설정</div>
             </div>
           </div>
         </div>
@@ -251,11 +223,11 @@ const UserLogin = () => {
       <div className="user-login-easy-wrap">
         <div className="user-login-easy-title">간편 로그인</div>
         <div className="user-login-easy-item">
-          <button onClick={handleKakaoLoginClick}>
+          <button onClick={handleKakaoClick}>
             <img className="user-login-easy-kakao" src={`${process.env.REACT_APP_IMAGE_URL}/btn_kakao.png`} alt="" />
           </button>
           <div id="naverIdLogin" style={{ display: 'none' }}></div>
-          <button onClick={handleNaverLoginClick}>
+          <button onClick={handleNaverClick}>
             <img className="user-login-easy-naver" src={`${process.env.REACT_APP_IMAGE_URL}/btn_naver.png`} alt="" />
           </button>
         </div>
@@ -282,6 +254,44 @@ const UserLogin = () => {
           </div>
         </div>
       }
+      {isPasswordFind &&
+        <div className='manager-popup'>
+          <div className='user-login-popup-password-find-wrap'>
+            <div className='manager-title'>● 비밀번호 재설정</div>
+            <div className='user-login-popup-password-find-email'>
+              <label htmlFor="">이메일</label>
+              <input className='width300' type="text" id="userId" maxlength="50" placeholder="회원가입때 사용한 이메일을 입력해 주세요." title="입력태그" value={findEmail} onChange={(e) => { setFindEmail(e.target.value) }} />
+            </div>
+            <div className='user-login-popup-password-find-button'>
+              <button className="manager-button" onClick={handleFindeEmailClick}>확인</button>
+              <button className="manager-button" onClick={() => setIsPasswordFind(false)}>닫기</button>
+            </div>
+          </div>
+        </div>
+      }
+      {isInputPassword &&
+        <div className='manager-popup'>
+          <div className='user-login-new-password-wrap'>
+            <div className='user-login-new-password-title'>임시 비밀번호 변경</div>
+            <div className='user-login-new-password-line'>
+              <label className='width100 word-right label-margin-right' htmlFor="newPassword">새로운 비밀번호</label>
+              <input className='width300' type="password" id="newPassword" maxlength="50" placeholder="새로운 비밀번호를 입력해 주세요." title="입력태그" value={newPassword} onChange={(e) => { setNewPassword(e.target.value) }} />
+            </div>
+            <div className='user-login-new-password-line'>
+              <label className='width100 word-right label-margin-right' htmlFor="newPassword">확인 비밀번호</label>
+              <input className='width300' type="password" id="confirmPassword" maxlength="50" placeholder="확인 비밀번호를 입력해 주세요." title="입력태그" value={confirmPassword} onChange={(e) => { setConfirmPassword(e.target.value) }} />
+            </div>
+            <div className='user-login-new-password-line align-right'>
+              <button type="button" className="manager-button manager-button-save" onClick={handleNewPasswordClick}>확인</button>
+              <button type="button" className="manager-button manager-button-close" onClick={() => setIsInputPassword(false)}>닫기</button>
+            </div>
+          </div>
+        </div>
+      }
+      {loading && (
+        <Loading />
+      )}
+
     </div>
   );
 }

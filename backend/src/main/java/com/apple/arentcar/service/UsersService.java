@@ -3,6 +3,7 @@ package com.apple.arentcar.service;
 import com.apple.arentcar.dto.UsersLoginDTO;
 import com.apple.arentcar.mapper.UsersMapper;
 import com.apple.arentcar.model.Users;
+import com.apple.arentcar.util.PasswordGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,10 +51,22 @@ public class UsersService {
     }
 
     public Users updateUsersByIssue(Users users) {
-        String encodedPassword = passwordEncoder.encode(users.getUserPassword());
+        String temporaryPassword = PasswordGenerator.generateTemporaryPassword();
+        users.setUserPassword(temporaryPassword);
+
+        String encodedPassword = passwordEncoder.encode(temporaryPassword);
         users.setUserPassword(encodedPassword);
+        users.setUsageStatus("3");
 
         usersMapper.updateUsersById(users);
+
+        String emailSubject = "A렌트카 임시비밀번호가 발급되었습니다.";
+        String emailBody = String.format(
+                "안녕하세요. %s님,\n\n A렌트카 사용자 임시비밀번호가 발급되었습니다.\n\n임시비밀번호 : %s\n\n 비밀번호 변경 후 로그인 바랍니다.\n\n감사합니다.",
+                users.getUserName(),
+                temporaryPassword
+        );
+        emailService.sendEmail(users.getUserEmail(), emailSubject, emailBody);
 
         return users;
     }

@@ -63,6 +63,12 @@ const HeaderMenu = () => {
 
     document.cookie = 'nid_aut=; path=/; domain=.naver.com; expires=Thu, 01 Jan 1970 00:00:00 GMT';
 
+    if (window.Kakao) {
+      window.Kakao.Auth.logout(() => {
+        console.log('카카오 로그아웃 완료');
+      });
+    }
+
     navigate('/');
   };
 

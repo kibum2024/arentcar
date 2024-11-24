@@ -1,0 +1,59 @@
+.register-admin-wrap {
+  width: 100%;
+  margin: 20px 20px;
+}
+
+.register-admin-title-wrap {
+  margin: 20px;
+}
+
+.register-admin-button-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.register-admin-content-header {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.register-admin-content-row {
+  display: flex;
+  align-items: center;
+}
+
+.register-admin-content-popup-wrap {
+  width: 500px;
+  margin: 250px auto;
+  padding: 20px 20px;
+  background-color: #fff;
+  border-radius: 6px;
+}
+
+.register-admin-content-popup-close {
+  display: flex;
+  justify-content: space-between;
+}
+
+.register-admin-content-popup-line {
+  margin: 5px 0px;
+}
+
+.register-admin-pageing-wrap {
+  margin-top: 5px;
+}
+
+.register-admin-pageing-display {
+  margin: 0px 10px;
+}
+
+.register-admin-content-popup-usage-status {
+  -webkit-appearance: none;
+  /* 화살표 없애기 for chrome*/
+  -moz-appearance: none;
+  /* 화살표 없애기 for firefox*/
+  appearance: none;
+  /* 화살표 없애기 공통*/
+}

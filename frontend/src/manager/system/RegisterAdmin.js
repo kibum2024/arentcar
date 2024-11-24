@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { refreshAccessToken, handleLogout } from 'common/Common';
 import Loading from 'common/Loading';
-import 'manager/system/RegisterUser.css';
+import 'manager/system/RegisterAdmin.css';
 
-const RegisterUser = ({ onClick }) => {
+const RegisterAdmin = ({ onClick }) => {
   const [admins, setAdmins] = useState([]);
   const [isPopUp, setIsPopUp] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -387,13 +387,13 @@ const RegisterUser = ({ onClick }) => {
   }
 
   return (
-    <div className='register-menu-wrap'>
-      <div className='register-menu-header-wrap'>
-        <div className='register-menu-title-wrap'>
+    <div className='register-admin-wrap'>
+      <div className='register-admin-header-wrap'>
+        <div className='register-admin-title-wrap'>
           <div className='manager-title'>● 관리자등록</div>
         </div>
         <div
-          className='register-menu-button-wrap'
+          className='register-admin-button-wrap'
           style={{ width: `${totalWidth}px` }}
         >
           <div className='flex-align-center'>
@@ -408,15 +408,15 @@ const RegisterUser = ({ onClick }) => {
           </div>
         </div>
       </div>
-      <div className='register-menu-content-wrap'>
-        <div className='register-menu-content-header'>
+      <div className='register-admin-content-wrap'>
+        <div className='register-admin-content-header'>
           {columnDefs.map((title, index) => (
             <div key={index} className='manager-head-column' style={{ width: `${title.width}px`, textAlign: `center` }}>{title.headerName}</div>
           ))}
         </div>
-        <div className='register-menu-content-row-wrap'>
+        <div className='register-admin-content-row-wrap'>
           {admins.map((row, index) => (
-            <div key={index} className='register-menu-content-row'>
+            <div key={index} className='register-admin-content-row'>
               {columnDefs.map((title, index) => (
                 <div
                   key={index} className='manager-row-column'
@@ -449,10 +449,10 @@ const RegisterUser = ({ onClick }) => {
         </div>
         {isPopUp &&
           <div className='manager-popup'>
-            <div className='register-menu-content-popup-wrap'>
-              <div className='register-menu-content-popup-close'>
+            <div className='register-admin-content-popup-wrap'>
+              <div className='register-admin-content-popup-close'>
                 <div className='manager-popup-title'>● 관리자{workMode}</div>
-                <div className='register-menu-content-popup-button'>
+                <div className='register-admin-content-popup-button'>
                   <button className='manager-button manager-button-save' onClick={handleDataSaveClick}>저장</button>
                   {workMode === "수정" &&
                     <>
@@ -463,27 +463,27 @@ const RegisterUser = ({ onClick }) => {
                   <button className='manager-button manager-button-close' onClick={handlePopupClodeClick}>닫기</button>
                 </div>
               </div>
-              <div className='register-menu-content-popup-line'>
+              <div className='register-admin-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">관리자코드</label>
                 <input className='width50  word-center' type="text" value={adminCode} disabled />
               </div>
-              <div className='register-menu-content-popup-line'>
+              <div className='register-admin-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">관리자ID</label>
                 <input className='width300 word-left' value={adminId} type="text" maxLength={30} onChange={(e) => setAdminId(e.target.value)} />
               </div>
-              <div className='register-menu-content-popup-line'>
+              <div className='register-admin-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">관리자명</label>
                 <input className='width300 word-left' value={adminName} type="text" maxLength={30} onChange={(e) => setAdminName(e.target.value)} />
               </div>
-              <div className='register-menu-content-popup-line'>
+              <div className='register-admin-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">비밀번호</label>
                 <input className='width300 word-left' value={adminPassword} type="text" maxLength={50} disabled onChange={(e) => setAdminPassword(e.target.value)} />
               </div>
-              <div className='register-menu-content-popup-line'>
+              <div className='register-admin-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">이메일</label>
                 <input className='width300' type="text" value={adminEmail} maxLength={50} onChange={(e) => setAdminEmail(e.target.value)} />
               </div>
-              <div className='register-menu-content-popup-line'>
+              <div className='register-admin-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">사용권한</label>
                 <select className='width150' id="comboBox" value={adminRole} onChange={(e) => (setAdminRole(e.target.value))}>
                   {optionsAdminRole.map((option) => (
@@ -493,9 +493,9 @@ const RegisterUser = ({ onClick }) => {
                   ))}
                 </select>
               </div>
-              <div className='register-menu-content-popup-line'>
+              <div className='register-admin-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">사용여부</label>
-                <select className='register-menu-content-popup-usage-status width150' id="comboBox" value={usageStatus} disabled onChange={(e) => (setUsageStatus(e.target.value))}>
+                <select className='register-admin-content-popup-usage-status width150' id="comboBox" value={usageStatus} disabled onChange={(e) => (setUsageStatus(e.target.value))}>
                   {optionsUsageStatus.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
@@ -507,14 +507,14 @@ const RegisterUser = ({ onClick }) => {
           </div>
         }
       </div>
-      <div className='register-menu-pageing-wrap flex-align-center'>
+      <div className='register-admin-pageing-wrap flex-align-center'>
         <button
           className='manager-button'
           style={{ color: pageNumber === 1 ? '#aaa' : 'rgb(38, 49, 155)' }}
           onClick={() => handlePageChange(pageNumber - 1)}
           disabled={pageNumber === 1}
         >이전</button>
-        <div className='register-menu-pageing-display'>{pageNumber} / {totalPages}</div>
+        <div className='register-admin-pageing-display'>{pageNumber} / {totalPages}</div>
         <button
           className='manager-button'
           style={{ color: pageNumber === totalPages ? '#aaa' : 'rgb(38, 49, 155)' }}
@@ -529,4 +529,4 @@ const RegisterUser = ({ onClick }) => {
   );
 }
 
-export default RegisterUser;
+export default RegisterAdmin;

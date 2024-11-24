@@ -236,3 +236,55 @@
   width: 45px;
   height: 45px;
 }
+
+.user-login-popup-password-find-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 400px;
+  margin: 250px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.user-login-popup-password-find-email {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.user-login-popup-password-find-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.user-login-new-password-wrap {
+  width: 500px;
+  margin: 230px auto;
+  padding: 20px 20px;
+  background-color: #fff;
+  border-radius: 6px;
+}
+
+.user-login-new-password-title {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.user-login-new-password-line {
+  display: flex;
+  align-items: center;
+  margin: 10px 0px;
+}
+
+.user-login-new-password-line.align-right {
+  justify-content: end;
+}

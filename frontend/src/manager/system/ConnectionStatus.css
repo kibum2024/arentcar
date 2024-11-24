@@ -1,0 +1,28 @@
+.connection-status-wrap {
+  width: 100%;
+}
+
+.connection-status-title {
+  width: 90%;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 10px 10px 2px 10px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: rgb(92, 239, 13);
+  color: black;
+}
+
+.connection-status-info {
+  width: 90%;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0px 10px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #ddd;
+}

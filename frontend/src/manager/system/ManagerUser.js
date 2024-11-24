@@ -294,57 +294,6 @@ const ManagerUser = ({ onClick }) => {
     setUsageStatus("2");
   };
 
-  const handlePasswordIssueClick = async () => {
-    if (window.confirm('임시비밀번호를 발급하시겠습니까?')) {
-      setUsageStatus("3");
-      let newUser = {
-        user_code: userCode,
-        user_id: userId,
-        user_password: userPassword,
-        user_name: userName,
-        user_role: userRole,
-        user_email: userEmail,
-        usage_status: "3",
-      };
-      try {
-        setLoading(true);
-        const token = localStorage.getItem('accessToken');
-        await updatePassword(token, newUser);
-      } catch (error) {
-        if (error.response && error.response.status === 403) {
-          try {
-            const newToken = await refreshAccessToken();
-            await updatePassword(newToken, newUser);
-          } catch (error) {
-            alert("인증이 만료되었습니다. 다시 로그인 해주세요." + error);
-            handleLogout();
-          }
-        } else {
-          alert("임시비밀번호 중 오류가 발생했습니다." + error);
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
-  const updatePassword = async (token, newUser) => {
-    const response = await axios.put(
-      `${process.env.REACT_APP_API_URL}/arentcar/user/users/issue/${userCode}`,
-      newUser,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true, 
-      }
-    );
-    newUser.usage_status = response.data.usage_status;
-    newUser.user_password = response.data.user_password;
-    setUsers((prevUser) => prevUser.map(user => user.user_code === userCode ? newUser : user));
-    alert("임시비밀번호가 발급되었습니다.");
-  };
-
   const handleCloseClick = () => {
     if (onClick) {
       onClick();

@@ -21,6 +21,7 @@
         SELECT *
         FROM users
         WHERE user_email = #{userEmail}
+        AND   usage_status in ("1", "3")
     </select>
 
     <!-- Insert -->
@@ -84,7 +85,7 @@
         user_password = #{userPassword},
         usage_status = "1",
         updated_at = NOW()
-        WHERE user_id = #{userId}
+        WHERE user_email = #{userEmail}
     </update>
 
 </mapper>

@@ -1,7 +1,6 @@
 package com.apple.arentcar.controller;
 
 import com.apple.arentcar.dto.JwtUserResponse;
-import com.apple.arentcar.dto.KakaoRequestDTO;
 import com.apple.arentcar.dto.UsersLoginDTO;
 import com.apple.arentcar.model.Users;
 import com.apple.arentcar.security.JwtUtil;
@@ -9,17 +8,17 @@ import com.apple.arentcar.service.UsersService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/arentcar")
@@ -30,6 +29,12 @@ public class UsersController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Value("${kakao.client.id}")
+    private String clientId;
+
+    @Value("${kakao.redirect.uri}")
+    private String redirectUri;
 
     @GetMapping("/user/users")
     public List<Users> getAllUsers() {
@@ -74,11 +79,15 @@ public class UsersController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/user/users/issue/{userCode}")
+    @PutMapping("/user/users/issue/{userEmail}")
     public ResponseEntity<Users> updateUsersByIssue(
-            @PathVariable Integer userCode,
+            @PathVariable String userEmail,
             @RequestBody Users users) {
-        users.setUserCode(userCode);
+
+        users = usersService.getUsersByEmail(userEmail);
+        if (users == null) {
+            return ResponseEntity.notFound().build();
+        };
 
         Users updatedUsers  = usersService.updateUsersByIssue(users);
         return ResponseEntity.ok(updatedUsers);
@@ -239,4 +248,54 @@ public class UsersController {
         return response.getBody(); // 사용자 정보 JSON 반환
     }
 
+    @PostMapping("/user/kakao-login")
+    public ResponseEntity<?> handleKakaoCallback(@RequestBody Map<String, String> request) {
+        String code = request.get("code");
+        String tokenUrl = "https://kauth.kakao.com/oauth/token";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", clientId);
+        params.add("redirect_uri", redirectUri);
+        params.add("code", code);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
+
+        try {
+            // 액세스 토큰 요청
+            ResponseEntity<Map> tokenResponse = restTemplate.postForEntity(tokenUrl, entity, Map.class);
+            String accessToken = (String) tokenResponse.getBody().get("access_token");
+
+            // 사용자 정보 요청
+            String userInfoUrl = "https://kapi.kakao.com/v2/user/me";
+            HttpHeaders userHeaders = new HttpHeaders();
+            userHeaders.set("Authorization", "Bearer " + accessToken);
+
+            HttpEntity<Void> userRequest = new HttpEntity<>(userHeaders);
+            ResponseEntity<Map> userInfoResponse = restTemplate.exchange(userInfoUrl, HttpMethod.GET, userRequest, Map.class);
+            String nickname = (String) ((Map<String, Object>) userInfoResponse.getBody().get("properties")).get("nickname");
+
+            String email = "dnflrlqja@naver.com";
+            Users users = usersService.getUsersByEmail(email);
+            if (users != null) {
+                users.setUserName(nickname);
+                return ResponseEntity.ok(users);
+            };
+
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("user_email", "not data");
+            responseBody.put("user_name", nickname);
+            return ResponseEntity.ok(responseBody);
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", "로그인 실패");
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
 }

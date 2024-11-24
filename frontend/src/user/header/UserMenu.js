@@ -5,6 +5,7 @@ import ContentHome from 'user/content/ContentHome';
 import UserLogin from 'user/content/UserLogin';
 import UserMemberShip from 'user/content/UserMemberShip';
 import NaverCallback from 'user/content/NaverCallback';
+import KakaoCallback from 'user/content/KakaoCallback';
 import FooterMain from 'user/footer/FooterMain';
 
 const UserMenu = () => {
@@ -19,6 +20,7 @@ const UserMenu = () => {
           <Route path="/login" element={<UserLogin />} ></Route>
           <Route path="/membership" element={<UserMemberShip />} ></Route>
           <Route path="/naver-callback" element={<NaverCallback />} /> 
+          <Route path="/kakao-callback" element={<KakaoCallback />} /> 
         </Routes>
       </div>
       <div className='user-menu-footer-wrap'>

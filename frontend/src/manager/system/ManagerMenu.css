@@ -117,5 +117,6 @@
   border: 1px solid #ddd;
   border-radius: 6px;
   background-color: rgb(237, 246, 248);
+  color: rgb(17, 119, 235);
   cursor: pointer;
 }

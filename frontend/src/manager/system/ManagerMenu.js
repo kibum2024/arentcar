@@ -6,8 +6,9 @@ import { setAdminState } from '../../redux/AdminState';
 import { refreshAccessToken, handleLogout } from 'common/Common';
 import 'manager/system/ManagerMenu.css';
 import RegisterMenu from 'manager/system/RegisterMenu';
-import RegisterUser from 'manager/system/RegisterUser';
+import RegisterAdmin from 'manager/system/RegisterAdmin';
 import ManagerUser from 'manager/system/ManagerUser';
+import ConnectionStatus from 'manager/system/ConnectionStatus';
 
 const ManagerMenu = () => {
   const [menus, setMenus] = useState([]);
@@ -27,8 +28,9 @@ const ManagerMenu = () => {
 
   const componentMap = {
     RegisterMenu: <RegisterMenu onClick={handleCloseClick} />,
-    RegisterUser: <RegisterUser onClick={handleCloseClick} />,
+    RegisterAdmin: <RegisterAdmin onClick={handleCloseClick} />,
     ManagerUser: <ManagerUser onClick={handleCloseClick} />,
+    ConnectionStatus: <ConnectionStatus onClick={handleCloseClick} />,
   };
 
   useEffect(() => {
@@ -161,6 +163,9 @@ const ManagerMenu = () => {
         <div className='manager-menu-content-left'>
           <div className='manager-menu-content-homepage' onClick={handleHomePageClick}>
             홈페이지
+          </div>
+          <div>
+            <ConnectionStatus />
           </div>
         </div>
         <div className='manager-menu-content-right'>
