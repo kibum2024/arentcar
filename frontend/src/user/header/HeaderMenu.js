@@ -38,7 +38,6 @@ const HeaderMenu = () => {
   }, [location]);
 
   const handleMenuMainClick = (menuUrl) => {
-    console.log("menuUrl : ",menuUrl);
     navigate(menuUrl);
   };
 

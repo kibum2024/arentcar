@@ -18,13 +18,16 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000")); // React 클라이언트
+        config.setAllowedOrigins(Arrays.asList("http://43.200.185.148", "http://localhost:3000"));
         config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("DELETE");
+        config.addAllowedMethod("OPTIONS");
 
-        // 모든 경로에 대해 CORS 허용
-        source.registerCorsConfiguration("/**", config);
-
+        source.registerCorsConfiguration("/arentcar/**", config);
+//        source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
 }

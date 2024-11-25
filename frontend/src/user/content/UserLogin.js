@@ -5,7 +5,6 @@ import { setUserState } from '../../redux/UserState';
 import axios from 'axios';
 import api from 'common/api';
 import Loading from 'common/Loading';
-import { refreshAccessToken, handleLogout } from 'common/Common';
 import 'user/content/UserLogin.css';
 
 
@@ -23,7 +22,6 @@ const UserLogin = () => {
   const [isPasswordFind, setIsPasswordFind] = useState(false);
   const [idSaveChk, setIdSaveChk] = useState(false);
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   useEffect(() => {
     setUserEmail(localStorage.getItem('saveUserEmail'));
@@ -150,7 +148,7 @@ const UserLogin = () => {
       window.Kakao.Auth.logout(() => {
         console.log('카카오 로그아웃 완료');
         window.Kakao.Auth.authorize({
-          redirectUri: 'http://localhost:3000/kakao-callback',
+          redirectUri: `${process.env.REACT_APP_API_URL_FRONTEND}/kakao-callback`,
         });
       });
     } catch (error) {
@@ -161,7 +159,7 @@ const UserLogin = () => {
   const handleNaverClick = () => {
     const naverLogin = new window.naver.LoginWithNaverId({
       clientId: 'tZmqhZO1NzVp8B5iVi2F',
-      callbackUrl: 'http://localhost:3000/naver-callback',
+      callbackUrl: `${process.env.REACT_APP_API_URL_FRONTEND}/naver-callback`,
       isPopup: false,
       loginButton: { color: 'green', type: 3, height: '40' },
       state: Math.random().toString(36).substring(2, 10),

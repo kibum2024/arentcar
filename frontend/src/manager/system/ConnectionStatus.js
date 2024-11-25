@@ -6,7 +6,7 @@ const ConnectionStatus = () => {
   const [isConnected, setIsConnected] = useState(false); 
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8080/ws/visitor");
+    const socket = new WebSocket(process.env.REACT_APP_WS_URL);
 
     socket.onopen = () => {
       setIsConnected(true); 
@@ -47,7 +47,7 @@ const ConnectionStatus = () => {
       {/* <div className={`status ${isConnected ? "connected" : "disconnected"}`}>
         {isConnected ? "연결됨" : "연결되지 않음"}
       </div> */}
-      {/* <div className="connection-status-info">
+      <div className="connection-status-info">
         <div className="connection-status-count">현재 접속자 수: <strong>{connectionInfo.count}</strong></div>
         <div className="connection-status-ip-title">접속 IP목록</div>
         <div className="connection-status-ip-info">
@@ -57,7 +57,7 @@ const ConnectionStatus = () => {
             ))}
           </ul>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

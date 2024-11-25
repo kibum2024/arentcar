@@ -12,7 +12,7 @@ function NaverCallback() {
 	useEffect(() => {
 		const naverLogin = new window.naver.LoginWithNaverId({
 			clientId: 'tZmqhZO1NzVp8B5iVi2F',
-			callbackUrl: 'http://localhost:3000/naver-callback',
+			callbackUrl: `${process.env.REACT_APP_API_URL_FRONTEND}/naver-callback`,
 		});
 
 		naverLogin.init();

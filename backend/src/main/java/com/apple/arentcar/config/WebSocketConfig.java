@@ -19,6 +19,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(visitorWebSocketHandler, "/ws/visitor")
-                .setAllowedOrigins("*"); // CORS 허용
+                .setAllowedOrigins("http://localhost:3000", "https://43.200.185.148");
     }
 }

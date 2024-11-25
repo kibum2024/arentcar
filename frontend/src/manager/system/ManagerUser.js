@@ -30,8 +30,10 @@ const ManagerUser = ({ onClick }) => {
   const [userId, setUserId] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [userName, setUserName] = useState("");
-  const [userRole, setUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [userPhoneNumber, setUserPhoneNumber] = useState("");
+  const [userBirthDate, setUserBirthDate] = useState("");
+  const [userCategory, setUserCategory] = useState("");
   const [usageStatus, setUsageStatus] = useState("");
 
   const optionsUserCategory = [
@@ -42,7 +44,7 @@ const ManagerUser = ({ onClick }) => {
 
   const optionsUsageStatus = [
     { value: '1', label: '사용' },
-    { value: '2', label: '미사용' },
+    { value: '2', label: '정지' },
   ];
 
   const pageingUsers = async () => {
@@ -135,11 +137,12 @@ const ManagerUser = ({ onClick }) => {
     setIsPopUp(true);
     setWorkMode(workMode);
     setUserCode(findCode.user_code);
-    setUserId(findCode.user_id);
-    setUserPassword(findCode.user_password);
     setUserName(findCode.user_name);
-    setUserRole(findCode.user_role);
+    setUserPassword(findCode.user_password);
     setUserEmail(findCode.user_email);
+    setUserPhoneNumber(findCode.user_phone_number);
+    setUserBirthDate(findCode.user_birth_date);
+    setUserCategory(findCode.user_category);
     setUsageStatus(findCode.usage_status);
   };
 
@@ -148,8 +151,10 @@ const ManagerUser = ({ onClick }) => {
     setUserId("");
     setUserPassword("");
     setUserName("");
-    setUserRole("2");
     setUserEmail("");
+    setUserPhoneNumber("");
+    setUserBirthDate("");
+    setUserCategory("1");
     setUsageStatus("3");
   };
 
@@ -178,8 +183,10 @@ const ManagerUser = ({ onClick }) => {
             alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
             handleLogout();
           }
+        } else if (error.response.status === 409) {
+            alert("예약, 리뷰 등의 정보가 존재하여 삭제할 수 없습니다.");
         } else {
-          alert("삭제 중 오류가 발생했습니다." + error);
+          alert("삭제 중 오류가 발생했습니다.");
         }
       }
     }
@@ -206,8 +213,10 @@ const ManagerUser = ({ onClick }) => {
       user_id: userId,
       user_password: userPassword,
       user_name: userName,
-      user_role: userRole,
       user_email: userEmail,
+      user_phone_number: userPhoneNumber,
+      user_birth_date: userBirthDate,
+      user_category: userCategory,
       usage_status: usageStatus,
     };
 
@@ -257,8 +266,7 @@ const ManagerUser = ({ onClick }) => {
   };
 
   const updateUser = async (token, newUser) => {
-    await axios.put(
-      `${process.env.REACT_APP_API_URL}/arentcar/user/users/${userCode}`,
+    await axios.put(`${process.env.REACT_APP_API_URL}/arentcar/user/users/${userCode}`,
       newUser,
       {
         headers: {
@@ -290,10 +298,6 @@ const ManagerUser = ({ onClick }) => {
     setIsPopUp(false);
   };
 
-  const handleDataUseStopClick = () => {
-    setUsageStatus("2");
-  };
-
   const handleCloseClick = () => {
     if (onClick) {
       onClick();
@@ -301,10 +305,6 @@ const ManagerUser = ({ onClick }) => {
   };
 
   const validateCheck = () => {
-    if (!userId || userId.trim() === '') {
-      alert("관리자ID를 입력해주세요.");
-      return false;
-    };
     if (!userName || userName.trim() === '') {
       alert("관리자명을 입력해주세요.");
       return false;
@@ -340,7 +340,7 @@ const ManagerUser = ({ onClick }) => {
           style={{ width: `${totalWidth}px` }}
         >
           <div className='flex-align-center'>
-            <label className='manager-label' htmlFor="">관리자명</label>
+            <label className='manager-label' htmlFor="">사용자명</label>
             <input className='width200' type="text" value={searchName} onChange={(e) => (setSearchName(e.target.value))} />
             <button className='manager-button manager-button-search' onClick={() => handleSearchClick()}>검색</button>
             <span>[검색건수 : {totalCount}건]</span>
@@ -403,11 +403,6 @@ const ManagerUser = ({ onClick }) => {
                 <div className='manager-popup-title'>● 사용자{workMode}</div>
                 <div className='manager-user-content-popup-button'>
                   <button className='manager-button manager-button-save' onClick={handleDataSaveClick}>저장</button>
-                  {workMode === "수정" &&
-                    <>
-                      <button className='manager-button manager-button-stop' onClick={handleDataUseStopClick}>사용정지</button>
-                    </>
-                  }
                   <button className='manager-button manager-button-close' onClick={handlePopupClodeClick}>닫기</button>
                 </div>
               </div>
@@ -425,15 +420,15 @@ const ManagerUser = ({ onClick }) => {
               </div>
               <div className='manager-user-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">생년월일</label>
-                <input className='width300 word-left' value={userId} type="text" maxLength={30} onChange={(e) => setUserId(e.target.value)} />
+                <input className='width300 word-left' value={userBirthDate} type="text" maxLength={8} onChange={(e) => setUserBirthDate(e.target.value)} />
               </div>
               <div className='manager-user-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">휴대폰번호</label>
-                <input className='width300 word-left' value={userId} type="text" maxLength={30} onChange={(e) => setUserId(e.target.value)} />
+                <input className='width300 word-left' value={userPhoneNumber} type="text" maxLength={11} onChange={(e) => setUserPhoneNumber(e.target.value)} />
               </div>
               <div className='manager-user-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">사용구분</label>
-                <select className='width150' id="comboBox" value={userRole} onChange={(e) => (setUserRole(e.target.value))}>
+                <select className='width150' id="comboBox" value={userCategory} onChange={(e) => (setUserCategory(e.target.value))}>
                   {optionsUserCategory.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
@@ -443,7 +438,7 @@ const ManagerUser = ({ onClick }) => {
               </div>
               <div className='manager-user-content-popup-line'>
                 <label className='width80 word-right label-margin-right' htmlFor="">사용여부</label>
-                <select className='manager-user-content-popup-usage-status width150' id="comboBox" value={usageStatus} disabled onChange={(e) => (setUsageStatus(e.target.value))}>
+                <select className='manager-user-content-popup-usage-status width150' id="comboBox" value={usageStatus} onChange={(e) => (setUsageStatus(e.target.value))}>
                   {optionsUsageStatus.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}

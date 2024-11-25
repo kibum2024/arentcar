@@ -16,8 +16,7 @@ const KakaoCallback = () => {
 
       if (code) {
         try {
-          const response = await axios.post(
-            'http://localhost:8080/arentcar/user/kakao-login',
+          const response = await axios.post(`${process.env.REACT_APP_API_URL}/arentcar/user/kakao-login`,
             { code }
           );
           console.log('response.data:', response.data);

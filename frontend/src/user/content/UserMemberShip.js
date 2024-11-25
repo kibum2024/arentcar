@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import 'user/content/UserMemberShip.css';
@@ -121,7 +121,7 @@ const UserMemberShip = () => {
     };
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/arentcar/user/users`, newUser);
+      await axios.post(`${process.env.REACT_APP_API_URL}/arentcar/user/users`, newUser);
       alert("자료가 등록되었습니다.");
       navigate('/login');
     } catch (error) {
@@ -131,7 +131,7 @@ const UserMemberShip = () => {
 
   const handleDuplicateChkClick = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/user/users/email/${userEmail}`);
+      await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/user/users/email/${userEmail}`);
       setDuplicateChk(false);
       alert("이미 사용 중인 이메일 주소입니다. 다른 이메일 주소를 입력하세요.");
     } catch (error) {
