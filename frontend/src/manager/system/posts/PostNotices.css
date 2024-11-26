@@ -1,0 +1,135 @@
+.manager-post-notice-wrap{
+    margin: 20px;
+}
+
+.manager-post-notice-header-h5{
+    font-weight: bold;
+    padding-left: 15px;
+}
+
+.manager-post-notice-table-head{
+    width: 1180px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.manager-post-notice-table-body{
+    width: 1180px;
+    margin-top: 10px;
+    box-sizing : border-box;
+}
+
+.manager-post-notice-table-paging{
+    margin-top: 5px;
+}
+
+.manager-post-notice-table-head-colmn{
+    background-color: aliceblue;
+}
+
+.manager-post-notice-table-row-colmn, 
+.manager-post-notice-table-head-colmn{
+    border: 1px solid #ededf0;
+    height: 30px;
+    padding-left: 5px;
+}
+
+.post-btn1{
+    /* display: inline-block;
+    background-color: #ee0a0a;
+    color: #eeeeee;
+    text-align: center;
+    width: 45px;
+    height: 23px;
+    line-height: 23px; */
+    color: #ee0a0a;
+}
+.post-btn2{
+    /* display: inline-block;
+    background-color: #3b70d6;
+    color: #eeeeee;
+    text-align: center;
+    width: 45px;
+    height: 23px;
+    line-height: 23px; */
+    color: #3b70d6;
+
+}
+.post-btn3{
+    /* display: inline-block;
+    background-color: #ededf0;
+    color: #77777a;
+    text-align: center;
+    width: 45px;
+    height: 23px;
+    line-height: 23px; */
+    color: #77777a;
+}
+
+.manager-post-notice-popup{
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+}
+
+.manager-post-notice-popup-wrap{
+    background-color: #fdfdfd;
+    width: 600px;
+    margin: 150px auto;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.manager-post-notice-popup-header{
+    display: flex;
+    justify-content: space-between;
+}
+.manager-post-notice-h6{
+    font-weight: bold;
+}
+
+.manager-post-notice-popup-close{
+    color: #ee0a0a;
+}
+
+.manager-post-notice-popup-save{
+    color: #3b70d6;
+}
+
+.manager-post-notice-popup-line{
+    margin: 10px 0px;
+}
+
+.manager-post-notice-popup-line-label{
+    font-weight: bold;
+    width: 80px;
+    margin-right: 10px;
+    text-align: end;
+    vertical-align: middle;
+}
+
+.manager-post-notice-popup-line-textarea{
+    resize: none;
+    overflow:hidden;
+    padding: 5px;
+    display: inline-block;
+}
+.manager-post-notice-popup-line-textarea:focus {
+    outline: none;
+}
+
+.manager-post-notice-popup-read {
+    width: 750px;
+    min-height: 280px;
+    
+}
+
+.manager-post-notice-popup-author{
+    display: inline-block;
+    margin: 3px 5px;
+}
+

@@ -6,9 +6,15 @@ import { setAdminState } from '../../redux/AdminState';
 import { refreshAccessToken, handleLogout } from 'common/Common';
 import 'manager/system/ManagerMenu.css';
 import RegisterMenu from 'manager/system/RegisterMenu';
+import RentalCarInfo from 'manager/carinfo/RentalCarInfo';
+import CarInfo from 'manager/carinfo/CarInfo';
 import RegisterAdmin from 'manager/system/RegisterAdmin';
 import ManagerUser from 'manager/system/ManagerUser';
 import ConnectionStatus from 'manager/system/ConnectionStatus';
+import PostNotices from './posts/PostNotices';
+import PostReviews from './posts/PostReviews';
+import ManagerReservation from 'manager/reservation/ManagerReservation';
+import RentalRates from 'manager/managepayment/RentalRates';
 
 const ManagerMenu = () => {
   const [menus, setMenus] = useState([]);
@@ -28,9 +34,15 @@ const ManagerMenu = () => {
 
   const componentMap = {
     RegisterMenu: <RegisterMenu onClick={handleCloseClick} />,
+    managerRentalCar: <RentalCarInfo onClick={handleCloseClick} />,
+    managerCar: <CarInfo onClick={handleCloseClick} />,
     RegisterAdmin: <RegisterAdmin onClick={handleCloseClick} />,
     ManagerUser: <ManagerUser onClick={handleCloseClick} />,
     ConnectionStatus: <ConnectionStatus onClick={handleCloseClick} />,
+    manageNotices: <PostNotices onClick={handleCloseClick} />,
+    managementCustomer: <PostReviews onClick={handleCloseClick}/>,//임시링크
+    ManagerReservation: <ManagerReservation onClick={handleCloseClick} />,
+    RentalRates: <RentalRates onClick={handleCloseClick} />,
   };
 
   useEffect(() => {
@@ -59,7 +71,7 @@ const ManagerMenu = () => {
   const getMenus = async (token) => {
     const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/menus`, {
       headers: { Authorization: `Bearer ${token}` },
-      withCredentials: true, 
+      withCredentials: true,
     });
     setMenus(response.data);
   };

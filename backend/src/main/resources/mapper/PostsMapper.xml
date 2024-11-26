@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.apple.arentcar.mapper.post.PostsMapper">
+
+    <select id="getPostsAll" resultType="com.apple.arentcar.model.post.Notices">
+        SELECT p.*,
+               CASE
+                   when p.author_type = 'US' THEN us.user_name
+                   when p.author_type = 'AM' THEN am.admin_name
+                END as 'author' from posts p
+            LEFT join admins am on am.admin_code = p.author_code
+            LEFT join users us on us.user_code = p.author_code;
+    </select>
+
+    <select id="getAllNotices" resultType="com.apple.arentcar.model.post.Notices">
+        SELECT p.*,
+            CASE
+                when p.author_type = 'US' THEN us.user_name
+                when p.author_type = 'AM' THEN am.admin_name
+            END as 'author' from posts p
+        LEFT join admins am on am.admin_code = p.author_code
+        LEFT join users us on us.user_code = p.author_code
+        where p.post_type = 'NT'
+        ORDER BY p.post_code LIMIT #{pageSize} OFFSET #{pageNumber};
+    </select>
+
+    <select id="countAllNotices" resultType="int">
+        SELECT count(*) from posts p where p.post_type = 'NT';
+    </select>
+
+    <select id="getsSearchNotices" resultType="com.apple.arentcar.model.post.Notices">
+        SELECT p.*,
+               CASE
+                   when p.author_type = 'US' THEN us.user_name
+                   when p.author_type = 'AM' THEN am.admin_name
+                   END as 'author' from posts p
+               LEFT join admins am on am.admin_code = p.author_code
+               LEFT join users us on us.user_code = p.author_code
+        where p.post_type = 'NT' and p.post_title LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY p.post_code LIMIT #{pageSize} OFFSET #{pageNumber};
+    </select>
+
+    <select id="countSearchNotices" resultType="int">
+        SELECT count(*) from posts p where p.post_type = 'NT' and p.post_title LIKE CONCAT('%', #{keyword}, '%');
+    </select>
+
+    <select id="getNotice" resultType="com.apple.arentcar.model.post.Notices">
+        SELECT p.*,
+               CASE
+                   when p.author_type = 'US' THEN us.user_name
+                   when p.author_type = 'AM' THEN am.admin_name
+                END as 'author' from posts p
+        LEFT join admins am on am.admin_code = p.author_code
+        LEFT join users us on us.user_code = p.author_code
+        where p.post_type = 'NT' AND p.post_code = #{postCode};
+    </select>
+
+    <insert id="createNotice" parameterType="com.apple.arentcar.model.post.Notices">
+        INSERT INTO posts (post_type, post_title, post_content, author_code, author_type)
+        values('NT', #{postTitle}, #{postContent}, #{authorCode},'AM');
+    </insert>
+
+    <update id="updateNotice" parameterType="com.apple.arentcar.model.post.Notices">
+        update posts SET
+        post_title = #{postTitle},
+        post_content = #{postContent},
+        updated_at = NOW()
+        where post_code = #{postCode};
+    </update>
+
+    <delete id="deleteNotice">
+        DELETE FROM posts where post_code = #{postCode};
+    </delete>
+
+    <select id="getAllReviews" resultType="com.apple.arentcar.model.post.Reviews">
+        SELECT p.*, rv.review_rating,
+            CASE
+                when p.author_type = 'US' THEN us.user_name
+                when p.author_type = 'AM' THEN am.admin_name
+            END as 'author' from posts p
+        LEFT join admins am on am.admin_code = p.author_code
+        LEFT join users us on us.user_code = p.author_code
+        join reviews rv on rv.post_code = p.post_code
+        ORDER BY p.post_code LIMIT #{pageSize} OFFSET #{pageNumber};
+    </select>
+
+    <select id="getSearchAllReviews" resultType="com.apple.arentcar.model.post.Reviews">
+        SELECT p.*, rv.review_rating,
+            CASE
+                when p.author_type = 'US' THEN us.user_name
+                when p.author_type = 'AM' THEN am.admin_name
+            END as 'author' from posts p
+        LEFT join admins am on am.admin_code = p.author_code
+        LEFT join users us on us.user_code = p.author_code
+        join reviews rv on rv.post_code = p.post_code
+        where p.post_title LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY p.post_code LIMIT #{pageSize} OFFSET #{pageNumber};
+    </select>
+
+    <select id="getReview" resultType="com.apple.arentcar.model.post.Reviews">
+        SELECT p.*, rv.review_rating,
+            CASE
+                when p.author_type = 'US' THEN us.user_name
+                when p.author_type = 'AM' THEN am.admin_name
+            END as 'author' from posts p
+        LEFT join admins am on am.admin_code = p.author_code
+        LEFT join users us on us.user_code = p.author_code
+        join reviews rv on rv.post_code = p.post_code
+        where p.post_code = #{postCode};
+    </select>
+
+    <select id="getAllInquirys" resultType="com.apple.arentcar.model.post.Inquirys">
+        SELECT p.*, iq.inquiry_status from posts p
+        join inquirys iq on iq.post_code = p.post_code;
+    </select>
+
+</mapper>

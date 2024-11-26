@@ -1,0 +1,70 @@
+/* 전체 컨테이너 설정 */
+.car-list-wrap {
+    width: 1080px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    gap: 20px; 
+}
+
+/* 각 카드 스타일 */
+.car-list-card-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 360px;
+    overflow: hidden;
+    box-shadow: 0px 0px 5px 1px #ccc;
+    padding:  20px;
+    position: relative;
+    border-radius: 12px;
+    background-color: white;
+    /* max-height: 130px; */
+}
+
+.car-list-card-car-image-wrap{
+    width: 240px;
+    height: 90px;
+    position: relative;
+}
+
+#car-manufacturer{
+    font-size: 14px;
+}
+.car-list-card-info-car-name{
+    font-size: 18px;
+    font-weight: bold;
+}
+.car-list-card-car-image{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.car-list-card-info{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 20px;
+}
+.car-list-card-info-logo{
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+.car-list-title{
+    width: 100%;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+.car-list-title span{
+    color: #d60228;
+}
+.car-list-card-top-area{
+    display: flex;
+}
+.car-list-card-bottom-area{
+    display: flex;
+    padding: 0 20px 0 20px;
+}
+  

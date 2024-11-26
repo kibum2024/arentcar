@@ -12,6 +12,7 @@ const setAccessToken = (token) => {
 
 // JWT 만료 확인 함수
 const isTokenExpired = (token) => {
+  console.log("token : ",token);
   if (token === null || typeof token === 'undefined' || token === '' || token === 'undefined') {
     return false;
   }

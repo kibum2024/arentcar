@@ -1,0 +1,95 @@
+.reservation-calendar-wrap{
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    width: 1080px;
+    margin: 0 auto;
+    background-color: #ffffff;
+}
+.reservation-calendar {
+    width: 400px;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+.reservation-calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f4f4f4;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.reservation-calendar-header button {
+    background-color: #ff7916;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.reservation-calendar-header button:hover {
+    background-color: #dd6815;
+}
+
+.reservation-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 20px;
+    background-color: #ffffff;
+    padding: 10px;
+}
+
+.reservation-calendar-day-of-week {
+    text-align: center;
+    font-weight: bold;
+    color: #555;
+}
+
+.reservation-calendar-day {
+    height: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.reservation-calendar-day:hover {
+    background-color: #ff7916;
+    color: white;
+    cursor: pointer;
+}
+
+.reservation-calendar-day.selected {
+    background-color: #ff7916;
+    color: white;
+    cursor: pointer;
+}
+
+.reservation-calendar-day.disabled-day {
+    color: #ccc;
+}
+.reservation-calendar-day.disabled-day:hover {
+    background-color: #fff;
+    color: #ccc;
+    cursor: default;
+}
+
+.reservation-calendar-day.empty {
+    background-color: transparent;
+    border: none;
+    cursor: default;
+}
+.reservation-calender-button-wrap{
+    display: flex;
+    width: 84px;
+    justify-content: space-between;
+}
+.reservation-calendar-day.selected-range {
+    background-color: #f0ad4e; /* 선택 범위 색상 */
+    color: white;
+  }
+  

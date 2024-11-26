@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.apple.arentcar.mapper.ReservationsMapper">
+
+    <!-- 모든 조회 -->
+    <select id="getAllReservations"
+            parameterType="com.apple.arentcar.dto.ReservationRequestDTO"
+            resultType="com.apple.arentcar.dto.ReservationsResponseDTO">
+        SELECT
+        r.reservation_code,
+        u.user_name,
+        rc.car_number,
+        ct.car_type_name,
+        cc.common_name AS insuranceName,
+        rl.branch_name AS rentalLocationName,
+        DATE(r.rental_date) AS rental_date,
+        TIME_FORMAT(r.rental_time, '%H:%i:%s') AS rental_time,
+        rr.branch_name AS returnLocationName,
+        DATE(r.return_date) AS return_date,
+        TIME_FORMAT(r.return_time, '%H:%i:%s') AS return_time,
+        r.payment_amount
+        FROM reservations r
+        JOIN users u ON r.user_code = u.user_code
+        JOIN rental_cars rc ON r.car_code = rc.car_code
+        JOIN car_types ct ON rc.car_type_code = ct.car_type_code
+        JOIN branchs rl ON r.rental_location = rl.branch_code
+        JOIN branchs rr ON r.return_location = rr.branch_code
+        JOIN common_codes cc ON r.insurance_type = cc.common_code AND cc.common_kind_code = 'insurance_type'
+        WHERE 1=1
+        <if test="userName != null and userName != ''">
+            AND u.user_name = #{userName}
+        </if>
+        <if test="rentalLocationName != null and rentalLocationName != ''">
+            AND rl.branch_name = #{rentalLocationName}
+        </if>
+        <if test="rentalDate != null and rentalDate != ''">
+            AND r.rental_date = #{rentalDate}
+        </if>
+    </select>
+
+    <!-- Insert -->
+    <insert id="createReservation" parameterType="com.apple.arentcar.model.Reservations">
+        INSERT INTO reservations (
+        user_code, car_code, rental_location, rental_date, rental_time,
+        return_location, return_date, return_time, insurance_type,
+        payment_category, payment_type, payment_amount, created_at, updated_at
+        ) VALUES (
+        #{userCode}, #{carCode}, #{rentalLocation}, #{rentalDate}, #{rentalTime},
+        #{returnLocation}, #{returnDate}, #{returnTime}, #{insuranceType},
+        #{paymentCategory}, #{paymentType}, #{paymentAmount}, NOW(), NOW()
+        )
+    </insert>
+
+    <!-- Update -->
+    <update id="updateReservationById" parameterType="com.apple.arentcar.model.Reservations">
+        UPDATE reservations
+        SET
+        user_code = #{userCode},
+        car_code = #{carCode},
+        rental_location = #{rentalLocation},
+        rental_date = #{rentalDate},
+        rental_time = #{rentalTime},
+        return_location = #{returnLocation},
+        return_date = #{returnDate},
+        return_time = #{returnTime},
+        insurance_type = #{insuranceType},
+        payment_category = #{paymentCategory},
+        payment_type = #{paymentType},
+        payment_amount = #{paymentAmount},
+        updated_at = NOW()
+        WHERE reservation_code = #{reservationCode}
+    </update>
+
+    <!-- Delete -->
+    <delete id="deleteReservationById">
+        DELETE FROM reservations
+        WHERE reservation_code = #{reservationCode}
+    </delete>
+</mapper>

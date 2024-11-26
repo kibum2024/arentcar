@@ -1,170 +1,214 @@
-import React, { useState } from "react";
-import './ManagerReservation.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "manager/reservation/ManagerReservation.css";
+import "index.css";
+import { refreshAccessToken, handleLogout } from "common/Common";
 
 const ManagerReservation = () => {
-  // 모달 열기/닫기 상태와 데이터 상태 관리
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalData, setModalData] = useState({});
+  // 상태 관리
+  const [branchNames, setBranchNames] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState("");
+  const [reservationDate, setReservationDate] = useState("");
+  const [reserverName, setReserverName] = useState("");
+  const [isPopUp, setIsPopUp] = useState(false);
+  const [reservations, setReservations] = useState([]);
+  const [columnDefs] = useState([
+    { titlename: "예약 ID", field: "reservation_code", width: 100, align: "center" },
+    { titlename: "성함", field: "user_name", width: 100, align: "center" },
+    { titlename: "차량번호", field: "car_number", width: 100, align: "center" },
+    { titlename: "차량명", field: "car_type_name", width: 200, align: "center" },
+    { titlename: "대여지점", field: "rental_location_name", width: 100, align: "center" },
+    { titlename: "대여일", field: "rental_date", width: 150, align: "center" },
+    { titlename: "반납일", field: "return_date", width: 150, align: "center" },
+    { titlename: "", field: "", width: 100, align: "center" }, // 상세버튼 공백 열
+  ]);
 
-  // 모달 열기 함수
-  const openModal = (data) => {
-    console.log("data : ", data);
-    setModalData(data);
-    setIsModalOpen(true);
+  // 초기 데이터 가져오기
+  useEffect(() => {
+    handleFetchBranchNames();
+    handleFetchAllReservations();
+  }, []);
+
+  // 전체 예약 데이터 가져오기
+  const handleFetchAllReservations = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/reservations`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+      setReservations(response.data); // 전체 데이터 설정
+    } catch (error) {
+      console.error("전체 예약 데이터를 가져오는 중 오류 발생", error);
+    }
   };
 
-  // 모달 닫기 함수
-  const closeModal = () => {
-    setIsModalOpen(false);
+  // 필터링된 예약 데이터 가져오기 (검색 버튼 클릭 시 호출)
+  const handleFetchFilteredReservations = async () => {
+    const params = {
+      rentalLocationName: selectedBranch,
+      rentalDate: reservationDate.replace("-",""),
+      userName: reserverName,
+    };
+
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/reservations`, {
+        params,
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+
+      setReservations(response.data); // 필터링된 데이터 설정
+
+    } catch (error) {
+      console.error("전체 예약 데이터를 가져오는 중 오류 발생", error);
+    }
+  };
+
+  // 지점명 데이터 가져오기
+  const handleFetchBranchNames = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/branchs`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+      setBranchNames(response.data.map((branch) => branch.branch_name));
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        try {
+          const newToken = await refreshAccessToken();
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/branchs`, {
+            headers: { Authorization: `Bearer ${newToken}` },
+            withCredentials: true,
+          });
+          setBranchNames(response.data.map((branch) => branch.branch_name));
+        } catch (error) {
+          alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
+          handleLogout();
+        }
+      } else {
+        console.error("지점명 데이터를 가져오는 중 오류가 발생했습니다.", error);
+      }
+    }
+  };
+  // 팝업 열기 및 닫기
+  const handleDetailClick = (reservations) => {
+    setIsPopUp(true);
+  };
+
+  const handlePopupClodeClick = () => {
+    setIsPopUp(false);
   };
 
   return (
-    <div>
-      <div className="container">
-        {/* 왼쪽 네비게이션 영역 */}
-        {/* <nav className="sidebar">
-          <h3>관리자 nav</h3>
-          <p>1</p>
-          <p>2</p>
-          <p>3</p>
-        </nav> */}
-
-        {/* 오른쪽 메인 콘텐츠 영역 */}
-        <div className="main-content">
-          <header>
-            <h2>예약현황</h2>
-          </header>
-          <div className="filter">
-            <span>
-              <select name="options">
-                <option value="option1">지점명</option>
-                <option value="option2">지점 1</option>
-                <option value="option3">지점 2</option>
-                <option value="option4">지점 3</option>
-              </select>
-            </span>
-            <span>
-              <input type="text" placeholder="예약자 성함" name="username" />
-              <button type="submit" className="gray-button">
-                조회
-              </button>
-            </span>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>예약코드</th>
-                <th>고객명</th>
-                <th>지점명</th>
-                <th>차량번호</th>
-                <th>차량명</th>
-                <th>대여일</th>
-                <th>반납일</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* 예약 정보 표 행 */}
-              <tr>
-                <td>R12345</td>
-                <td>김철수</td>
-                <td>지점 1</td>
-                <td>123가4567</td>
-                <td>쏘나타</td>
-                <td>2024-11-01</td>
-                <td>2024-11-10</td>
-                <td>
-                  <button
-                    className="gray-button"
-                    onClick={() => openModal({
-                      code: 'R12345',
-                      name: '김철수',
-                      branch: '지점 1',
-                      carNumber: '123가4567',
-                      carName: '쏘나타',
-                      rentalDate: '2024-11-01',
-                      returnDate: '2024-11-10'
-                    })}
-                  >
-                    상세
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>R67890</td>
-                <td>이영희</td>
-                <td>지점 2</td>
-                <td>456나7890</td>
-                <td>아반떼</td>
-                <td>2024-11-05</td>
-                <td>2024-11-15</td>
-                <td>
-                  <button
-                    className="gray-button"
-                    onClick={() => openModal({
-                      code: 'R67890',
-                      name: '이영희',
-                      branch: '지점 2',
-                      carNumber: '456나7890',
-                      carName: '아반떼',
-                      rentalDate: '2024-11-05',
-                      returnDate: '2024-11-15'
-                    })}
-                  >
-                    상세
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+    <div className="manager-reservation-wrap">
+      {/* 헤더 */}
+      <div className="manager-reservation-header-wrap">
+        <div className="manager-reservation-title-wrap">
+          <div className="manager-reservation-title manager-title">● 예약현황</div>
+        </div>
+        <div className="manager-reservation-controls-wrap">
+          <input
+            type="text"
+            placeholder="예약자 성함"
+            value={reserverName}
+            onChange={(e) => setReserverName(e.target.value)}
+            className="manager-reservation-text-input"
+          />
+          <select
+            className="manager-reservation-select"
+            value={selectedBranch}
+            onChange={(e) => setSelectedBranch(e.target.value)}
+          >
+            <option value="">대여지점</option>
+            {branchNames.map((name, index) => (
+              <option key={index} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+          <input
+            type="date"
+            value={reservationDate}
+            onChange={(e) => setReservationDate(e.target.value)}
+            className="manager-reservation-date-input"
+          />
+          <button
+            onClick={handleFetchFilteredReservations}
+            className="manager-reservation-button-search manager-button manager-button-search"
+          >
+            검색
+          </button>
         </div>
       </div>
 
-      {/* 모달 창 */}
-      {isModalOpen && (
-        // <div className="modal" onClick={closeModal}>
-          <div className="modal-content" onClick={closeModal}>
-            <span className="close-button" onClick={closeModal}>
-              &times;
-            </span>
-            <h3>상세 정보</h3>
-            <div className="info-box">
-              <p>
-                <strong>고객명:</strong> <span>{modalData.name}</span>
-              </p>
+      {/* 테이블 헤더 */}
+      <div className="manager-reservation-content-header-row-wrap">
+        {columnDefs.map((title, index) => (
+          <div
+            key={index}
+            className="manager-reservation-content-header-column manager-head-column"
+            style={{
+              width: `${title.width}px`,
+              textAlign: title.align || "center",
+            }}
+          >
+            {title.titlename}
+          </div>
+        ))}
+      </div>
+
+      {/* 테이블 데이터 */}
+      <div className="manager-reservation-content-list-wrap">
+        {reservations.length > 0 ? (
+          reservations.map((reservation, index) => (
+            <div key={index} className="manager-reservation-content-item">
+              {columnDefs.map((column, colIndex) => (
+                <div
+                  key={colIndex}
+                  className="manager-reservation-content-column manager-row-column"
+                  style={{
+                    ...(column.field === "" ? { display: "flex" } : ""),
+                    ...(column.field === "" ? { alignItems: "center" } : ""),
+                    ...(column.field === "" ? { justifyContent: "center" } : ""),
+                    width: `${column.width}px`,
+                    textAlign: column.align || "center",
+                  }}
+                >
+                  {column.field === "" ? (
+                    <button
+                      className="manager-reservation-content-button-detail manager-button"
+                      onClick={() => handleDetailClick(reservations)}
+                    >
+                      상세
+                    </button>
+                  ) : (
+                    reservation[column.field]
+                  )}
+                </div>
+              ))}
             </div>
-            <div className="info-box">
-              <p>
-                <strong>지점명:</strong> <span>{modalData.branch}</span>
-              </p>
-            </div>
-            <div className="info-box">
-              <p>
-                <strong>차량번호:</strong> <span>{modalData.carNumber}</span>
-              </p>
-              <p>
-                <strong>차량명:</strong> <span>{modalData.carName}</span>
-              </p>
-            </div>
-            <div className="info-box">
-              <p>
-                <strong>대여일:</strong> <span>{modalData.rentalDate}</span>
-              </p>
-              <p>
-                <strong>반납일:</strong> <span>{modalData.returnDate}</span>
-              </p>
-            </div>
-            <div className="btm-btn">
-              <button type="button" className="gray-button" id="left-btn">
-                예약취소
-              </button>
-              <button type="button" className="gray-button" id="right-btn">
-                반납
-              </button>
+          ))
+        ) : (
+          <div className="manager-reservation-content-no-data">예약 데이터가 없습니다.</div>
+        )}
+      </div>
+
+      {/* 팝업 */}
+      {isPopUp &&
+        <div className='manager-reservation-popup manager-popup'>
+          <div className='manager-reservation-content-popup-wrap'>
+            <div className='manager-reservation-content-popup-close'>
+              <div className='manager-popup-title'>● 예약상세</div>
+              <div className='manager-reservation-content-popup-button'>
+                <button className='manager-button manager-button-close' onClick={handlePopupClodeClick}>닫기</button>
+              </div>
             </div>
           </div>
-        // </div>
-      )}
+        </div>
+      }
     </div>
   );
 };

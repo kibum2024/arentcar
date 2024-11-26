@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.apple.arentcar.mapper.BranchsMapper">
+
+    <!-- 모든 조회 -->
+    <select id="getAllBranchs" resultType="com.apple.arentcar.model.Branchs">
+        SELECT * FROM branchs
+    </select>
+
+    <!-- key 단건 조회 -->
+    <select id="getBranchsById" resultType="com.apple.arentcar.model.Branchs">
+        SELECT * FROM branchs 
+        WHERE branch_code = #{branchCode}
+    </select>
+
+    <!-- Insert -->
+    <insert id="createBranchs" parameterType="com.apple.arentcar.model.Branchs" >
+        INSERT INTO branchs 
+        (branch_code, branch_name, branch_longitude, branch_latitude, region_code, post_code, branch_basic_address, branch_detailed_address, branch_phone_number, available_pickup_time, available_return_time, created_at, updated_at)
+        VALUES 
+        (#{branchCode}, #{branchName}, #{branchLongitude}, #{branchLatitude}, #{regionCode}, #{postCode}, #{branchBasicAddress}, #{branchDetailedAddress}, #{branchPhoneNumber}, #{availablePickupTime}, #{availableReturnTime}, NOW(), NOW())
+    </insert>
+
+    <!-- Update -->
+    <update id="updateBranchsById" parameterType="com.apple.arentcar.model.Branchs">
+        UPDATE branchs 
+        SET 
+          branch_name = #{branchName},
+          branch_longitude = #{branchLongitude},
+          branch_latitude = #{branchLatitude},
+          region_code = #{regionCode},
+          post_code = #{postCode},
+          branch_basic_address = #{branchBasicAddress},
+          branch_detailed_address = #{branchDetailedAddress},
+          branch_phone_number = #{branchPhoneNumber},
+          available_pickup_time = #{availablePickupTime},
+          available_return_time = #{availableReturnTime},
+          updated_at = NOW()
+        WHERE branch_code = #{branchCode}
+    </update>
+
+    <!-- Delete -->
+    <delete id="deleteBranchsById">
+        DELETE FROM branchs 
+        WHERE branch_code = #{branchCode}
+    </delete>
+
+    
+</mapper>

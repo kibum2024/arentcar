@@ -22,7 +22,7 @@ public class VisitorWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-//        System.out.println("WebSocket 연결 성공: " + session.getId());
+        System.out.println("WebSocket 연결 성공: " + session.getId());
         String ip = getIpAddress(session); // IP 주소 추출
         activeSessions.put(session.getId(), session);
 
@@ -72,7 +72,7 @@ public class VisitorWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void saveVisitorLog(String ipAddress) {
-//        System.out.println("ipAddress : " + ipAddress);
+        System.out.println("ipAddress : " + ipAddress);
 
         // 데이터베이스에 접속 기록 저장
         if (visitorLogMapper != null) {

@@ -1,0 +1,106 @@
+/* 전체 컨테이너 설정 */
+.rental-car-container {
+    width: 1280px;
+    display: flex;
+    flex-wrap: wrap;   /* 줄 바꿈을 허용 */
+    margin: 0 auto;
+    gap: 20px;  /* 카드 사이 간격 */
+}
+
+/* 각 카드 스타일 */
+.rental-car-wrap {
+    width: 413px;
+    height: 400px;
+    overflow: hidden;
+    box-shadow: 0px 0px 5px 1px #ccc;
+    margin-bottom: 20px;  /* 아래 간격 추가 */
+    position: relative;  /* 오버레이를 위치시키기 위한 부모 설정 */
+    transition: background-color 0.3s ease;
+}
+
+/* 카드에 마우스 오버 시 배경색 변경 */
+.rental-car-wrap:hover {
+    background-color: #616161;
+}
+
+/* 링크 스타일 */
+.rental-car-wrap a {
+    width: 100%;
+    text-decoration-line: none;
+    color: black;
+    position: relative; /* 오버레이를 덮을 수 있도록 설정 */
+    display: block;
+}
+
+/* 이미지 스타일 */
+.rental-car-wrap img {
+    width: 100%; /* 이미지 크기를 부모 div에 맞게 자동으로 설정 */
+    height: 200px;
+    object-fit: cover; /* 이미지가 영역에 맞게 잘리거나 비율을 유지하면서 조정 */
+    transition: transform 0.3s ease; /* 마우스 오버 시 부드럽게 확대되는 효과 */
+    margin: 150px 0 0 80px;
+}
+
+/* 마우스 오버 시 이미지를 살짝 확대 */
+.rental-car-wrap:hover img {
+    transform: scale(1.1);
+}
+
+/* 이미지 위에 덮어지는 오버레이 */
+.rental-car-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* 반투명 검정 배경 */
+    opacity: 0; /* 기본적으로 오버레이는 보이지 않음 */
+    transition: opacity 0.3s ease; /* 마우스 오버 시 부드럽게 나타나는 효과 */
+}
+
+/* 마우스를 올렸을 때 오버레이 표시 */
+.rental-car-wrap:hover::after {
+    opacity: 1;
+}
+
+/* 텍스트 제목 스타일 */
+.rental-car-title {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    color: white; /* 텍스트 색상 */
+    z-index: 2; /* 이미지 위에 텍스트가 오도록 설정 */
+}
+
+/* 제목 스타일 */
+.rental-car-title h3 {
+    font-size: 24px;
+    color: black; /* 기본 색상 */
+    transition: color 0.3s ease; /* 색상 변경 시 부드럽게 */
+}
+
+/* 마우스 오버 시 h3 태그 색상 변경 */
+.rental-car-wrap:hover .rental-car-title h3 {
+    color: white; /* hover 시 흰색으로 변경 */
+}
+
+/* 차량 정보 스타일 */
+.rental-car-detail {
+    font-size: 16px;
+    font-weight: bold;
+    color: #3b70d6;
+}
+
+/* 이미지 스타일 */
+#car-image {
+    width: 100%; /* 부모의 너비에 맞추어 이미지 크기 조정 */
+    height: 200px;
+    object-fit: cover;
+}
+
+/* hover 시 흰색으로 변경 */
+.h3-hover {
+    color: white;
+  }
+  

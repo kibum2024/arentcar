@@ -29,7 +29,7 @@ const ConnectionStatus = () => {
     };
 
     socket.onclose = () => {
-      // console.log("WebSocket 연결 종료");
+      console.log("WebSocket 연결 종료");
       setIsConnected(false); // WebSocket 연결 상태 업데이트
     };
 

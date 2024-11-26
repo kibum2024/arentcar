@@ -1,0 +1,31 @@
+
+.user-review-popup{
+    background-color: rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+
+}
+
+.user-review-popup-wrap{
+    background-color: #fafafa;
+    margin: 100px auto;
+    padding: 20px;
+    min-height: 300px;
+    max-width: 600px;
+}
+
+.user-review-popup-line{
+    text-align: center;
+    margin: 10px 0px;
+}
+
+
+
+
+
+
+

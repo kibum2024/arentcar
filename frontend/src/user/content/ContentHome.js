@@ -5,9 +5,11 @@ import 'user/content/ContentHome.css';
 let socket; // 전역 변수로 WebSocket 관리
 
 const ContentHome = () => {
-  const [serverMessage, setServerMessage] = useState(""); // 서버에서 받은 메시지 저장
+  const [serverMessage, setServerMessage] = useState(""); 
 
   // useEffect(() => {
+  //   console.log("WebSocket 시작");
+
   //   if (!socket) {
   //     const socket = new WebSocket(process.env.REACT_APP_WS_URL);
 

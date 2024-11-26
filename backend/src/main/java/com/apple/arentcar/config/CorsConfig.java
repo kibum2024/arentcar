@@ -27,7 +27,6 @@ public class CorsConfig {
         config.addAllowedMethod("OPTIONS");
 
         source.registerCorsConfiguration("/arentcar/**", config);
-//        source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
 }

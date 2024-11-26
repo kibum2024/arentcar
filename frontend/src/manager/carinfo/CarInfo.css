@@ -1,0 +1,63 @@
+.car-info-wrap {
+  width: 100%;
+  margin: 20px 20px;
+}
+
+.car-info-title-wrap {
+  margin: 20px;
+}
+
+.car-info-button-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.car-info-content-header {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.car-info-content-row {
+  display: flex;
+  align-items: center;
+}
+
+.car-info-content-popup-wrap {
+  width: 500px;
+  /* margin: 250px auto; */
+  margin: 80px auto;
+  padding: 20px 20px;
+  background-color: #fff;
+  border-radius: 6px;
+}
+
+.car-info-content-popup-close {
+  display: flex;
+  justify-content: space-between;
+}
+
+.car-info-content-popup-line {
+  margin: 5px 0px;
+}
+
+.car-info-pageing-wrap {
+  margin-top: 5px;
+}
+
+.car-info-pageing-display {
+  margin: 0px 10px;
+}
+
+.car-info-file-button {
+  width: 250px;
+  height: 26px;
+  text-align: center;
+  border: 1px solid #ddd;
+  background-color: white;
+  border-radius: 6px;
+  font-weight: bold;
+  margin: 0px 2px;
+  color: rgb(38, 49, 155);
+}
