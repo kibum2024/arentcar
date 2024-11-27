@@ -177,10 +177,15 @@ export const refreshAccessToken = async () => {
   }
 };
 
-/**
- * 사용자 로그아웃 처리 함수
- */
+//  사용자 로그아웃 처리 함수
 export const handleLogout = () => {
+  // localStorage.removeItem('accessToken');
+  // Cookies.remove('refreshToken'); 
+  window.location.href = '/'; 
+};
+
+//  사용자 로그아웃 처리 함수
+export const handleAdminLogout = () => {
   // localStorage.removeItem('accessToken');
   // Cookies.remove('refreshToken'); 
   window.location.href = '/admin'; 

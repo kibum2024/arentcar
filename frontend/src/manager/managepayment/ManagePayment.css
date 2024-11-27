@@ -24,31 +24,6 @@
   flex: 1; /* 입력 필드가 남는 공간 채우기 */
 }
 
-/* 버튼 스타일 */
-button {
-  height: 32px;
-  padding: 0 12px;
-  background-color: white;
-  color: green;
-  border: 2px solid green;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  outline: none; /* 포커스 스타일 제거 */
-}
-
-button:hover {
-  background-color: green;
-  color: white;
-}
-
-button:disabled {
-  color: #aaa;
-  border-color: #eee;
-  cursor: not-allowed;
-}
-
 /* 테이블 */
 .manage-payment-table-wrap {
   border: 1px solid #ddd;

@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { setUserState } from '../../redux/UserState';
 import axios from 'axios';
 import api from 'common/api';
+import Cookies from 'js-cookie';
 import Loading from 'common/Loading';
 import 'user/content/UserLogin.css';
 
@@ -45,6 +46,8 @@ const UserLogin = () => {
 
   const handleLoginClick = async () => {
     try {
+      localStorage.removeItem('accessToken');
+      Cookies.remove('refreshToken'); 
       const response = await api.post(`${process.env.REACT_APP_API_URL}/arentcar/user/users/login`, {
         user_email: userEmail,
         user_password: userPassword,

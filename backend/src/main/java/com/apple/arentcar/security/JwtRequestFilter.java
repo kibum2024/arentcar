@@ -37,7 +37,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        System.out.println("authorizationHeader aaa: " + authorizationHeader);
+//        System.out.println("authorizationHeader aaa: " + authorizationHeader);
 
         // 회원가입 및 토큰 발행 요청인지 확인
         String requestURI = httpRequest.getRequestURI();
@@ -49,13 +49,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     || requestURI.equals("/arentcar/user/users/login") && httpRequest.getMethod().equalsIgnoreCase("POST")
                     || requestURI.equals("/arentcar/user/users/refresh") && httpRequest.getMethod().equalsIgnoreCase("POST")
                     || requestURI.equals("/ws/visitor");
-            System.out.println("requestURI ccc: " + requestURI);
-
+//            System.out.println("requestURI ccc: " + requestURI);
         } else {
             isPublicRequest = false;
         }
 
-        System.out.println("isPublicRequest aaa: " + isPublicRequest);
+//        System.out.println("isPublicRequest aaa: " + isPublicRequest);
 
         if (!isPublicRequest && authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);

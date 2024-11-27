@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { setAdminState } from '../../redux/AdminState';
-import { refreshAccessToken, handleLogout } from 'common/Common';
+import { refreshAccessToken, handleAdminLogout } from 'common/Common';
 import 'manager/system/ManagerMenu.css';
 import RegisterMenu from 'manager/system/RegisterMenu';
 import RentalCarInfo from 'manager/carinfo/RentalCarInfo';
@@ -57,7 +57,7 @@ const ManagerMenu = () => {
             await getMenus(newToken);
           } catch (refreshError) {
             alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
-            handleLogout();
+            handleAdminLogout();
           }
         } else {
           console.error('There was an error fetching the menu!', error);
@@ -118,7 +118,7 @@ const ManagerMenu = () => {
     dispatch(setAdminState({
       loginState: false
     }));
-    handleLogout()
+    handleAdminLogout()
   }
 
   const handleHomePageClick = () => {

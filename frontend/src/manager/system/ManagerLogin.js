@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setAdminState } from '../../redux/AdminState';
 import api from 'common/api';
-import { refreshAccessToken, handleLogout } from 'common/Common';
+import Cookies from 'js-cookie';
+import { refreshAccessToken, handleAdminLogout } from 'common/Common';
 import 'manager/system/ManagerLogin.css';
 
 
@@ -38,6 +39,8 @@ const ManagerLogin = () => {
 
   const handleLoginClick = async () => {
     try {
+      localStorage.removeItem('accessToken');
+      Cookies.remove('refreshToken'); 
       const response = await api.post(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins/login`, {
         admin_id: adminId,
         admin_password: adminPassword,
@@ -85,7 +88,7 @@ const ManagerLogin = () => {
           await updatePassword(newToken);
         } catch (refreshError) {
           alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
-          handleLogout();
+          handleAdminLogout();
         }
       } else {
       alert("비밀번호 변경  중 오류가 발생하였습니다. " + error.message);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { refreshAccessToken, handleLogout, formatDate, formatPhone } from 'common/Common';
+import { refreshAccessToken, handleAdminLogout, formatDate, formatPhone } from 'common/Common';
 import Loading from 'common/Loading';
 import 'manager/system/ManagerUser.css';
 
@@ -58,7 +58,7 @@ const ManagerUser = ({ onClick }) => {
           await getUsers(newToken);
         } catch (error) {
           alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
-          handleLogout();
+          handleAdminLogout();
         }
       } else {
         console.error('There was an error fetching the users pageing!', error);
@@ -101,7 +101,7 @@ const ManagerUser = ({ onClick }) => {
           await getCount(newToken);
         } catch (error) {
           alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
-          handleLogout();
+          handleAdminLogout();
         }
       } else {
         console.error('There was an error fetching the users count!', error);
@@ -181,7 +181,7 @@ const ManagerUser = ({ onClick }) => {
             await deleteUser(newToken, userCode);
           } catch (error) {
             alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
-            handleLogout();
+            handleAdminLogout();
           }
         } else if (error.response.status === 409) {
             alert("예약, 리뷰 등의 정보가 존재하여 삭제할 수 없습니다.");
@@ -232,7 +232,7 @@ const ManagerUser = ({ onClick }) => {
             await updateUser(newToken, newUser);
           } catch (error) {
             alert("인증이 만료되었습니다. 다시 로그인 해주세요." + error);
-            handleLogout();
+            handleAdminLogout();
           }
         } else {
           alert("수정 중 오류가 발생했습니다." + error);
@@ -252,7 +252,7 @@ const ManagerUser = ({ onClick }) => {
             await createUser(newToken, newUser);
           } catch (error) {
             alert("인증이 만료되었습니다. 다시 로그인 해주세요." + error);
-            handleLogout();
+            handleAdminLogout();
           }
         } else {
           alert("등록 중 오류가 발생했습니다." + error);

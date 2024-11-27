@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
 
 // 액세스 토큰 및 리프레시 토큰 저장소
 let accessToken = localStorage.getItem('accessToken') || null;
@@ -12,7 +13,12 @@ const setAccessToken = (token) => {
 
 // JWT 만료 확인 함수
 const isTokenExpired = (token) => {
-  console.log("token : ",token);
+  // console.log("token : ",token);
+  const refreshToken = Cookies.get('refreshToken'); 
+  if (!refreshToken) {
+    // console.log("리프레쉬 토큰 없음");
+    token = "";
+  }
   if (token === null || typeof token === 'undefined' || token === '' || token === 'undefined') {
     return false;
   }

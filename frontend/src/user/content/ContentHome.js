@@ -17,7 +17,6 @@ const ContentHome = () => {
   //       console.log("WebSocket 연결 성공");
   //     };
 
-
   //     socket.onmessage = (event) => {
   //       if (event && event.data) {
   //         setServerMessage(event.data);
@@ -38,6 +37,8 @@ const ContentHome = () => {
   //     socket.onmessage = null;
   //   };
   // }, []);
+
+  // console.log("WebSocket 밖");
 
   return (
     <div className='content-home-wrap'>

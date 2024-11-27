@@ -125,7 +125,7 @@ public class AdminsController {
 
         ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(false) // JavaScript에서 접근 불가
-                .secure(true) // HTTPS를 사용할 경우에만 전송
+                .secure(false) // HTTPS를 사용할 경우에 true로 변경할 것
                 .path("/") // 쿠키가 유효한 경로
                 .maxAge(7 * 24 * 60 * 60) // 7일 동안 유효
                 .build();
@@ -138,6 +138,7 @@ public class AdminsController {
     @PostMapping("/manager/admins/refresh")
     public ResponseEntity<JwtResponse> refreshAccessToken(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
         // 리프레시 토큰이 없으면 UNAUTHORIZED 응답
+//        System.out.println("refresh refreshToken: " + refreshToken);
         if (refreshToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -145,7 +146,7 @@ public class AdminsController {
         if (!JwtUtil.validateRefreshToken(refreshToken)) {
             // 리프레시 토큰이 만료되었거나 유효하지 않다면, 새 리프레시 토큰과 액세스 토큰을 생성
             String adminId = JwtUtil.getItemFromRefreshToken(refreshToken);
-            System.out.println("refresh userEmail: " + adminId);
+//            System.out.println("refresh userEmail: " + adminId);
 
             // 새로운 액세스 토큰 생성
             String newAccessToken = JwtUtil.generateToken(adminId);
