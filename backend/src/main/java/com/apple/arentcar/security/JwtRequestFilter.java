@@ -48,7 +48,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     || requestURI.equals("/arentcar/manager/admins/refresh") && httpRequest.getMethod().equalsIgnoreCase("POST")
                     || requestURI.equals("/arentcar/user/users/login") && httpRequest.getMethod().equalsIgnoreCase("POST")
                     || requestURI.equals("/arentcar/user/users/refresh") && httpRequest.getMethod().equalsIgnoreCase("POST")
-                    || requestURI.equals("/ws/visitor");
+                    || requestURI.equals("/ws/");
 //            System.out.println("requestURI ccc: " + requestURI);
         } else {
             isPublicRequest = false;

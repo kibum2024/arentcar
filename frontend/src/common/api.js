@@ -13,7 +13,7 @@ const setAccessToken = (token) => {
 
 // JWT 만료 확인 함수
 const isTokenExpired = (token) => {
-  // console.log("token : ",token);
+  console.log("token : ",token);
   const refreshToken = Cookies.get('refreshToken'); 
   if (!refreshToken) {
     // console.log("리프레쉬 토큰 없음");

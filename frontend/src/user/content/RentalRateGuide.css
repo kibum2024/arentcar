@@ -1,0 +1,171 @@
+.rental-rate-guide-wrap {
+  width: 100%;
+  margin: 20px auto;
+}
+
+.rental-rate-guide-title {
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.rental-rate-guide-sub-title {
+  font-size: 14px;
+  text-align: center;
+}
+
+.rental-rate-guide-menu-wrap {
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 60px auto;
+  padding: 30px 0px;
+  gap: 20px;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.rental-rate-guide-sub-menu {
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rental-rate-guide-sub-menu-img-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 48px;
+  line-height: 48px;
+}
+
+.rental-rate-guide-sub-menu-title {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  height: 20px;
+  line-height: 20px;
+}
+.rental-rate-guide-menu-rental-qualification-wrap {
+  width: 60%;
+  margin: 60px auto;
+}
+
+.rental-rate-guide-menu-rental-qualification-title {
+  font-size: 30px;
+  font-weight: bold;
+  margin: 100px 0px 30px;
+}
+
+.rental-rate-guide-menu-rental-qualification-content-box th {
+  text-align: center;
+  height: 50px;
+  font-size: 14px;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+}
+
+.rental-rate-guide-menu-rental-qualification-content-box td {
+  text-align: center;
+  height: 50px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+}
+
+.lst.dot > li {
+  position: relative;
+  padding-left: 12px;
+  margin: 5px 0px;
+}
+
+.lst.dot > li::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 0px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #aaa;
+}
+
+.rental-rate-guide-additional-fee-img-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 132px;
+  height: 132px;
+  background-color: #fafafa;
+  border-radius: 50%;
+}
+
+.rental-rate-guide-additional-fee-content> li {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 14px;
+  margin: 20px 0px;
+}
+
+.rental-rate-guide-rental-process-content {
+  display: flex;
+  gap: 40px;
+}
+
+.rental-rate-guide-rental-process-content > li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 280px;
+}
+
+.rental-rate-guide-rental-process-img-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 260px;
+  height: 150px;
+}
+
+.rental-rate-guide-rental-process-txt {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.rental-rate-guide-insurance-reward-content-box th {
+  text-align: center;
+  height: 50px;
+  font-size: 14px;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+}
+
+.rental-rate-guide-insurance-reward-content-box td {
+  text-align: center;
+  height: 50px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+}
+
+.rental-rate-guide-damage-exemption-content-box th {
+  text-align: center;
+  height: 50px;
+  font-size: 14px;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+}
+
+.rental-rate-guide-damage-exemption-content-box td {
+  text-align: center;
+  height: 50px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+}

@@ -9,6 +9,7 @@ import KakaoCallback from 'user/content/KakaoCallback';
 import FooterMain from 'user/footer/FooterMain';
 import ReservationPage from 'user/content/ReservationPage';
 import ReservationDetail from 'user/content/ReservationDetail';
+import RentalRateGuide from 'user/content/RentalRateGuide';
 
 const UserMenu = () => {
   return (
@@ -18,13 +19,14 @@ const UserMenu = () => {
       </div>
       <div className='user-menu-content-wrap'>
         <Routes>
-          <Route path="/" element={<ContentHome />} ></Route>
-          <Route path="/login" element={<UserLogin />} ></Route>
-          <Route path="/membership" element={<UserMemberShip />} ></Route>
+          <Route path="/" element={<ContentHome />} />
+          <Route path="/login" element={<UserLogin />} />
+          <Route path="/membership" element={<UserMemberShip />} />
           <Route path="/naver-callback" element={<NaverCallback />} /> 
           <Route path="/kakao-callback" element={<KakaoCallback />} /> 
           <Route path="/reservation" element={<ReservationPage />} /> 
           <Route path="/reservationdetail" element={<ReservationDetail />} /> 
+          <Route path="/rentalrateguide" element={<RentalRateGuide />} /> 
         </Routes>
       </div>
       <div className='user-menu-footer-wrap'>

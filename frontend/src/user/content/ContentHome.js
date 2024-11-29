@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import MainSlider from 'user/content/MainSlider';
 import 'user/content/ContentHome.css';
 
-let socket; // 전역 변수로 WebSocket 관리
+let socket = new WebSocket(process.env.REACT_APP_WS_URL);
 
 const ContentHome = () => {
   const [serverMessage, setServerMessage] = useState(""); 
