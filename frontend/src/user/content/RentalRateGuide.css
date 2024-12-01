@@ -24,6 +24,24 @@
   gap: 20px;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.rental-rate-guide-menu-wrap.sticky {
+  position: fixed;
+  top: -84px;
+  left: 0;
+  width: 100%;
+}
+
+.rental-rate-guide-sub-menu.active {
+  padding-bottom: 10px;
+  border-bottom: 3px solid #ff404b;
+  z-index: 5;
 }
 
 .rental-rate-guide-sub-menu {
@@ -31,6 +49,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: pointer;
 }
 
 .rental-rate-guide-sub-menu-img-wrap {
@@ -50,15 +69,17 @@
   height: 20px;
   line-height: 20px;
 }
-.rental-rate-guide-menu-rental-qualification-wrap {
+.rental-rate-guide-menu-title-wrap {
   width: 60%;
   margin: 60px auto;
 }
 
-.rental-rate-guide-menu-rental-qualification-title {
+.rental-rate-guide-menu-title {
   font-size: 30px;
   font-weight: bold;
   margin: 100px 0px 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #ccc;
 }
 
 .rental-rate-guide-menu-rental-qualification-content-box th {
@@ -112,12 +133,13 @@
   margin: 20px 0px;
 }
 
-.rental-rate-guide-rental-process-content {
+.rental-rate-guide-rental-process-content, .rental-rate-guide-return-process-content, .rental-rate-guide-etc-info-content {
   display: flex;
-  gap: 40px;
+  justify-content: space-between;
+  /* gap: 40px; */
 }
 
-.rental-rate-guide-rental-process-content > li {
+.rental-rate-guide-rental-process-content > li, .rental-rate-guide-return-process-content> li, .rental-rate-guide-etc-info-content > li {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -125,7 +147,7 @@
   width: 280px;
 }
 
-.rental-rate-guide-rental-process-img-wrap {
+.rental-rate-guide-rental-process-img-wrap, .rental-rate-guide-return-process-img-wrap, .rental-rate-guide-etc-info-img-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -133,7 +155,7 @@
   height: 150px;
 }
 
-.rental-rate-guide-rental-process-txt {
+.rental-rate-guide-txt, .rental-rate-guide-insurance-reward-content-title {
   font-size: 14px;
   font-weight: bold;
 }
@@ -168,4 +190,8 @@
   height: 50px;
   font-size: 14px;
   border: 1px solid #ccc;
+}
+
+.rental-rate-guide-damage-exemption-content-txt, .rental-rate-guide-insurance-reward-content-txt {
+  margin-bottom: 20px;
 }
