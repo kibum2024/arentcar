@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import 'user/content/RentalRateGuide.css';
 
 const RentalRateGuide = () => {
@@ -11,6 +12,7 @@ const RentalRateGuide = () => {
   const damageExemptionRef = useRef(null);
   const etcInfoRef = useRef(null);
 
+  const [carTypeRates, setCarTypeRates] = useState([]);
   const [activeMenu, setActiveMenu] = useState(null);
   const [isSticky, setIsSticky] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -30,6 +32,10 @@ const RentalRateGuide = () => {
     };
   }, [lastScrollY]);
 
+  
+  useEffect(() => {
+    handleCarTypeClick("01");
+  }, []);
 
   const handleImageClick = (position) => {
     setActiveMenu(position);
@@ -54,6 +60,17 @@ const RentalRateGuide = () => {
         top: elementTop - offset,
         behavior: 'smooth',
       });
+    }
+  };
+
+  const handleCarTypeClick = async (carType) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/user/rentalRates/car-type/${carType}`);
+      if (response.data) {
+        setCarTypeRates(response.data);
+      }
+    } catch (error) {
+      console.error('There was an error fetching the menu!', error);
     }
   };
 
@@ -186,6 +203,44 @@ const RentalRateGuide = () => {
       {/* 요금안내 */}
       <div className='rental-rate-guide-menu-title-wrap' ref={feeGuideRef}>
         <div className='rental-rate-guide-menu-title'>요금 안내</div>
+        <div className="rental-rate-guide-fee-guide-content-wrap">
+          <div className='rental-rate-guide-fee-guide-content-title-wrap'>
+            <button onClick={() => handleCarTypeClick("01")}>경형/소형</button>
+            <button onClick={() => handleCarTypeClick("02")}>중형/대형</button>
+            <button onClick={() => handleCarTypeClick("03")}>SUV</button>
+            <button onClick={() => handleCarTypeClick("04")}>승합</button>
+          </div>
+          <div className='rental-rate-guide-fee-guide-content'>
+            <table>
+              <thead>
+                <tr>
+                  <th>차종명</th>
+                  <th>6시간</th>
+                  <th>12시간</th>
+                  <th>24시간</th>
+                  <th>1~2일</th>
+                  <th>3~4일</th>
+                  <th>5~6일</th>
+                  <th>7일이상</th>
+                </tr>
+              </thead>
+              <tbody>
+              {carTypeRates.map((carTypeRate, index) => 
+               <tr>
+                <td>{carTypeRate.car_type_name}</td>
+                <td>{carTypeRate.rental_rate1.toLocaleString()}</td>
+                <td>{carTypeRate.rental_rate2.toLocaleString()}</td>
+                <td>{carTypeRate.rental_rate3.toLocaleString()}</td>
+                <td>{carTypeRate.rental_rate4.toLocaleString()}</td>
+                <td>{carTypeRate.rental_rate5.toLocaleString()}</td>
+                <td>{carTypeRate.rental_rate6.toLocaleString()}</td>
+                <td>{carTypeRate.rental_rate7.toLocaleString()}</td>
+               </tr>
+              )}  
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
       {/* 추가요금 */}
       <div className='rental-rate-guide-menu-title-wrap' ref={additionalFeeRef}>

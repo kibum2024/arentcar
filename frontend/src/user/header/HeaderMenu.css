@@ -23,7 +23,7 @@
   display: flex;
   align-items: center;
   margin-left: 80px;
-  gap: 80px;
+  gap: 150px;
 }
 
 .header-menu-top-menu> ul> li {

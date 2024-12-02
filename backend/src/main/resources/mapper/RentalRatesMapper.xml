@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.apple.arentcar.mapper.RentalRatesMapper">
+
+    <!-- 모든 조회 -->
+    <select id="getAllRentalRates" resultType="com.apple.arentcar.model.RentalRates">
+        SELECT * FROM rental_rates
+    </select>
+
+    <!-- key 단건 조회 -->
+    <select id="getRentalRatesById" resultType="com.apple.arentcar.model.RentalRates">
+        SELECT * FROM rental_rates
+        WHERE rate_code = #{rateCode}
+    </select>
+
+    <!-- 차량형식 조회 -->
+    <select id="getRentalRatesByCarTypeCategory" resultType="com.apple.arentcar.dto.RentalRateResponseDTO">
+        SELECT
+        a.car_type_name,
+        SUM(CASE WHEN b.rental_start_hours = 0 THEN COALESCE(b.rental_rate, 0) ELSE 0 END) AS rental_rate1,
+        SUM(CASE WHEN b.rental_start_hours = 7 THEN COALESCE(b.rental_rate, 0) ELSE 0 END) AS rental_rate2,
+        SUM(CASE WHEN b.rental_start_hours = 13 THEN COALESCE(b.rental_rate, 0) ELSE 0 END) AS rental_rate3,
+        SUM(CASE WHEN b.rental_start_hours = 25 THEN COALESCE(b.rental_rate, 0) ELSE 0 END) AS rental_rate4,
+        SUM(CASE WHEN b.rental_start_hours = 49 THEN COALESCE(b.rental_rate, 0) ELSE 0 END) AS rental_rate5,
+        SUM(CASE WHEN b.rental_start_hours = 97 THEN COALESCE(b.rental_rate, 0) ELSE 0 END) AS rental_rate6,
+        SUM(CASE WHEN b.rental_start_hours = 145 THEN COALESCE(b.rental_rate, 0) ELSE 0 END) AS rental_rate7
+        FROM car_types a
+        JOIN rental_rates b ON a.car_type_code = b.car_type_code
+        WHERE a.car_type_category = #{carTypeCategory}
+        GROUP BY a.car_type_code, a.car_type_name
+        ORDER BY a.car_type_name
+    </select>
+
+    <!-- Insert -->
+    <insert id="createRentalRates" parameterType="com.apple.arentcar.model.RentalRates" >
+        INSERT INTO rental_rates 
+        (rate_code, car_type_code, rental_rate_main_category, rental_rate_sub_category, rental_rate, rental_start_hours, rental_end_hours, rental_discount_rate, created_at, updated_at)
+        VALUES 
+        (#{rateCode}, #{carTypeCode}, #{rentalRateMainCategory}, #{rentalRateSubCategory}, #{rentalRate}, #{rentalStartHours}, #{rentalEndHours}, #{rentalDiscountRate}, NOW(), NOW())
+    </insert>
+
+    <!-- Update -->
+    <update id="updateRentalRatesById" parameterType="com.apple.arentcar.model.RentalRates">
+        UPDATE rental_rates 
+        SET 
+          car_type_code = #{carTypeCode},
+          rental_rate_main_category = #{rentalRateMainCategory},
+          rental_rate_sub_category = #{rentalRateSubCategory},
+          rental_rate = #{rentalRate},
+          rental_start_hours = #{rentalStartHours},
+          rental_end_hours = #{rentalEndHours},
+          rental_discount_rate = #{rentalDiscountRate},
+          updated_at = NOW()
+        WHERE rate_code = #{rateCode}
+    </update>
+
+    <!-- Delete -->
+    <delete id="deleteRentalRatesById">
+        DELETE FROM rental_rates 
+        WHERE rate_code = #{rateCode}
+    </delete>
+
+    
+</mapper>
