@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import 'user/content/ReservationCalender.css';
 
 const ReservationCalender = ({ onRentalPeriod }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const currentDate = new Date();
   const [currentMonteDate, setCurrentMonteDate] = useState(new Date());
   const [nextMonteDate, setNextMonteDate] = useState(new Date());
   const [firstSelectedDay, setFirstSelectedDay] = useState(null);  // 첫 번째 달력 선택된 날짜
   const [secondSelectedDay, setSecondSelectedDay] = useState(null); // 두 번째 달력 선택된 날짜
   const [firstSelectedRange, setFirstSelectedRange] = useState([]); // 첫 번째 달력 날짜 범위
   const [secondSelectedRange, setSecondSelectedRange] = useState([]); // 두 번째 달력 날짜 범위
-  const [firstSaveRange, setFirstSaveRange] = useState([]); // 첫 번째 달력 날짜 범위 저장
-  const [secondSaveRange, setSecondSaveRange] = useState([]); // 두 번째 달력 날짜 범위 저장
+
 
   const year = currentMonteDate.getFullYear();
   const month = currentMonteDate.getMonth();
@@ -44,111 +43,98 @@ const ReservationCalender = ({ onRentalPeriod }) => {
     if (currentMonteDate > currentDate) {
       setCurrentMonteDate(new Date(year, month - 1, 1));
       setNextMonteDate(new Date(year, month, 1));
+
     }
   };
 
   const goToNextMonth = () => {
     setCurrentMonteDate(new Date(year, month + 1, 1));
     setNextMonteDate(new Date(year, month + 2, 1));
-    
+
   };
 
   const handleSelected = (day, isNextMonth) => {
+
     if (!isNextMonth) {
-      if (firstSelectedDay === null) {
-        setFirstSelectedDay(new Date(year, month, day));
-        console.log(firstSelectedDay);
+      if (currentDate.getTime() > new Date(year, month, day + 1).getTime()) {
+        alert("이전날짜는 선택 하실 수 없습니다.");
       } else {
-        setSecondSelectedDay(new Date(year, month, day));
+
+        if (firstSelectedDay == null) {
+          setFirstSelectedDay(new Date(year, month, day));
+        } else {
+          setSecondSelectedDay(new Date(year, month, day));
+        }
       }
     } else {
-      if (firstSelectedDay === null) {
+      if (firstSelectedDay == null) {
         setFirstSelectedDay(new Date(nextMonthYear, nextMonth, day));
-        console.log(firstSelectedDay);
       } else {
         setSecondSelectedDay(new Date(nextMonthYear, nextMonth, day));
       }
+
     }
   };
 
-  const getFirstCalendarRange = (startDay, endDay) => {
+  const filterRangeByCurrentMonth = (startDay, endDay, calendarStart, calendarEnd) => {
     const range = [];
-    if (startDay.getFullYear() === year && startDay.getMonth() === month) {
-      if (endDay.getFullYear() === year && endDay.getMonth() === month) {
-        for (let i = startDay.getDate(); i <= endDay.getDate(); i++) {
-          range.push(i);
-        }
-      } else {
-        for (let i = startDay.getDate(); i <= lastDayOfMonth.getDate(); i++) {
-          range.push(i);
-        }
+    const rangeStart = Math.max(startDay.getTime(), calendarStart.getTime());
+    const rangeEnd = Math.min(endDay.getTime(), calendarEnd.getTime());
+
+    if (rangeStart <= rangeEnd) {
+      const startDate = new Date(rangeStart).getDate();
+      const endDate = new Date(rangeEnd).getDate();
+      for (let i = startDate; i <= endDate; i++) {
+        range.push(i);
       }
     }
-    return range; // 항상 반환
+    return range;
   };
-  const getSecondCalendarRange = (startDay, endDay) => {
-    const range = [];
-    if (startDay.getFullYear() === year && startDay.getMonth() === month) {
-      if (endDay.getFullYear() === year && endDay.getMonth() === month) {
-        return range;
-      } else {
-        const startDate = firstDayOfNextMonth.getDate();
-        const endDate = endDay.getDate();
-        for (let i = startDate; i <= endDate; i++) {
-          range.push(i);
-        }
-        return range;
-      }
-    } else {
-      if (endDay.getFullYear() === nextMonthYear && endDay.getMonth() === nextMonth) {
-        const startDate = startDay.getDate();
-        const endDate = endDay.getDate();
-        for (let i = startDate; i <= endDate; i++) {
-          range.push(i);
-        }
-        return range;
-      }
-    }
-  };
-
-  useEffect(() => {
-    setNextMonteDate(new Date(year, month + 1, 1));
-  }, []);
-  useEffect(() => {
-    console.log(nextMonthDays);
-  }, [nextMonthDays]);
-
   useEffect(() => {
     if (firstSelectedDay && secondSelectedDay) {
+      if (firstSelectedDay > secondSelectedDay) {
+        let change = firstSelectedDay;
+        setFirstSelectedDay(secondSelectedDay);
+        setSecondSelectedDay(change);
+      }
       onRentalPeriod(firstSelectedDay, secondSelectedDay);
-      setFirstSelectedRange(getFirstCalendarRange(firstSelectedDay, secondSelectedDay));
-      setSecondSelectedRange(getSecondCalendarRange(firstSelectedDay, secondSelectedDay));
-      setFirstSaveRange(getFirstCalendarRange(firstSelectedDay, secondSelectedDay));
-      setSecondSaveRange(getSecondCalendarRange(firstSelectedDay, secondSelectedDay));
+      const newFirstRange = filterRangeByCurrentMonth(
+        firstSelectedDay,
+        secondSelectedDay,
+        firstDayOfMonth,
+        lastDayOfMonth
+      );
+      const newSecondRange = filterRangeByCurrentMonth(
+        firstSelectedDay,
+        secondSelectedDay,
+        firstDayOfNextMonth,
+        lastDayOfNextMonth
+      );
+
+      setFirstSelectedRange(newFirstRange);
+      setSecondSelectedRange(newSecondRange);
     } else {
       // 선택 범위 초기화
       setFirstSelectedRange([]);
       setSecondSelectedRange([]);
     }
-  }, [firstSelectedDay, secondSelectedDay]);
+  }, [firstSelectedDay, secondSelectedDay, currentMonteDate]);
+
   useEffect(() => {
-    console.log(firstSelectedRange);
-    console.log(secondSelectedRange);
-    console.log(firstDayOfNextMonth.getDate());
-  }, [firstSelectedRange, secondSelectedRange]);
-
-
+    setNextMonteDate(new Date(year, month + 1, 1));
+  }, []);
 
   const isDayInFirstRange = (day) => firstSelectedRange.includes(day) || false;
   const isDayInSecondRange = (day) => secondSelectedRange.includes(day) || false;
 
   return (
     <div className='reservation-calendar-wrap'>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16" onClick={goToPreviousMonth}>
+        <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+        <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+      </svg>
       <div className="reservation-calendar">
         <div className="reservation-calendar-header">
-          <div className='reservation-calender-button-wrap'>
-            <button onClick={goToPreviousMonth}>◀</button>
-          </div>
           <span>{year}년 {month + 1}월</span>
         </div>
         <div className="reservation-calendar-grid">
@@ -160,6 +146,7 @@ const ReservationCalender = ({ onRentalPeriod }) => {
               key={index}
               className={`reservation-calendar-day
                 ${isDayInFirstRange(day) ? 'selected-range' : ''}
+                ${index % 7 === 0 ? 'day-off' : ''}
                 ${firstSelectedDay && firstSelectedDay.getMonth() === month && firstSelectedDay.getDate() === day ? 'selected' : ''}
                 ${secondSelectedDay && secondSelectedDay.getMonth() === month && secondSelectedDay.getDate() === day ? 'selected' : ''}
                 ${day ? '' : 'empty'}
@@ -175,9 +162,6 @@ const ReservationCalender = ({ onRentalPeriod }) => {
       <div className="reservation-calendar">
         <div className="reservation-calendar-header">
           <span>{nextMonthYear}년 {nextMonth + 1}월</span>
-          <div className='reservation-calender-button-wrap'>
-            <button onClick={goToNextMonth}>▶</button>
-          </div>
         </div>
         <div className="reservation-calendar-grid">
           {daysOfWeek.map((day) => (
@@ -188,6 +172,7 @@ const ReservationCalender = ({ onRentalPeriod }) => {
               key={index}
               className={`reservation-calendar-day 
                 ${isDayInSecondRange(day) ? 'selected-range' : ''}
+                ${index % 7 === 0 ? 'day-off' : ''}
                 ${firstSelectedDay && firstSelectedDay.getMonth() === nextMonth && firstSelectedDay.getDate() === day ? 'selected' : ''}
                 ${secondSelectedDay && secondSelectedDay.getMonth() === nextMonth && secondSelectedDay.getDate() === day ? 'selected' : ''}
                 ${day ? '' : 'empty'}
@@ -199,6 +184,10 @@ const ReservationCalender = ({ onRentalPeriod }) => {
           ))}
         </div>
       </div>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16" onClick={goToNextMonth}>
+        <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708" />
+        <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708" />
+      </svg>
     </div>
   );
 };

@@ -1,24 +1,21 @@
 package com.apple.arentcar.mapper;
-  
+
+import com.apple.arentcar.dto.AdminsLoginDTO;
+import com.apple.arentcar.dto.ChartDataDTO;
 import com.apple.arentcar.model.Branchs;
+import com.apple.arentcar.model.Menus;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
 @Mapper
-public interface BranchsMapper  {
+public interface BranchsMapper {
 
-    List<Branchs> getAllBranchs();
+    List<Branchs> findAllBranches();
 
-    Branchs getBranchsById(@Param("branchCode") Integer branchCode);
+    List<Branchs> findBranchsByBranchName(@Param("branchname") String branchName);
 
-    void createBranchs(Branchs branchs);
-
-    void updateBranchsById(Branchs branchs);
-
-    void deleteBranchsById(@Param("branchCode") Integer branchCode);
-
-    
-
+    List<ChartDataDTO> getBranchChartData(@Param("startDate") String startDate, @Param("endDate") String endDate);
 }

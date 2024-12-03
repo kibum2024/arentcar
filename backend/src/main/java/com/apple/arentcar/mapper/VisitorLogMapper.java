@@ -13,6 +13,8 @@ public interface VisitorLogMapper  {
 
     VisitorLog getVisitorLogById(@Param("visitorLogCode") Integer visitorLogCode);
 
+    Integer getVisitorLogCount();
+
     void createVisitorLog(@Param("ipAddress") String ipAddress);
 
 }

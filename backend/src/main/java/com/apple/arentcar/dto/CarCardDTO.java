@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CarCardDTO {
+    private Integer carTypeCode;
 
     private String carTypeName;
 
@@ -16,6 +17,8 @@ public class CarCardDTO {
     private String seatingCapacity;
 
     private String modelYear;
+
+    private Integer carCode;
 
     private String carImageName;
 
@@ -28,4 +31,8 @@ public class CarCardDTO {
     private String branchLatitude;
 
     private String branchLongitude;
+
+    private Integer rentalRate;
+
+    private Integer rentalDiscountRate;
 }

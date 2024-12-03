@@ -1,15 +1,16 @@
 package com.apple.arentcar.controller;
 
-import com.apple.arentcar.dto.ReservationRequestDTO;
+import com.apple.arentcar.dto.CarReturnRequestDTO;
+import com.apple.arentcar.dto.ReservationDetailDTO;
+import com.apple.arentcar.dto.ReservationsSearchRequestDTO;
 import com.apple.arentcar.dto.ReservationsResponseDTO;
-import com.apple.arentcar.model.Reservations;
 import com.apple.arentcar.service.ReservationsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/arentcar")
@@ -18,83 +19,80 @@ public class ReservationsController {
     @Autowired
     private ReservationsService reservationsService;
 
-//    @GetMapping("/manager/reservations")
-//    public List<ReservationsResponseDTO> getAllReservations() {
-//        return reservationsService.getAllReservations();
-//    }
-
     @GetMapping("/manager/reservations")
-    public ResponseEntity<List<ReservationsResponseDTO>> getAllReservations(
+    public ResponseEntity<List<ReservationsResponseDTO>> getReservations(
             @RequestParam(required = false) String userName,
             @RequestParam(required = false) String rentalLocationName,
-            @RequestParam(required = false) String rentalDate) {
+            @RequestParam(required = false) String rentalDate,
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize) {
 
-        // RequestDTO 생성 및 값 설정
-        ReservationRequestDTO requestDTO = new ReservationRequestDTO();
+        pageNumber = Math.max(pageNumber, 1);
+        int offset = (pageNumber - 1) * pageSize;
 
+        ReservationsSearchRequestDTO requestDTO = new ReservationsSearchRequestDTO();
         requestDTO.setUserName(userName);
         requestDTO.setRentalLocationName(rentalLocationName);
         requestDTO.setRentalDate(rentalDate);
+        requestDTO.setOffset(offset);
+        requestDTO.setPageSize(pageSize);
 
-        System.out.println("userName: " + requestDTO.getUserName());
-
-        // Service 호출
-        List<ReservationsResponseDTO> reservations = reservationsService.getAllReservations(requestDTO);
+        List<ReservationsResponseDTO> reservations = reservationsService.getReservations(requestDTO);
 
         if (reservations.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
+
         return ResponseEntity.ok(reservations);
     }
+    @GetMapping("/manager/reservations/count")
+    public ResponseEntity<Integer> getTotalReservationsCount(
+        @RequestParam(required = false) String rentalLocationName,
+        @RequestParam(required = false) String rentalDate,
+        @RequestParam(required = false) String userName) {
+            int count;
 
-//    @GetMapping("/manager/reservations/searchlist")
-//    public ResponseEntity<List<ReservationsResponseDTO>> getFilteredReservations(
-//            @RequestParam(required = false) String userName,
-//            @RequestParam(required = false) String rentalLocationName,
-//            @RequestParam(required = false) String rentalDate) {
-//
-//        // RequestDTO 생성 및 값 설정
-//        ReservationRequestDTO requestDTO = new ReservationRequestDTO();
-//
-//        requestDTO.setUserName(userName);
-//        requestDTO.setRentalLocationName(rentalLocationName);
-//        requestDTO.setRentalDate(rentalDate);
-//
-//        System.out.println("userName: " + requestDTO.getUserName());
-//
-//        // Service 호출
-//        List<ReservationsResponseDTO> reservations = reservationsService.getFilteredReservations(requestDTO);
-//
-//        if (reservations.isEmpty()) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(reservations);
-//    }
+            // 조건별 조회
+            if ((rentalLocationName != null && !rentalLocationName.isEmpty()) ||
+                    (rentalDate != null && !rentalDate.isEmpty()) ||
+                    (userName != null && !userName.isEmpty())) {
 
-    @PostMapping("/manager/reservations")
-    public ResponseEntity<Reservations> createReservations(@RequestBody Reservations reservations) {
-        reservationsService.createReservations(reservations);
-        return ResponseEntity.status(HttpStatus.CREATED).body(reservations);
+                // 조건별 DTO 생성
+                ReservationsSearchRequestDTO searchRequestDTO = new ReservationsSearchRequestDTO();
+                searchRequestDTO.setRentalLocationName(rentalLocationName);
+                searchRequestDTO.setRentalDate(rentalDate);
+                searchRequestDTO.setUserName(userName);
+
+                // 조건에 따른 개수 조회
+                count = reservationsService.countByConditions(searchRequestDTO);
+            } else {
+                // 전체 예약 개수 조회
+                count = reservationsService.countAllReservations();
+            }
+
+            return ResponseEntity.ok(count);
+    }
+    @GetMapping("/manager/reservations/detail/{reservationCode}")
+    public ReservationDetailDTO getReservationDetailById(@PathVariable("reservationCode") String reservationCode) {
+        return reservationsService.getReservationDetailById(reservationCode);
     }
 
+    @PutMapping("/manager/reservations/carreturn/{carNumber}")
+    public ResponseEntity<Void> updateCarStatus(
+            @PathVariable String carNumber,
+            @RequestBody Map<String, Object> carReturnRequest) {
 
-    @PutMapping("/manager/reservations/{reservationCode}")
-    public ResponseEntity<Void> updateReservationsById(
-            @PathVariable Integer reservationCode,
-            @RequestBody Reservations reservations) {
-        reservations.setReservationCode(reservationCode);
+        reservationsService.updateCarStatus(carNumber, carReturnRequest);
 
-        reservationsService.updateReservationsById(reservations);
         return ResponseEntity.noContent().build();
     }
+    @PutMapping("/manager/reservations/cancel/{reservationCode}")
+    public ResponseEntity<Void> updateReservationStatus(
+            @PathVariable String reservationCode,
+            @RequestBody Map<String, Object> reservationStatusRequest) {
 
-    @DeleteMapping("/manager/reservations/{reservationCode}")
-    public ResponseEntity<Void> deleteBranchsById(
-            @PathVariable Integer reservationCode) {
-        reservationsService.deleteReservationsById(reservationCode);
+        reservationsService.updateReservationStatus(reservationCode, reservationStatusRequest);
+
         return ResponseEntity.noContent().build();
     }
-
-
-
 }

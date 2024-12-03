@@ -1,0 +1,33 @@
+.reservation-statistics-list {
+    display: flex;
+    flex-direction: column; /* 정렬을 아래로 정함 */
+    margin-top: 20px;
+}
+
+/* 통계 필터 제목 */
+.daily-and-monthly-filter-head {
+    margin: 30px 30px 30px 30px;
+    color: navy;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* 일별, 월별 필터 */
+.daily-and-monthly-filter-row {
+    display: flex;
+    align-items: center; /* 컨테이너 세로 축의 중앙으로 정렬 */
+    gap: 10px; /* 아이템들 사이의 공간*/
+    margin-left: 20px; /* 왼쪽 바깥 여백*/
+    margin-bottom: 20px;
+}
+
+.chart-container h3 {
+    margin-top: 7%;
+}
+
+/* 전체 지점, 지역별 지점 버튼 */
+.daily-and-monthly-filter-row {
+    color: green;
+    font-size: 14px;
+    font-weight: bold;
+}

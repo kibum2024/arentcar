@@ -12,8 +12,13 @@
 
     <!-- key 단건 조회 -->
     <select id="getVisitorLogById" resultType="com.apple.arentcar.model.VisitorLog">
-        SELECT * FROM visitor_log 
+        SELECT * FROM visitor_log
         WHERE visitor_log_code = #{visitorLogCode}
+    </select>
+
+    <!-- 전체 count 조회 -->
+    <select id="getVisitorLogCount" resultType="integer">
+        SELECT count(*) FROM visitor_log
     </select>
 
     <!-- Insert -->

@@ -1,133 +1,98 @@
-/* 컨테이너 */
 .manage-payment-wrap {
-  margin: 20px auto;
-  padding: 20px;
-  border-radius: 8px; /* 둥근 모서리 */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
-  max-width: 1200px; /* 최대 너비 제한 */
-  background-color: transparent; /* 배경색을 투명으로 설정 */
+  margin: 20px;
+}
+.manage-payment-title-wrap{
+  margin: 20px 20px;
 }
 
-/* 검색 영역 */
-.manage-payment-search-wrap {
+.manage-payment-search-wrap{
+  margin: 20px 0;
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  align-items: center;
+  gap: 5px; /* 요소 간 간격 */
 }
 
-.manage-payment-search-wrap input {
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  padding: 0 12px;
-  font-size: 14px;
-  flex: 1; /* 입력 필드가 남는 공간 채우기 */
+.manage-payment-content-header-row-wrap {
+  display: flex; 
 }
 
-/* 테이블 */
-.manage-payment-table-wrap {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-top: 20px;
-}
-
-.manage-payment-table-header-wrap,
-.manage-payment-table-row-wrap {
+.manage-payment-content-list-wrap {
   display: flex;
+  flex-direction: column; 
+  width: 100%;
 }
 
-.manage-payment-table-header-wrap {
-  font-weight: bold;
+.manage-payment-content-item {
+  display: flex; /* 플렉스 박스로 가로 정렬 */
+ 
 }
 
-.manage-payment-table-column-wrap,
-.manage-payment-table-cell-wrap {
-  padding: 12px;
+.manage-payment-content-no-data{
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1; /* 열의 너비를 균등하게 */
-  border-right: 1px solid #ddd;
 }
 
-.manage-payment-table-column-wrap:last-child,
-.manage-payment-table-cell-wrap:last-child {
-  border-right: none;
+.manage-payment-pagination-wrap{
+  margin-top: 5px;
 }
 
-.manage-payment-table-row-wrap {
-  border-bottom: 1px solid #ddd;
+.manage-payment-detail-content-popup-wrap {
+  width: 500px;
+  margin: 250px auto;
+  padding: 20px 20px;
+  background-color: #fff;
+  border-radius: 6px;
 }
-
-.manage-payment-table-row-wrap:hover {
-  background-color: #f1f9ff;
-}
-
-.manage-payment-table-body-wrap {
-  background-color: white;
-}
-
-/* 페이지네이션 */
-.manage-payment-pagination-wrap {
+.manage-payment-detail-content-popup-header-wrap{
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
+  justify-content: space-between;
 }
 
-/* 팝업 */
-.manage-payment-popup-wrap {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+.manage-payment-detail-content-popup-close {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-top: 20px;
+  justify-content: space-between;
+}
+.manage-payment-detail-popup-high-reservation-id{
+  margin-bottom: 5px;
 }
 
-.manage-payment-popup-content-wrap {
-  font-size: 12px;
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 600px;
-  max-width: 90%;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-  position: relative;
-  animation: fade-in 0.3s ease;
+.manage-payment-detail-popup-section {
+  margin-bottom: 10px; /* 섹션 간 간격 */
+  padding-bottom: 10px; /* 구분선 위쪽 여백 */
+  padding: 10px; /* 내부 여백 */
+  border-radius: 8px; /* 모서리를 둥글게 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+  background-color: #fff; /* 섹션 배경색 */
+  border: 1px solid #ddd; /* 구분을 위한 테두리 */
 }
 
-/* 팝업 닫기 버튼 */
-.manage-payment-popup-close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+.manage-payment-detail-popup-section-title {
+  font-weight: bold; /* 섹션 제목 강조 */
+  color: #333; /* 글자 색상 */
+  margin-left: 10px;
+  margin-bottom: 5px;
 }
 
-/* 팝업 테이블 스타일 */
-.manage-payment-popup-content-wrap table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+.manage-payment-detail-popup-field-row {
+  display: flex; /* 라벨과 값을 한 줄에 배치 */
+  justify-content: space-between; /* 라벨과 값 간의 간격 균등 배치 */
+  align-items: center; /* 세로 중앙 정렬 */
+  gap: 0; /* 라벨과 값 사이의 간격 완전히 제거 */
+  margin-bottom: 1px; /* 필드 간 간격 최소화 */
 }
 
-.manage-payment-popup-content-wrap th,
-.manage-payment-popup-content-wrap td {
-  border: 1px solid #ddd; /* 테두리 추가 */
-  padding: 10px;
-  text-align: left; /* 텍스트 좌측 정렬 */
-  font-size: 14px;
+.manage-payment-detail-popup-field-row label {
+  width: 16%;
+  /* flex: 0 0 10%; 라벨의 고정 너비를 20%로 줄임 */
+  text-align: right; /* 라벨 왼쪽 정렬 */
+  font-weight: bold; /* 라벨 강조 */
+  margin-right: 5px; /* 라벨과 값 사이의 간격 최소화 */
 }
 
-.manage-payment-popup-content-wrap th {
-  font-weight: bold;
-  text-align: center; /* 헤더는 가운데 정렬 */
+.manage-payment-detail-popup-field-row span {
+  flex: 1; /* 값이 남은 공간을 차지 */
+  text-align: left; /* 값도 왼쪽 정렬 */
+}
+.manage-payment-detail-content-popup-footer-wrap{
+  display: flex;
+  justify-content: space-between;
 }

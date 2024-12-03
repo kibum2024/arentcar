@@ -48,7 +48,7 @@ const ConnectionStatus = () => {
         {isConnected ? "연결됨" : "연결되지 않음"}
       </div> */}
       <div className="connection-status-info">
-        <div className="connection-status-count">현재 접속자 수: <strong>{connectionInfo.count}</strong></div>
+        {/* <div className="connection-status-count">현재 접속자 수: <strong>{connectionInfo.count}</strong></div> */}
         <div className="connection-status-ip-title">접속 IP목록</div>
         <div className="connection-status-ip-info">
           <ul>

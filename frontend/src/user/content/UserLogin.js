@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUserState } from '../../redux/UserState';
 import axios from 'axios';
@@ -30,6 +30,7 @@ const UserLogin = () => {
     if (idSaveChkValue) {
       setIdSaveChk(idSaveChkValue);
     }
+
   }, []);
 
   const handleIdSaveChkChange = (e) => {

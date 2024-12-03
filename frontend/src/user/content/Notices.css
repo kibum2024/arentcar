@@ -1,0 +1,26 @@
+.user-customers-detail{
+    width: 100%;
+    background-color: #ededf0;
+}
+.user-customers-detail-notices{
+    padding: 0px;
+}
+.user-customers-detail-notices-header{
+    overflow: hidden;
+
+}
+.user-customers-detail-notices-title{
+    float: left;
+}
+.user-customers-detail-notices-author{
+    float: right;
+}
+.user-customers-detail-notices-author>div{
+    text-align: end;
+}
+.user-customers-detail-notices-content{
+    font-size: 16px;
+    padding: 0px 30px;
+}
+
+

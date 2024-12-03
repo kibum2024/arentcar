@@ -8,17 +8,21 @@
     <!-- 모든 조회 -->
     <select id="getAllCars" resultType="com.apple.arentcar.dto.CarCardDTO">
         SELECT
+        ct.car_type_code,
         ct.car_type_name,
         cc1.common_name AS fuel_type,
         cc2.common_name AS seating_capacity,
         rc.model_year,
+        rc.car_code,
         ct.car_image_name,
         cc3.common_name AS car_manufacturer,
         cc4.common_name AS car_type_category,
         b.branch_name,
         b.branch_latitude,
         b.branch_longitude,
-        cc3.brand_image_name
+        cc3.brand_image_name,
+        rr.rental_rate,
+        rr.rental_discount_rate
         FROM
         rental_cars rc
         JOIN
@@ -33,6 +37,7 @@
         common_codes cc4 ON cc4.common_code = ct.car_type_category AND cc4.common_kind_code = 'car_type_category'
         JOIN
         branchs b on b.branch_code = rc.branch_code
+        JOIN rental_rates rr on rr.car_type_code  = rc.car_type_code
         <where>
             <if test='branchName != null and branchName != ""'>
                 AND b.branch_name = #{branchName}
@@ -49,6 +54,16 @@
             <if test='seatingCapacity != null and seatingCapacity != ""'>
                 AND cc2.common_name = #{seatingCapacity}
             </if>
+            AND NOT EXISTS (
+            SELECT 1
+            FROM reservations r
+            WHERE r.car_code = rc.car_code
+            AND (
+            STR_TO_DATE(r.rental_date, '%Y%m%d') &lt;= STR_TO_DATE(#{returnDate}, '%Y%m%d')
+            AND STR_TO_DATE(r.return_date, '%Y%m%d') >= STR_TO_DATE(#{rentalDate}, '%Y%m%d')
+            )
+            )
+            AND (#{returnDate} - #{rentalDate}) * 24 >= rr.rental_start_hours AND (#{returnDate} - #{rentalDate}) * 24 &lt;=rr.rental_end_hours
         </where>
     </select>
     <select id="getFilterCarsCount" resultType="int">
@@ -84,6 +99,16 @@
             <if test='seatingCapacity != null and seatingCapacity != ""'>
                 AND cc2.common_name = #{seatingCapacity}
             </if>
+                AND NOT EXISTS (
+                SELECT 1
+                FROM reservations r
+                WHERE r.car_code = rc.car_code
+                AND (
+                STR_TO_DATE(r.rental_date, '%Y%m%d') &lt;= STR_TO_DATE(#{returnDate}, '%Y%m%d')
+                AND STR_TO_DATE(r.return_date, '%Y%m%d') >= STR_TO_DATE(#{rentalDate}, '%Y%m%d')
+                )
+                )
+
         </where>
     </select>
     <select id="getCarType" resultType="com.apple.arentcar.dto.CarTypeDTO">
@@ -105,9 +130,58 @@
         SELECT DISTINCT model_year  from rental_cars order by model_year;
     </select>
     <select id="getAllBranchs" resultType="com.apple.arentcar.dto.BranchsDTO">
-        SELECT branch_name from branchs ORDER BY branch_name;
+        SELECT b.branch_name
+        FROM regions r
+        JOIN branchs b ON r.region_code = b.region_code
+        WHERE r.region_name =#{region}
+        ORDER BY region_name
+        ASC
     </select>
 
+    <select id="getInsurance" resultType="com.apple.arentcar.dto.InsuranceDTO">
+        SELECT common_name AS insurance_type,
+        common_insurance_fee AS insurance_fee
+        FROM common_codes cc
+        WHERE common_kind_code = 'insurance_type'
+    </select>
+
+    <select id="getAllRegions" resultType="com.apple.arentcar.dto.RegionsDTO">
+        SELECT region_name FROM regions ORDER BY region_name ASC
+    </select>
+
+    <insert id="InsertUserReservation" parameterType="com.apple.arentcar.dto.UserReservationDTO">
+        INSERT INTO reservations (
+        user_code,
+        car_code,
+        rental_location,
+        rental_date,
+        rental_time,
+        return_location,
+        return_date,
+        return_time,
+        insurance_type,
+        payment_category,
+        payment_type,
+        payment_amount
+        ) VALUES (
+        #{userCode},
+        #{carCode},
+        (SELECT branch_code
+        FROM branchs b
+        WHERE branch_name = #{rentalLocation}),
+        #{rentalDate},
+        #{rentalTime},
+        (SELECT branch_code
+        FROM branchs b
+        WHERE branch_name = #{returnLocation}),
+        #{returnDate},
+        #{returnTime},
+        #{insuranceType},
+        #{paymentCategory},
+        #{paymentType},
+        #{paymentAmount}
+        );
+    </insert>
 
 
 

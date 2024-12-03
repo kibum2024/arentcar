@@ -21,4 +21,8 @@ public class VisitorLogService {
         return visitorLogMapper.getVisitorLogById(visitorLogCode);
     }
 
+    public Integer getVisitorLogCount() {
+        return visitorLogMapper.getVisitorLogCount();
+    }
+
 }

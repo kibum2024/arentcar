@@ -1,9 +1,12 @@
 package com.apple.arentcar.service;
 
-import com.apple.arentcar.model.Branchs;
+import com.apple.arentcar.dto.ChartDataDTO;
 import com.apple.arentcar.mapper.BranchsMapper;
+import com.apple.arentcar.model.Branchs;
+import com.apple.arentcar.model.Menus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -13,26 +16,15 @@ public class BranchsService {
     @Autowired
     private BranchsMapper branchsMapper;
 
-    public List<Branchs> getAllBranchs() {
-        return branchsMapper.getAllBranchs();
+    public List<Branchs> findAllBranches() {
+        return branchsMapper.findAllBranches();
     }
 
-    public Branchs getBranchsById(Integer branchCode) {
-        return branchsMapper.getBranchsById(branchCode);
+    public List<Branchs> findBranchsByBranchName(String branchName) {
+        return branchsMapper.findBranchsByBranchName(branchName);
     }
 
-    public void createBranchs(Branchs branchs) {
-        branchsMapper.createBranchs(branchs);
+    public List<ChartDataDTO> getBranchChartData(String startDate, String endDate) {
+        return branchsMapper.getBranchChartData(startDate, endDate);
     }
-
-    public void updateBranchsById(Branchs branchs) {
-        branchsMapper.updateBranchsById(branchs);
-    }
-
-    public void deleteBranchsById(Integer branchCode) {
-        branchsMapper.deleteBranchsById(branchCode);
-    }
-
-    
-
 }

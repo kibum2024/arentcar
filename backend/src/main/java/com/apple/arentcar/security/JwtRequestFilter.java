@@ -37,7 +37,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-//        System.out.println("authorizationHeader aaa: " + authorizationHeader);
+        System.out.println("authorizationHeader aaa: " + authorizationHeader);
 
         // 회원가입 및 토큰 발행 요청인지 확인
         String requestURI = httpRequest.getRequestURI();

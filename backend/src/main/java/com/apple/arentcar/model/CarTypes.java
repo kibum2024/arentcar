@@ -32,7 +32,6 @@ public class CarTypes {
     private String carManufacturer;
     @JsonProperty("model_year")
     private String modelYear;
-    @JsonProperty("car_image_name")
     private String carImageName;
 
     private LocalDateTime createdAt;

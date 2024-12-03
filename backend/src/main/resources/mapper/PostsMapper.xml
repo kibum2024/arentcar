@@ -3,9 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.apple.arentcar.mapper.post.PostsMapper">
+<mapper namespace="com.apple.arentcar.mapper.PostsMapper">
 
-    <select id="getPostsAll" resultType="com.apple.arentcar.model.post.Notices">
+    <select id="getPostsAll" resultType="com.apple.arentcar.model.Notices">
         SELECT p.*,
                CASE
                    when p.author_type = 'US' THEN us.user_name
@@ -15,7 +15,7 @@
             LEFT join users us on us.user_code = p.author_code;
     </select>
 
-    <select id="getAllNotices" resultType="com.apple.arentcar.model.post.Notices">
+    <select id="getAllNotices" resultType="com.apple.arentcar.model.Notices">
         SELECT p.*,
             CASE
                 when p.author_type = 'US' THEN us.user_name
@@ -31,7 +31,7 @@
         SELECT count(*) from posts p where p.post_type = 'NT';
     </select>
 
-    <select id="getsSearchNotices" resultType="com.apple.arentcar.model.post.Notices">
+    <select id="getsSearchNotices" resultType="com.apple.arentcar.model.Notices">
         SELECT p.*,
                CASE
                    when p.author_type = 'US' THEN us.user_name
@@ -47,7 +47,7 @@
         SELECT count(*) from posts p where p.post_type = 'NT' and p.post_title LIKE CONCAT('%', #{keyword}, '%');
     </select>
 
-    <select id="getNotice" resultType="com.apple.arentcar.model.post.Notices">
+    <select id="getNotice" resultType="com.apple.arentcar.model.Notices">
         SELECT p.*,
                CASE
                    when p.author_type = 'US' THEN us.user_name
@@ -58,12 +58,12 @@
         where p.post_type = 'NT' AND p.post_code = #{postCode};
     </select>
 
-    <insert id="createNotice" parameterType="com.apple.arentcar.model.post.Notices">
+    <insert id="createNotice" parameterType="com.apple.arentcar.model.Notices">
         INSERT INTO posts (post_type, post_title, post_content, author_code, author_type)
         values('NT', #{postTitle}, #{postContent}, #{authorCode},'AM');
     </insert>
 
-    <update id="updateNotice" parameterType="com.apple.arentcar.model.post.Notices">
+    <update id="updateNotice" parameterType="com.apple.arentcar.model.Notices">
         update posts SET
         post_title = #{postTitle},
         post_content = #{postContent},
@@ -75,7 +75,7 @@
         DELETE FROM posts where post_code = #{postCode};
     </delete>
 
-    <select id="getAllReviews" resultType="com.apple.arentcar.model.post.Reviews">
+    <select id="getAllReviews" resultType="com.apple.arentcar.model.Reviews">
         SELECT p.*, rv.review_rating,
             CASE
                 when p.author_type = 'US' THEN us.user_name
@@ -87,7 +87,11 @@
         ORDER BY p.post_code LIMIT #{pageSize} OFFSET #{pageNumber};
     </select>
 
-    <select id="getSearchAllReviews" resultType="com.apple.arentcar.model.post.Reviews">
+    <select id="countReviews" resultType="int">
+        SELECT count(*) from posts p where p.post_type = 'RV';
+    </select>
+
+    <select id="getSearchAllReviews" resultType="com.apple.arentcar.model.Reviews">
         SELECT p.*, rv.review_rating,
             CASE
                 when p.author_type = 'US' THEN us.user_name
@@ -100,7 +104,11 @@
         ORDER BY p.post_code LIMIT #{pageSize} OFFSET #{pageNumber};
     </select>
 
-    <select id="getReview" resultType="com.apple.arentcar.model.post.Reviews">
+    <select id="countSearchReviews" resultType="int">
+        SELECT count(*) from posts p where p.post_type = 'RV' and p.post_title LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="getReview" resultType="com.apple.arentcar.model.Reviews">
         SELECT p.*, rv.review_rating,
             CASE
                 when p.author_type = 'US' THEN us.user_name
@@ -112,9 +120,172 @@
         where p.post_code = #{postCode};
     </select>
 
-    <select id="getAllInquirys" resultType="com.apple.arentcar.model.post.Inquirys">
-        SELECT p.*, iq.inquiry_status from posts p
+    <insert id="createReviewPosts" parameterType="com.apple.arentcar.model.Reviews">
+        <selectKey resultType="int" keyProperty="postCode" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO posts (post_type, post_title, post_content, author_code, author_type)
+        values('RV', #{postTitle}, #{postContent}, #{authorCode},'US');
+    </insert>
+    <insert id="createReview" parameterType="com.apple.arentcar.model.Reviews">
+        INSERT INTO reviews (post_code, review_rating)
+        values(#{postCode}, #{reviewRating});
+    </insert>
+
+    <delete id="deleteReview">
+        DELETE FROM reviews where post_code = #{postCode};
+    </delete>
+    <delete id="deletePostsRV">
+        DELETE FROM posts where post_code = #{postCode};
+    </delete>
+
+    <select id="dayChartsCount" resultType="com.apple.arentcar.model.ChartsCount">
+        SELECT
+            CONCAT(year, '년 ',
+                         CASE
+                             WHEN month = '12' THEN '12월'
+            WHEN month = '11' THEN '11월'
+            WHEN month = '10' THEN '10월'
+            WHEN month = '09' THEN '09월'
+            WHEN month = '08' THEN '08월'
+            WHEN month = '07' THEN '07월'
+            WHEN month = '06' THEN '06월'
+            WHEN month = '05' THEN '05월'
+            WHEN month = '04' THEN '04월'
+            WHEN month = '03' THEN '03월'
+            WHEN month = '02' THEN '02월'
+            WHEN month = '01' THEN '01월'
+        END
+            ) AS column_name, COUNT(review_rating) as countRV
+        from(
+                SELECT date_format(rv.created_at,"%Y") as year, date_format(rv.created_at,"%m") as month, rv.review_rating
+                from posts p
+                    LEFT join users us on us.user_code = p.author_code
+                    join reviews rv on rv.post_code = p.post_code
+            ) as c
+        GROUP BY column_name
+        ORDER BY column_name DESC
+            LIMIT 5 OFFSET 0;
+    </select>
+    <select id="dayChartsAvg" resultType="com.apple.arentcar.model.ChartsAvg">
+        SELECT
+            CONCAT(year, '년 ',
+                         CASE
+                             WHEN month = '12' THEN '12월'
+            WHEN month = '11' THEN '11월'
+            WHEN month = '10' THEN '10월'
+            WHEN month = '09' THEN '09월'
+            WHEN month = '08' THEN '08월'
+            WHEN month = '07' THEN '07월'
+            WHEN month = '06' THEN '06월'
+            WHEN month = '05' THEN '05월'
+            WHEN month = '04' THEN '04월'
+            WHEN month = '03' THEN '03월'
+            WHEN month = '02' THEN '02월'
+            WHEN month = '01' THEN '01월'
+        END
+            ) AS column_name, avg(avg_review_rating) as avgRV
+        from(
+                SELECT year, month, review_rating, AVG(review_rating) OVER(PARTITION BY year ORDER BY month) AS avg_review_rating
+                FROM
+                    (
+                    SELECT date_format(rv.created_at,"%Y") as year, date_format(rv.created_at,"%m") as month, rv.review_rating
+                    from posts p
+                    LEFT join users us on us.user_code = p.author_code
+                    join reviews rv on rv.post_code = p.post_code
+                    ) as a
+            ) as c
+        GROUP BY column_name
+        ORDER BY column_name DESC
+            LIMIT 5 OFFSET 0;
+    </select>
+
+    <select id="ageChartsCount" resultType="com.apple.arentcar.model.ChartsCount">
+        SELECT CASE
+        WHEN age BETWEEN 20 AND 29 THEN '20대'
+        WHEN age BETWEEN 30 AND 39 THEN '30대'
+        WHEN age BETWEEN 40 AND 49 THEN '40대'
+        WHEN age BETWEEN 50 AND 59 THEN '50대'
+        WHEN age >= 60 THEN '60대 이상'
+        END AS column_name
+        , count(review_rating) as countRV
+        FROM(
+        SELECT date_format(now(), '%Y') - date_format(us.user_birth_date, '%Y') AS age, rv.review_rating
+        from posts p
+        LEFT join users us on us.user_code = p.author_code
+        join reviews rv on rv.post_code = p.post_code
+        ) AS c
+        GROUP BY column_name
+        ORDER BY column_name;
+    </select>
+    <select id="ageChartsAvg" resultType="com.apple.arentcar.model.ChartsAvg">
+        SELECT CASE
+        WHEN age BETWEEN 20 AND 29 THEN '20대'
+        WHEN age BETWEEN 30 AND 39 THEN '30대'
+        WHEN age BETWEEN 40 AND 49 THEN '40대'
+        WHEN age BETWEEN 50 AND 59 THEN '50대'
+        WHEN age >= 60 THEN '60대 이상'
+        END AS column_name
+        , avg(review_rating) as avgRV
+        FROM(
+        SELECT date_format(now(), '%Y') - date_format(us.user_birth_date, '%Y') AS age, rv.review_rating
+        from posts p
+        LEFT join users us on us.user_code = p.author_code
+        join reviews rv on rv.post_code = p.post_code
+        ) AS c
+        GROUP BY column_name
+        ORDER BY column_name;
+    </select>
+
+
+    <select id="getAllInquirys" resultType="com.apple.arentcar.model.Inquirys">
+        SELECT p.*, iq.inquiry_status,
+               CASE
+                   when p.author_type = 'US' THEN us.user_name
+                   when p.author_type = 'AM' THEN am.admin_name
+                   END as 'author' from posts p
+               LEFT join admins am on am.admin_code = p.author_code
+               LEFT join users us on us.user_code = p.author_code
         join inquirys iq on iq.post_code = p.post_code;
     </select>
+
+    <select id="getInquirys" resultType="com.apple.arentcar.model.Inquirys">
+        SELECT p.*, iq.inquiry_status,
+               CASE
+                   when p.author_type = 'US' THEN us.user_name
+                   when p.author_type = 'AM' THEN am.admin_name
+                   END as 'author' from posts p
+               LEFT join admins am on am.admin_code = p.author_code
+               LEFT join users us on us.user_code = p.author_code
+               join inquirys iq on iq.post_code = p.post_code
+        WHERE p.post_code = #{postCode};
+    </select>
+
+    <select id="getResponses" resultType="com.apple.arentcar.model.Responses">
+        SELECT rp.*,
+               CASE
+                   when rp.author_type = 'US' THEN us.user_name
+                   when rp.author_type = 'AM' THEN am.admin_name
+                   END as 'author' from responses rp
+                LEFT join admins am on am.admin_code = rp.author_code
+                LEFT join users us on us.user_code = rp.author_code
+        where rp.post_code = #{postCode};
+    </select>
+
+    <insert id="createResponses" parameterType="com.apple.arentcar.model.Responses">
+        INSERT INTO responses (post_code, response_content, author_code, author_type)
+        values(#{postCode}, #{responseContent}, #{authorCode}, 'AM');
+    </insert>
+
+    <update id="updateResponses" parameterType="com.apple.arentcar.model.Responses">
+        UPDATE responses SET
+            response_content = #{responseContent},
+            updated_at = NOW()
+        WHERE post_code = #{postCode} AND response_code = #{responseCode};
+    </update>
+
+    <delete id="deleteResponses">
+        DELETE FROM responses where response_code = #{responseCode};
+    </delete>
 
 </mapper>

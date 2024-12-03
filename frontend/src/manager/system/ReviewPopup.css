@@ -1,0 +1,44 @@
+
+.user-review-popup{
+    background-color: rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+
+}
+
+.user-review-popup-wrap{
+    background-color: #fafafa;
+    margin: 100px auto;
+    padding: 20px;
+    min-height: 200px;
+    max-width: 600px;
+}
+
+.user-review-popup-line{
+    text-align: center;
+    margin: 10px 0px;
+}
+.user-review-popup-wrap h6{
+    font-weight: bold;
+}
+.user-review-popup-score{
+    font-size: 22px;
+}
+.user-review-popup-content{
+    resize: none;
+    overflow:hidden;
+    padding: 5px;
+    display: inline-block;
+}
+.user-review-popup-content:focus {
+    outline: none;
+}
+
+
+
+
+

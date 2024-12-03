@@ -1,0 +1,62 @@
+.branches-guide-wrap {
+  align-items: flex-start;
+  gap: 50px;
+  padding: 40px 20px 20px 200px;
+}
+
+/* 지점 목록 그리드 */
+.branches-guide-menu-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 7개의 열로 구성 */
+  gap: 10px;
+  width: 100%;
+  max-width: 450px; /* 최대 너비 제한 */
+}
+
+/* 개별 지점 항목 */
+.branches-guide-menu-item {
+  background-color: #f8f9fa; /* 밝은 배경색 */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer; /* 기본적으로 손가락 커서 */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* 애니메이션 추가 */
+}
+
+.branches-guide-menu-item:hover {
+  background-color: #e9ecef; /* 호버 시 더 밝은 배경색 */
+  transform: translateY(-2px); /* 살짝 위로 올라가는 효과 */
+}
+
+/* 지도 및 세부 정보 영역 */
+.branches-guide-content-wrap {
+  flex: 1;
+  max-width: 600px;
+}
+
+.branches-guide-map-wrap {
+  height: 350px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f1f3f5;
+}
+
+/* 세부 정보 스타일 */
+.branches-guide-info-wrap {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 5px 15px 5px 15px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.branches-guide-info-wrap strong {
+  font-weight: bold;
+  color: #495057;
+}

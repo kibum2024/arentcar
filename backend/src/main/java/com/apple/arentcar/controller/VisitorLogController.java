@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/arentcar")
 public class VisitorLogController {
 
     @Autowired
@@ -28,6 +28,16 @@ public class VisitorLogController {
         VisitorLog visitorLog = visitorLogService.getVisitorLogById(visitorLogCode);
         if (visitorLog != null) {
             return ResponseEntity.ok(visitorLog);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/manager/visitorLog/count")
+    public ResponseEntity<Integer> getVisitorLogCount() {
+        Integer visitorCount = visitorLogService.getVisitorLogCount();
+        if (visitorCount != null) {
+            return ResponseEntity.ok(visitorCount);
         } else {
             return ResponseEntity.notFound().build();
         }

@@ -1,15 +1,82 @@
 import React, { useEffect, useState } from 'react';
 import 'user/content/ReservationDetail.css'
 import NaverMap from 'user/content/NaverMap';
-import { useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const ReservationDetail = (onClick) => {
-    const [isMapClick, setIsMapClick] = useState(false);
+const ReservationDetail = () => {
     const location = useLocation();
+    const navigate = useNavigate();
+    const carInfoLocation = useLocation();
     const car = location.state;
-    useEffect(()=> {
-        console.log(car);
-    },[]);
+    const rentalRate = car.rental_rate;
+    const [insurance,setInsurance] = useState([0,0]);
+    const [insuranceType,setInsuranceType] = useState('일반 자차');
+    const [insuranceTypeCode,setInsuranceTypeCode] = useState('01');
+    const [isMapClick, setIsMapClick] = useState(false);
+    const [driverRangeFee, setDriverRangeFee] = useState('standard');
+    const [discountFee, setDiscountFee] = useState(0);
+    const [estimatedRentalFee, setEstimatedRentalFee] = useState(0);
+    const [totalRentalFee, setTotalRentalFee] = useState(0);
+    const [carInfo, setCarInfo] = useState({});
+    const isLoginState = useSelector((state) => state.userState.loginState);
+    const userCode = useSelector((state) => state.userState.userCode);
+    
+
+    useEffect(()=>{
+        const fetchInsurance = async () => {
+            try {
+              const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/user/cars/insurance`, {
+              });
+              if (response.data) {
+                setInsurance(response.data);
+              }
+            } catch (error) {
+              if (axios.isCancel(error)) {
+                console.log('Request canceled:', error.message);
+              } else {
+                console.error('There was an error fetching the cars!', error);
+              }
+            }
+          };
+    
+          fetchInsurance();
+        //   console.log(car);
+        //   setCarInfo({...car,user_code : userCode,payment_amount : totalRentalFee});
+    },[])
+
+    useEffect(()=>{
+        setCarInfo({...car,user_code : userCode,payment_amount : totalRentalFee,insurance_type : insuranceTypeCode});
+    },[userCode,totalRentalFee,insuranceTypeCode])
+
+    useEffect(() => {
+        if (car.rental_discount_rate !== 0)
+            setDiscountFee(Math.floor(rentalRate / car.rental_discount_rate));
+    }, [rentalRate,car.rental_discount_rate]);
+
+    useEffect(() => {
+        setEstimatedRentalFee(rentalRate - discountFee+Number( insurance[0].insurance_fee));
+        setTotalRentalFee(rentalRate - discountFee+Number( insurance[0].insurance_fee));
+    }, [insurance]);
+
+    useEffect(() => {
+        setInsuranceTypeCode(insuranceType === '일반 자차' ? '01':'02');
+    }, [insuranceType]);
+
+    useEffect(() => {
+        if (driverRangeFee === 'everyone' && insuranceType === '일반 자차') {
+            setTotalRentalFee(Number(estimatedRentalFee) + 20000);
+        }
+        else if(driverRangeFee === 'everyone' && insuranceType === '완전 자차'){
+            setTotalRentalFee(Number(estimatedRentalFee) + 20000 +Number( insurance[1].insurance_fee)-Number( insurance[0].insurance_fee));
+        }else if(driverRangeFee === 'standard' && insuranceType === '일반 자차'){
+            setTotalRentalFee(Number(estimatedRentalFee));
+        }else{
+            setTotalRentalFee(Number(estimatedRentalFee) +Number( insurance[1].insurance_fee)-Number( insurance[0].insurance_fee));
+        }
+    }, [driverRangeFee,insuranceType]);
+
     const branchLocation = {
         branch_latitude: car.branch_latitude,
         branch_longitude: car.branch_longitude
@@ -21,6 +88,30 @@ const ReservationDetail = (onClick) => {
     const handleMapCloseClick = () => {
         setIsMapClick(false);
     }
+    const addCommaToCurrency = (fee) => {
+        if (fee.toString().length > 6) {
+            return fee.toString().slice(0, -6) + ',' + fee.toString().slice(-6, -3) + ',' + fee.toString().slice(-3);
+        } else if (fee.toString().length < 3) {
+            return fee.toString();
+        }
+        return fee.toString().slice(0, -3) + ',' + fee.toString().slice(-3);
+    }
+    const handleDriverRange = (value) => {
+        setDriverRangeFee(value);
+    }
+    const handleInsurancefee = (value) => {
+        setInsuranceType(value);
+        
+    }
+    const handelReservationClick = () => {
+        // if(isLoginState){
+            alert('결제로 이동');
+            navigate('/paymentpage',{state : {...carInfo}});
+        // }else{
+        //     alert('로그인이 필요한 서비스 입니다.');
+        //     navigate('/login',{state : {...carInfo}});
+        // }
+    }
     return (
         <>
             <div className='reservation-detail-wrap'>
@@ -31,7 +122,7 @@ const ReservationDetail = (onClick) => {
                         </div>
                         <div className='reservation-detail-header-info-detail'>
                             <p>{car.fuel_type} {car.seating_capacity} {car.model_year}년식</p>
-                            <a href="#" onClick={handleMapClick}>{car.branch_name}</a>
+                            <p className='reservation-detail-header-info-map'  onClick={handleMapClick}>{car.branch_name}</p>
                         </div>
                     </div>
                 </div>
@@ -45,7 +136,7 @@ const ReservationDetail = (onClick) => {
                             <ul>
                                 <li>
                                     <span>대여료</span>
-                                    <span>600,000원</span>
+                                    <span>{addCommaToCurrency(rentalRate)}원</span>
                                 </li>
                                 <li>
                                     <span>운전자 범위 추가 비용</span>
@@ -53,7 +144,7 @@ const ReservationDetail = (onClick) => {
                                 </li>
                                 <li>
                                     <span>할인금액</span>
-                                    <span>60,000원</span>
+                                    <span>{addCommaToCurrency(discountFee)}원</span>
                                 </li>
                                 <li>
                                     <span>계약기간</span>
@@ -63,9 +154,9 @@ const ReservationDetail = (onClick) => {
                         </div>
                         <div className='reservation-detail-side-reservation-rental-fee'>
                             <p>총 대여료</p>
-                            <p>540,000원</p>
+                            <p>{addCommaToCurrency(totalRentalFee)}원</p>
                         </div>
-                        <button className='reservation-detail-side-reservation-button'>예약하기</button>
+                        <button className='reservation-detail-side-reservation-button' onClick={handelReservationClick}>예약하기</button>
                     </div>
                 </div>
                 <div className='reservation-detail-content-wrap'>
@@ -78,34 +169,58 @@ const ReservationDetail = (onClick) => {
                                 <p>할인금액</p>
                             </div>
                             <div>
-                                <p>600,000원</p>
-                                <p>10%</p>
-                                <p>60,000원</p>
+                                <p>{addCommaToCurrency(rentalRate)}원</p>
+                                <p>{car.rental_discount_rate}%</p>
+                                <p>{addCommaToCurrency(discountFee)}원</p>
                             </div>
                         </div>
                     </div>
                     <div className='reservation-detail-content-contract-information-fee'>
                         <p>예상 대여료</p>
-                        <p>540,000원</p>
+                        <p>{addCommaToCurrency(totalRentalFee)}원</p>
                     </div>
                     <div className='reservation-detail-content-contract-information-driver-range'>
                         <div>
                             <h3>운전자 범위</h3>
                         </div>
                         <div className='reservation-detail-content-contract-information-driver-range-radio-wrap'>
-                            <input type="radio" name='driver-range' id='driver-range' checked />
+                            <input
+                                type="radio"
+                                name="driver-range"
+                                value="standard"
+                                checked={driverRangeFee === 'standard'}
+                                onChange={(e) => handleDriverRange(e.target.value)}
+                            />
                             <label for="driver-range">표준</label>
-                            <input type="radio" name='driver-range' id='driver-range' />
+                            <input
+                                type="radio"
+                                name="driver-range"
+                                value="everyone"
+                                checked={driverRangeFee === 'everyone'}
+                                onChange={(e) => handleDriverRange(e.target.value)}
+                            />
                             <label for="driver-range">누구나 <span>+20,000원</span></label>
                         </div>
                     </div>
                     <div className='reservation-detail-content-contract-information-insurance'>
                         <h3>보험</h3>
                         <div className='reservation-detail-content-contract-information-insurance-radio-wrap'>
-                            <input type="radio" name='insurance' id='insurance' checked />
-                            <label for="insurance">일반 자차</label>
-                            <input type="radio" name='insurance' id='insurance' />
-                            <label for="insurance">완전 자차</label>
+                            <input type="radio"
+                            name='insurance'
+                            value="일반 자차"
+                            id='insurance'
+                            checked={insuranceType === '일반 자차'}
+                            onChange={(e) => handleInsurancefee(e.target.value)}
+                            />
+                            <label for="insurance">{insurance.length>0 ? insurance[0].insurance_type : ''}</label>
+                            <input type="radio"
+                            name='insurance'
+                            value="완전 자차"
+                            id='insurance'
+                            checked={insuranceType === '완전 자차'}
+                            onChange={(e) => handleInsurancefee(e.target.value)}
+                            />
+                            <label for="insurance">{insurance.length>0 ? insurance[1].insurance_type : ''}</label>
                         </div>
                     </div>
                     <h3 className='reservation-detail-content-contract-information-note'>유의 사항</h3>

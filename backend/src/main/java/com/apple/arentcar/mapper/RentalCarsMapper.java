@@ -1,5 +1,7 @@
 package com.apple.arentcar.mapper;
 
+import com.apple.arentcar.dto.RentalCarsBranchOptionAttrDTO;
+import com.apple.arentcar.dto.RentalCarsCarOptionAttrDTO;
 import com.apple.arentcar.dto.RentalCarsDTO;
 import com.apple.arentcar.model.RentalCars;
 import org.apache.ibatis.annotations.Mapper;
@@ -32,4 +34,10 @@ public interface RentalCarsMapper {
     int countRentalCarsByNum(@Param("carNumber") String carNumber);
     // 렌탈가능/렌탈중/정비중 전체 차량 수 조회
     int countAvailableRentalCars(@Param("carStatus") String carStatus);
+    // <select>의 <option>값으로 차량코드/명 동적으로 불러오기
+    List<RentalCarsCarOptionAttrDTO> getRentalCarsCodeName();
+    // <select>의 <option>값으로 지점코드/명 동적으로 불러오기
+    List<RentalCarsBranchOptionAttrDTO> getRentalCarsBranchCodeName();
+    // 엑셀 파일 다운로드용 차량 조회
+    List<RentalCarsDTO> getRentalCarsForExcel();
 }

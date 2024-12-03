@@ -11,19 +11,19 @@ const RentalCar = ({ ...selectedFilters }) => {
   const handleCarClick = (car) => {
     navigate('/reservationdetail',{
       state: {
-        ...car
+        ...car,
+        rental_date : selectedFilters.rentalDate,
+        return_date : selectedFilters.returnDate,
       }
     });
   };
 
   useEffect(() => {
-    const controller = new AbortController(); // 요청 취소를 위한 컨트롤러
 
     const fetchCars = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/user/cars`, {
           params: selectedFilters,
-          signal: controller.signal, // 요청 취소 연결
         });
         if (response.data) {
           setCars(response.data);
@@ -39,9 +39,8 @@ const RentalCar = ({ ...selectedFilters }) => {
 
     const fetchCarsCount = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/user/filter/countall`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/user/cars/filter/countall`, {
           params: selectedFilters,
-          signal: controller.signal, // 요청 취소 연결
         });
         if (response.data || response.data === 0) {
           setCarsCount(response.data);
@@ -58,9 +57,6 @@ const RentalCar = ({ ...selectedFilters }) => {
     fetchCars();
     fetchCarsCount();
 
-    return () => {
-      controller.abort(); // 컴포넌트 언마운트 시 요청 취소
-    };
   }, [selectedFilters]);
 
   return (

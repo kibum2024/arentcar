@@ -22,7 +22,7 @@ public class CarsService {
 
     // 차종 조회 및 페이지네이션
     public List<CarTypesDTO> getCarsWithPaging(int pageSize, int pageNumber) {
-        int offset = (pageNumber - 1) * pageSize;
+        int offset = (pageNumber - 1) * pageSize; // offset 계산 식
         return carsMapper.getCarsWithPaging(pageSize, offset);
     }
 

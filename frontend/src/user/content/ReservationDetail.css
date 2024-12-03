@@ -36,8 +36,9 @@
     width: 600px;
     font-size: 18px;
 }
-.reservation-detail-header-info-detail a{
+.reservation-detail-header-info-map{
     display: block;
+    text-align: right;
     font-size: 18px;
     font-weight: bold;
     color: rgb(87, 141, 211);

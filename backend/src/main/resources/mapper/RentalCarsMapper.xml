@@ -44,9 +44,12 @@
         SELECT
         rc.car_code,
         ct.car_type_name,
+        ct.car_type_code, <!-- 수정 기능을 위해 RentalCarsDTO에 같이 전달 -->
         rc.car_number,
         cc1.common_name AS car_status,
+        rc.car_status AS car_status_code, <!-- 수정 기능을 위해 RentalCarsDTO에 같이 전달 -->
         b.branch_name,
+        b.branch_code, <!-- 수정 기능을 위해 RentalCarsDTO에 같이 전달 -->
         cc2.common_name AS car_type_category,
         cc3.common_name AS origin_type,
         cc4.common_name AS seating_capacity,
@@ -71,9 +74,12 @@
         SELECT
         rc.car_code,
         ct.car_type_name,
+        ct.car_type_code, <!-- 수정 기능을 위해 RentalCarsDTO에 같이 전달 -->
         rc.car_number,
         cc1.common_name AS car_status,
+        rc.car_status AS car_status_code, <!-- 수정 기능을 위해 RentalCarsDTO에 같이 전달 -->
         b.branch_name,
+        b.branch_code, <!-- 수정 기능을 위해 RentalCarsDTO에 같이 전달 -->
         cc2.common_name AS car_type_category,
         cc3.common_name AS origin_type,
         cc4.common_name AS seating_capacity,
@@ -108,5 +114,44 @@
     <!-- 렌탈가능/렌탈중/정비중 전체 차량 수 조회 -->
     <select id="countAvailableRentalCars" resultType="int">
         SELECT COUNT(*) FROM rental_cars WHERE car_status = #{carStatus}
+    </select>
+
+    <!-- <select>의 <option>값으로 차량코드/명 동적으로 불러오기 -->
+    <select id="getRentalCarsCodeName" resultType="com.apple.arentcar.dto.RentalCarsCarOptionAttrDTO">
+        SELECT car_type_code, car_type_name FROM car_types
+    </select>
+
+    <!-- <select>의 <option>값으로 지점코드/명 동적으로 불러오기 -->
+    <select id="getRentalCarsBranchCodeName" resultType="com.apple.arentcar.dto.RentalCarsBranchOptionAttrDTO">
+        SELECT branch_code, branch_name FROM branchs
+    </select>
+
+    <!-- 엑셀 파일 다운로드용 차량 조회 -->
+    <select id="getRentalCarsForExcel" resultType="com.apple.arentcar.dto.RentalCarsDTO">
+        SELECT
+        rc.car_code,
+        ct.car_type_name,
+        ct.car_type_code, <!-- 수정 기능을 위해 RentalCarsDTO에 같이 전달 -->
+        rc.car_number,
+        cc1.common_name AS car_status,
+        rc.car_status AS car_status_code, <!-- 수정 기능을 위해 RentalCarsDTO에 같이 전달 -->
+        b.branch_name,
+        b.branch_code, <!-- 수정 기능을 위해 RentalCarsDTO에 같이 전달 -->
+        cc2.common_name AS car_type_category,
+        cc3.common_name AS origin_type,
+        cc4.common_name AS seating_capacity,
+        cc5.common_name AS fuel_type,
+        cc6.common_name AS car_manufacturer,
+        rc.model_year
+        FROM rental_cars rc
+        JOIN branchs b ON rc.branch_code = b.branch_code
+        JOIN car_types ct ON rc.car_type_code = ct.car_type_code
+        JOIN common_codes cc1 ON cc1.common_code = rc.car_status AND cc1.common_kind_code = 'car_status'
+        JOIN common_codes cc2 ON cc2.common_code = ct.car_type_category AND cc2.common_kind_code = 'car_type_category'
+        JOIN common_codes cc3 ON cc3.common_code = ct.origin_type AND cc3.common_kind_code = 'origin_type'
+        JOIN common_codes cc4 ON cc4.common_code = ct.seating_capacity AND cc4.common_kind_code = 'seating_capacity'
+        JOIN common_codes cc5 ON cc5.common_code = ct.fuel_type AND cc5.common_kind_code = 'fuel_type'
+        JOIN common_codes cc6 ON cc6.common_code = ct.car_manufacturer AND cc6.common_kind_code = 'car_manufacturer'
+        ORDER BY car_code
     </select>
 </mapper>

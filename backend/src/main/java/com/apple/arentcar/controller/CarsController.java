@@ -41,8 +41,8 @@ public class CarsController {
     // 차종 조회 및 페이지네이션(검색 기능 포함)
     @GetMapping("/manager/cars/paged")
     public ResponseEntity<List<CarTypesDTO>> getCarsWithPaging(
-                                             @RequestParam int pageSize,
-                                             @RequestParam int pageNumber,
+                                             @RequestParam int pageSize, // 10
+                                             @RequestParam int pageNumber, // 기본 페이지 1
                                              @RequestParam(required = false) String carTypeName) {
         List<CarTypesDTO> carTypes;
         if (carTypeName != null && !carTypeName.isEmpty()) {
@@ -86,7 +86,8 @@ public class CarsController {
 //            if (Files.exists(filePath)) {
 //                return ResponseEntity.status(HttpStatus.CONFLICT).body("File with the same name already exists!");
 //            }
-
+            
+            // StandardCopyOption.REPLACE_EXISTING -> 중복된 파일은 덮어쓰겠음
             // 덮어쓰기를 허용하므로 중복 확인은 필요하지 않음
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 

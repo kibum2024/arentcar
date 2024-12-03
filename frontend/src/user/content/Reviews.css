@@ -1,0 +1,69 @@
+.user-customers-reviews{
+    width: 100%;
+    background-color: #ededf0;
+}
+
+.user-customers-detail-reviews{
+    padding: 0px;
+}
+.user-customers-detail-reviews-header{
+    overflow: hidden;
+
+}
+.user-customers-detail-reviews-title{
+    float: left;
+}
+.user-customers-detail-reviews-author{
+    float: right;
+}
+.user-customers-detail-reviews-author>div{
+    text-align: end;
+}
+.user-customers-detail-reviews-content{
+    font-size: 16px;
+    padding: 0px 30px;
+}
+
+.user-customers-create-reviews{
+    margin: 0;
+}
+
+.user-customers-create-review-popup-wrap{
+    margin: 0px auto;
+    min-height: 200px;
+    max-width: 1000px;
+}
+
+.user-customers-create-review-popup-line{
+    text-align: center;
+    margin: 10px 0px;
+}
+.user-customers-create-review-popup-wrap h6{
+    font-weight: bold;
+}
+.user-customers-create-review-popup-score{
+    font-size: 22px;
+}
+.user-customers-create-review-popup-content{
+    border: 1px solid #cfcfcf;
+    width: 900px;
+    resize: none;
+    overflow:hidden;
+    padding: 5px;
+    display: inline-block;
+}
+.user-customers-create-review-popup-content:focus {
+    outline: none;
+}
+
+.user-customers-create-review-popup-button{
+    width: 70px;
+    height: 30px;
+    margin: 0px 5px;
+    background-color: #ee0a0a;
+    color: #ededf0;
+    font-weight: bold;
+    vertical-align: middle;
+    border-radius: 20px;
+}
+
