@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { refreshAccessToken, handleLogout } from 'common/Common';
-import { formatDate } from "common/Common";
+import { refreshAccessToken, handleLogout, formatDate } from 'common/Common';
+// import { formatDate } from "common/Common"; // 위에 포함
 import 'manager/managepayment/ManagePayment.css';
-import 'index.css';
+// import 'index.css'; //index.js에서 선어되어 있어 불필요
 
 const ManagePayment = () => {
   const [branchNames, setBranchNames] = useState([]);
@@ -149,7 +149,7 @@ const ManagePayment = () => {
   };
 
   const fetchBranchNamesData = async (token) => {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/branchs`, {
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/user/branchs`, {
       headers: { Authorization: `Bearer ${token}` },
       withCredentials: true,
     });
@@ -182,11 +182,11 @@ const ManagePayment = () => {
     const getManagePaymentDetails = async (token, reservationCode) => {
       if (!reservationCode) {
         return;
-      }
+      };
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/arentcar/manager/rentalrates/detail/${reservationCode}`,
       {
-        header: {
-          Authorization: `Bearer ${token}`,
+        headers: {
+          Authorization: `Bearer ${token}`
         },
         withCredentials: true,
       }

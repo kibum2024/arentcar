@@ -17,7 +17,7 @@ public class BranchsController {
     @Autowired
     private BranchsService branchsService;
 
-    @GetMapping("user/branches")
+    @GetMapping("/user/branchs")
     public List<Branchs> findAllBranches () {
         return branchsService.findAllBranches();
     }

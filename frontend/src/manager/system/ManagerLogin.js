@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setAdminState } from '../../redux/AdminState';
+import axios from 'axios';
 import api from 'common/api';
 import Cookies from 'js-cookie';
 import { refreshAccessToken, handleAdminLogout } from 'common/Common';
@@ -41,6 +42,13 @@ const ManagerLogin = () => {
     try {
       localStorage.removeItem('accessToken');
       Cookies.remove('refreshToken'); 
+
+      localStorage.removeItem('accessToken');
+      Cookies.remove('refreshToken'); 
+      
+      delete axios.defaults.headers.common['Authorization'];
+      console.log("토큰이 삭제되었습니다.");
+
       const response = await api.post(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins/login`, {
         admin_id: adminId,
         admin_password: adminPassword,

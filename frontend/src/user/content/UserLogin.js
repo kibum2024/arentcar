@@ -46,9 +46,15 @@ const UserLogin = () => {
   };
 
   const handleLoginClick = async () => {
+    localStorage.removeItem('accessToken');
+    Cookies.remove('refreshToken'); 
+
+    delete axios.defaults.headers.common['Authorization'];
+    console.log("토큰이 삭제되었습니다.");
+  
+    // 3. Cache-Control 헤더 추가 (캐시 방지)
+    axios.defaults.headers.common['Cache-Control'] = 'no-cache, no-store, must-revalidate';
     try {
-      localStorage.removeItem('accessToken');
-      Cookies.remove('refreshToken'); 
       const response = await api.post(`${process.env.REACT_APP_API_URL}/arentcar/user/users/login`, {
         user_email: userEmail,
         user_password: userPassword,
