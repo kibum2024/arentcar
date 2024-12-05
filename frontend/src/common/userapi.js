@@ -28,7 +28,7 @@ const isTokenExpired = (token) => {
 // 액세스 토큰을 재발급하는 함수
 const refreshAccessToken = async () => {
   try {
-    const response = await axios.post(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins/refresh`, {}, { withCredentials: true });
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/arentcar/user/users/refresh`, {}, { withCredentials: true });
     const newAccessToken = response.data.accessToken;
     setAccessToken(newAccessToken); 
     return newAccessToken;
@@ -39,15 +39,15 @@ const refreshAccessToken = async () => {
 };
 
 // Axios 인스턴스 생성
-const api = axios.create({
+const userapi = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   withCredentials: true, // 쿠키를 자동으로 포함 (리프레시 토큰)
 });
 
-api.setAccessToken = setAccessToken;
+userapi.setAccessToken = setAccessToken;
 
 // Axios 요청 인터셉터
-api.interceptors.request.use(
+userapi.interceptors.request.use(
   async (config) => {
     if (isTokenExpired(accessToken)) {
       // console.log('액세스 토큰 만료. 리프레시 토큰을 사용해 재발급 요청.');
@@ -65,4 +65,4 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-export default api;
+export default userapi;

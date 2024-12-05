@@ -47,7 +47,7 @@ const ManagerLogin = () => {
       Cookies.remove('refreshToken'); 
       
       delete axios.defaults.headers.common['Authorization'];
-      console.log("토큰이 삭제되었습니다.");
+      // console.log("토큰이 삭제되었습니다.");
 
       const response = await api.post(`${process.env.REACT_APP_API_URL}/arentcar/manager/admins/login`, {
         admin_id: adminId,

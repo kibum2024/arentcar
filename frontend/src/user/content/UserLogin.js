@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUserState } from '../../redux/UserState';
 import axios from 'axios';
-import api from 'common/api';
+import userapi from 'common/userapi';
 import Cookies from 'js-cookie';
 import Loading from 'common/Loading';
 import 'user/content/UserLogin.css';
@@ -50,12 +50,12 @@ const UserLogin = () => {
     Cookies.remove('refreshToken'); 
 
     delete axios.defaults.headers.common['Authorization'];
-    console.log("토큰이 삭제되었습니다.");
+    // console.log("토큰이 삭제되었습니다.");
   
     // 3. Cache-Control 헤더 추가 (캐시 방지)
     axios.defaults.headers.common['Cache-Control'] = 'no-cache, no-store, must-revalidate';
     try {
-      const response = await api.post(`${process.env.REACT_APP_API_URL}/arentcar/user/users/login`, {
+      const response = await userapi.post(`${process.env.REACT_APP_API_URL}/arentcar/user/users/login`, {
         user_email: userEmail,
         user_password: userPassword,
       });
@@ -69,7 +69,7 @@ const UserLogin = () => {
         return;
       }
 
-      api.setAccessToken(response.data.token);
+      userapi.setAccessToken(response.data.token);
       const userData = response.data.users;
       dispatch(setUserState({
         userCode: userData.user_code,
@@ -96,7 +96,7 @@ const UserLogin = () => {
     }
 
     try {
-      await api.put(`${process.env.REACT_APP_API_URL}/arentcar/user/users/newpassword`,
+      await userapi.put(`${process.env.REACT_APP_API_URL}/arentcar/user/users/newpassword`,
         {
           user_email: userEmail,
           user_password: newPassword,
