@@ -30,7 +30,7 @@ public class UsersController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("${kakao.client.id}")
+    @Value("${kakao.client.id}")    
     private String clientId;
 
     @Value("${kakao.redirect.uri}")
